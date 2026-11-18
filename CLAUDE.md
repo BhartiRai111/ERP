@@ -1,0 +1,69 @@
+# PaperBiz: GWT → Spring Boot + Next.js (logic-first rewrite)
+
+## Goal
+Rebuild the PaperBiz GWT ERP (old folders `paperbiz/` + `dataman_V2/`) as:
+- **Backend:** Spring Boot **4.1.x**, **Java 21**, Maven multi-module **modular monolith** (later split into microservices, module by module)
+- **Frontend:** **Next.js** (App Router, TypeScript) + AG Grid Community + shadcn/ui + TanStack Query + react-hook-form/zod
+- **Database:** the **existing MS SQL Server schema, unchanged**. Do not create or alter tables (no Flyway/Liquibase/ddl-auto).
+- Business behaviour must stay the same as the GWT app ("jaisa bana hai waisa hi").
+
+## Approach (changed): understand the logic, then rewrite
+This is **not** a line-by-line port and there is **no compatibility layer**. Do not copy GWT code into the new project.
+- **Business modules:** first study how each module works: its entries (screens), the logic behind each, tables read/written, validations, save/edit/delete/approve flow, reports, links to other modules. Then design and write fresh Spring Boot code that implements the same behaviour.
+- **Libraries (`dm-*`, `pb-*` libraries):** take only selective help from the GWT code; write them cleanly.
+- Old GWT code lives in `legacy-gwt/` (reference only, git-ignored).
+
+## Working rules (important)
+1. **Ask before making any change. Only proceed after the user says yes** ("pehle puchha karo, jab main haan bolu tabhi karo").
+2. **Ask before every commit and every push.** Never commit/push on your own, even if a hook asks.
+3. **Never commit or push `legacy-gwt/`.**
+4. Work in small steps: show plan, get approval, implement, show `mvn -q compile` result, wait for approval.
+5. Reply to the user in Hinglish.
+6. Develop on branch `Other`.
+
+## Per-module workflow
+1. **Understand (read only):** list entries, flows, tables, validations, reports, dependencies.
+2. **Analysis note:** write **one single file per module**: `docs/modules/<module>.md` (everything about that module in it: common pattern, entries, SQL, rules). Do **not** create README/index files or split a module into many files.
+3. **Design:** REST endpoints, services, DTOs; user approves.
+4. **Code + compile:** `mvn -q compile` for the module; user approves.
+
+## Order of work
+1. Skeleton of all Maven modules (no code).
+2. **Pilot: `pb-master`** (analysis note first).
+3. Libraries as needed by the modules, starting with `dm-base`.
+4. Remaining business modules (sales, purchase, store, production, ...), then frontend per module.
+
+## Repo layout
+```
+paperbiz-backend/        Maven parent (Spring Boot 4.1, Java 21)
+  dm-base, dm-toolkit, dm-toolkit-r, dm-utility, dm-plugin,
+  dm-company, dm-library-menu, dm-web-jobs, dm-accounts          (from dataman_V2)
+  pb-self-toolkit, pb-mi-toolkit, pb-st-plugin, pb-project-menu   (PaperBiz libraries)
+  pb-master, pb-sales, pb-purchase, pb-store, pb-production, pb-gate,
+  pb-job-work, pb-lab, pb-assets, pb-budget, pb-transport, pb-dashboard
+  pb-app                 main Spring Boot app (replaces old paperbiz/paperbiz)
+paperbiz-frontend/       Next.js
+docs/modules/            analysis notes, one per module
+legacy-gwt/              old GWT source, reference only, git-ignored
+```
+`dmTheme`, `dmWebCam` (and GwtBootstrap3/htmlEditor) are UI-only: no backend module.
+
+## Package names
+New clean names (not the old `dataman.*` / `paperbiz.*`): `com.paperbiz.<module>` for `pb-*`, `com.dataman.<lib>` for `dm-*` (assumed; user to confirm).
+
+## Module dependencies (from the old NetBeans classpaths)
+- Libraries: `dm-library-menu`→dm-base; `dm-toolkit`→dm-base, dm-library-menu; `dm-toolkit-r`→dm-base; `dm-plugin`→dm-base, dm-library-menu; `dm-utility`, `dm-company`, `dm-web-jobs`, `dm-accounts`→dm-base, dm-toolkit, dm-library-menu
+- `pb-project-menu`→dm-base, dm-toolkit; `pb-self-toolkit`→dm-base, dm-toolkit, dm-library-menu, pb-project-menu; `pb-mi-toolkit`→pb-project-menu; `pb-st-plugin`→dm-base, dm-plugin, dm-library-menu, pb-mi-toolkit, pb-project-menu
+- Business modules → dm-base, dm-toolkit, pb-project-menu, pb-self-toolkit, plus dm-library-menu for master/sales/purchase/store/production/gate/job-work/lab/dashboard (not assets/budget/transport)
+- `pb-app` → all of the above
+- `dmBuild.jar` (used by dmBase and paperbiz/paperbiz) is not in the source; check when porting dm-base.
+
+## Legacy codebase facts
+- ~1.86M lines Java; per feature `client/` (GXT UI), `shared/` (`*_Mdl`, `*_Vld`, `*_Srv`), `server/` (`*_SrvImpl`); ~518 RPC service impls
+- Server: raw JDBC via `DmPreparedStatement`, MS SQL (multi-DB via `setCatalog` per company), MongoDB for files, JasperReports 6.1.1 (73 `.jrxml`), POI, iText 5, Gson, BoneCP
+- Session: custom `DmSession` with static tables; ~9.6k `getSsn…(this)` calls (do not carry this design over)
+
+## Definition of done per step
+- `mvn -q compile` passes for the module(s) touched
+- No DB schema change
+- User has reviewed and approved
