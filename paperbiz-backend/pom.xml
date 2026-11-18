@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>4.1.2</version>
+        <relativePath/>
+    </parent>
+    <groupId>com.paperbiz</groupId>
+    <artifactId>paperbiz-backend</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>paperbiz-backend</name>
+    <description>PaperBiz ERP backend (modular monolith)</description>
+    <properties>
+        <java.version>21</java.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <modules>
+        <module>dm-base</module>
+        <module>dm-library-menu</module>
+        <module>dm-toolkit</module>
+        <module>dm-toolkit-r</module>
+        <module>dm-plugin</module>
+        <module>dm-utility</module>
+        <module>dm-company</module>
+        <module>dm-web-jobs</module>
+        <module>dm-accounts</module>
+        <module>pb-project-menu</module>
+        <module>pb-self-toolkit</module>
+        <module>pb-mi-toolkit</module>
+        <module>pb-st-plugin</module>
+        <module>pb-master</module>
+        <module>pb-sales</module>
+        <module>pb-purchase</module>
+        <module>pb-store</module>
+        <module>pb-production</module>
+        <module>pb-gate</module>
+        <module>pb-job-work</module>
+        <module>pb-lab</module>
+        <module>pb-assets</module>
+        <module>pb-budget</module>
+        <module>pb-transport</module>
+        <module>pb-dashboard</module>
+        <module>pb-app</module>
+    </modules>
+</project>
