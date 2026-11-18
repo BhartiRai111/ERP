@@ -1,3 +1,6 @@
 
 # Legacy GWT reference source (never commit)
 legacy-gwt/
+
+# Old split copy of pb-master doc (merged into docs/modules/pb-master.md)
+docs/modules/pb-master/
