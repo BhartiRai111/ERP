@@ -36,6 +36,12 @@ Goal: same project, same logic, same entry points (not same code). Backend and f
 4. **`dataman_V2/accounts` is postponed** until purchase/sales/store need it.
 - Common things needed by many entries live in the shared libraries (`dm-*`, `pb-self-toolkit`), never copied into a module.
 
+## Decisions (library design, `docs/design/library-design.md` sec 7)
+- Auth: JWT; password verified against `UserMast.PassWd` (legacy MD5) behind a `PasswordVerifier` interface (known risk; strong-hash opt-in migration later); permissions/session data cached server side.
+- Frontend: one Next.js app `paperbiz-frontend/`, pnpm, Node 22 LTS. Reports: **JasperReports 7.1.1** (never the old 6.1.1). License check removed (`LicensePolicy` no-op). `dm-toolkit-r` and `dm-plugin` deferred.
+- **Always use latest stable library versions**; no legacy jars. Legacy behaviour/messages stay the same unless the user approves a fix; security/resource bugs are always fixed.
+- Integration tests need the user's dev SQL Server + Mongo and a schema-only script (no DB in the container).
+
 ## Repo layout
 ```
 paperbiz-backend/        Maven parent (Spring Boot 4.1, Java 21)
