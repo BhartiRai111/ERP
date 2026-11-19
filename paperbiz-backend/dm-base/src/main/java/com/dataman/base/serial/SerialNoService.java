@@ -43,6 +43,57 @@ public class SerialNoService {
         }
     }
 
+    /**
+     * Key with a voucher prefix (legacy getSerialNoBigInt(site, vPrefix, table)):
+     * "1" + site (4) + prefix (2) + counter (11 digits). Site and prefix must be non-zero.
+     */
+    public String nextBigInt(String tableName, String voucherPrefix) {
+        String site = UserContextHolder.require().siteCode();
+        if (isZero(site)) {
+            throw new DmException("Sitecode is mandatory.");
+        }
+        if (isZero(voucherPrefix)) {
+            throw new DmException("Voucher Prefix is mandatory.");
+        }
+        try {
+            Long counter = jdbc.queryForObject("exec getCode :tableName, :siteCode, :vPrefix",
+                    new MapSqlParameterSource("tableName", tableName).addValue("siteCode", site)
+                            .addValue("vPrefix", voucherPrefix), Long.class);
+            return "1" + pad(site, "0000") + pad(voucherPrefix, "00") + new DecimalFormat("00000000000").format(counter == null ? 0 : counter);
+        } catch (Exception e) {
+            throw new DmException(0, e.getMessage());
+        }
+    }
+
+    /**
+     * Document id of a voucher (legacy getDocId): "1" + site (4) + voucher type (3) + prefix (2) + voucher no (8),
+     * the voucher number comes from the DB procedure {@code getDocId}.
+     */
+    public String docId(String voucherType, String voucherPrefix) {
+        String site = UserContextHolder.require().siteCode();
+        Long voucherNo = jdbc.queryForObject("exec getDocId :voucherType, :voucherPrefix, :siteCode",
+                new MapSqlParameterSource("voucherType", voucherType).addValue("voucherPrefix", voucherPrefix)
+                        .addValue("siteCode", site), Long.class);
+        if (voucherNo == null || voucherNo <= 0) {
+            throw new DmException("Unable to generate docId.");
+        }
+        return formatDocId(site, voucherType, voucherPrefix, voucherNo);
+    }
+
+    public static String formatDocId(String siteCode, String voucherType, String voucherPrefix, long voucherNo) {
+        return "1" + pad(siteCode, "0000") + pad(voucherType, "000") + pad(voucherPrefix, "00")
+                + new DecimalFormat("00000000").format(voucherNo);
+    }
+
+    private static boolean isZero(String v) {
+        return v == null || v.isBlank() || new BigDecimal(v.trim()).signum() == 0;
+    }
+
+    private static String pad(String value, String pattern) {
+        BigDecimal n = (value == null || value.isBlank()) ? BigDecimal.ZERO : new BigDecimal(value.trim());
+        return new DecimalFormat(pattern).format(n);
+    }
+
     /** Pure formatting part (unit tested). */
     public static String format(String siteCode, long counter, String counterPattern) {
         BigDecimal site = (siteCode == null || siteCode.isBlank()) ? BigDecimal.ZERO : new BigDecimal(siteCode.trim());

@@ -32,4 +32,15 @@ class ValidateTest {
         assertDoesNotThrow(() -> Validate.pan("ABCDE1234F", 1));
         assertEquals("Invalid PAN No.", assertThrows(DmException.class, () -> Validate.pan("abcde1234f", 1)).getMessage());
     }
+
+    @Test
+    void mobileAndGstin() {
+        assertDoesNotThrow(() -> Validate.mobile("", 1));
+        assertDoesNotThrow(() -> Validate.mobile("9876543210,9123456780", 1, 10));
+        assertEquals("Invalid Mobile No.", assertThrows(DmException.class, () -> Validate.mobile("12345", 1, 10)).getMessage());
+        assertEquals("Mobile No. should be numeric.", assertThrows(DmException.class, () -> Validate.mobile("98x", 1)).getMessage());
+        assertDoesNotThrow(() -> Validate.gstin("7", "ABCDE1234F", "07ABCDE1234F1Z5", 1));
+        assertEquals("Invalid GSTIN.", assertThrows(DmException.class, () -> Validate.gstin("7", "ABCDE1234F", "07ABCDE1234F1X5", 1)).getMessage());
+        assertEquals("Invalid GSTIN.", assertThrows(DmException.class, () -> Validate.gstin("7", "ABCDE1234F", "short", 1)).getMessage());
+    }
 }
