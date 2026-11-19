@@ -301,4 +301,4 @@ Public methods:
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Purana **Flash (SWFUpload) based file uploader** ke event classes (queued, progress, success, error). Naye frontend me normal browser file upload se badla jayega.

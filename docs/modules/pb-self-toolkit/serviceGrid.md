@@ -593,4 +593,4 @@ Helpers used: `DmServer.evaluateHelper`, `DmServer.getCodeViaManualCode`, `DmSer
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Service lines ka grid: ITS (item tax structure), GST type, valuation type, cess unit; `getDefaultValues`, `getITS`, lookups.

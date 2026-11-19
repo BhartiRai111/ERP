@@ -139,4 +139,4 @@ Helpers used: `DmServer.checkCurrentSiteRecord`, `DmServer.checkForwardVoucherDa
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Production order sales order ki tables me (`sOrder`, `sOrderDetail`)** save hota hai (voucher type se alag); `pb-production/productionOrder` se judta hai.

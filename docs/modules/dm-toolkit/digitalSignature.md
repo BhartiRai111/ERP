@@ -102,4 +102,4 @@ Helpers used: `DmServer.getMdbCollection`, `DmServer.getSsnId`, `DmServer.getSsn
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**PDF digital signature:** `signPdf`, keystore (PFX, `dscMaster` ka certificate) se; `getKeyStore`, header info. e-invoice/PDF signing ke liye.

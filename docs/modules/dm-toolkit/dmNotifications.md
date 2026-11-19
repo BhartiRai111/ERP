@@ -74,4 +74,4 @@ Helpers used: `DmShared.xNull`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Mobile/web notification bhejna (`uploadNotification`, `sendMessage`, `onMessage`): WebSocket/message queue. Detail dekhna baaki.

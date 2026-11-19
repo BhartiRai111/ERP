@@ -42,4 +42,4 @@ Nested: interface `CallBack`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Interface (41 lines) jo widgets ko `getTag/getTag2nd/setEnabled` jaisa common behaviour deta hai. Frontend me common props.

@@ -344,4 +344,4 @@ Helpers used: `DmServer.evaluateHelper`, `DmServer.getConnection`, `DmServer.get
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Report layout templates (`getTxtHManageTemplate`, `getTxtHAcName`, `processRequest`): user-defined report column/layout (master report builder). Detail dekhna baaki.

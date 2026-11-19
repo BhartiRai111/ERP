@@ -49,4 +49,4 @@ Public methods:
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Mobile number box: sirf digits aur base country ke `mobileDigit` rule (jaise India 10 digit; `LocaleSettings.mobileDigits()` / `Validate.mobile`).

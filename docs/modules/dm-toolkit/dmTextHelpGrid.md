@@ -68,4 +68,4 @@ Nested: interface `HelpGridCallBack`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**TextHelp ka popup grid** (472 lines): `show(textBox, searchText)`, `reQuery(text)` (filter `BEGINSWITH` key column par, first page se), First/Prev/Next/Last, `ok()` selected row, `isStatic`, `appendable`. Behaviour `dmTextHelp` note me.

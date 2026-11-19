@@ -52,4 +52,4 @@ Helpers used: `DmServer.compileJasper`, `DmServer.getConnection`, `DmServer.getC
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Open-source (non-Jasper) report** ka screen/server (`OpenSourceReport_SrvImpl`): detail dekhna baaki.

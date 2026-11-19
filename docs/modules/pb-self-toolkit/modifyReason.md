@@ -137,4 +137,4 @@ Helpers used: `DmServer.vNull`, `DmShared.foriegnKey`, `DmShared.iNull`, `DmShar
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Modify-reason ka PaperBiz-side popup/server (`getTxtHReason`, `getEditResion`, `modifyReason` table); asal logic `dm-toolkit/modifyReason`.

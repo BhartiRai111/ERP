@@ -317,4 +317,4 @@ Helpers used: `DmServer.convertDate`, `DmServer.evaluateHelper`, `DmServer.getCo
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Accounts voucher ki approval list (`getFillRecords`, `setApproval`, lookups status/cost center/voucher no/type); `pb-self-toolkit` ke approval screens jaisa pattern. `gstVoucherEntryApproval` GST voucher ke liye.

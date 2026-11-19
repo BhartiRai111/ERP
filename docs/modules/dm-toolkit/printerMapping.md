@@ -103,4 +103,4 @@ Helpers used: `DmServer.convertFromJson`, `DmServer.convertToJson`, `DmShared.fi
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Report -> printer mapping (har machine par kaun si report kis printer se): `getTxtHPrinter`, local setting JSON (`getJsonOfLocalSettingReportMapModel`, `getPrinterMappingLocalSettingFromJSon`). `dmStatic` ke client `localSettingPrintMap` se judta hai.

@@ -67,4 +67,4 @@ Helpers used: `DmServer.convertDate`, `DmServer.getServerTimestamp`, `DmServer.v
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Document ke saath insurance policy ka link/use: `policyTrans` insert (`pb-master/policyMaster` utilised amount check isi se).

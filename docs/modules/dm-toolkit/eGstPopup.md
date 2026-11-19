@@ -879,4 +879,4 @@ Helpers used: `DmBaseServer.getSsnData`, `DmServer.evaluateHelper`, `DmServer.ge
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+E-way bill / e-invoice ka popup (screen se `processEGst`): lookups transport mode, transporter, vehicle type, e-way sub-supply type, document type, transaction type, cancel reason (dm-base enums `Eway_*`, `Einv_*`). Generate/cancel/print buttons `gst` ke server methods ko chalate hain.

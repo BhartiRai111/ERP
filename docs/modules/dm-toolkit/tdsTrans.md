@@ -78,4 +78,4 @@ Helpers used: `DmServer.convertDate`, `DmServer.getServerTimestamp`, `DmServer.g
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+`tdsTrans` table me TDS entry save/delete (`saveTdsTrans`, `deleteTdsTrans`). UI `pb-self-toolkit/tdsPopup`.

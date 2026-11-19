@@ -232,4 +232,4 @@ Helpers used: `DmServer.evaluateHelper`, `DmServer.getCodeViaManualCode`, `DmSer
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Stock FIFO process ko UI se chalana:** filters category, group, department, item; `startFifo` (stock engine `runStockFIFO_Process`), `readLogFile` (progress log). Inventory accounting active ho to nahi chalta.

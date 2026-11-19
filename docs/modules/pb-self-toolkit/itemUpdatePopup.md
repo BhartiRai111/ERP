@@ -192,4 +192,4 @@ Helpers used: `DmServer.convertDate`, `DmServer.executeScalar`, `DmServer.getSer
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Item update popup: badlaav ka history `itemUpdateHistory`, `itemMast`/`itemMakeMast` update (purchase ke dauran item ki detail sudhaarna).

@@ -162,4 +162,4 @@ Helpers used: `DmServer.dCodify`, `DmServer.getCachedSftpPollingDirectoryModel`,
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**SFTP polling:** remote directory me nayi files par event (`getSftpEvent`, `listRemoteFiles`, `createSftpDirectory`, `initializePolling`, `run`); queue `dataman.queue`/`rdp` ke saath. Integration (PFMS jaisa source id `addPFMSSourceIdToSftpPolling`).

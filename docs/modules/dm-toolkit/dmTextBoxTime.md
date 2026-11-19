@@ -49,4 +49,4 @@ Public methods:
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Time box (HH.mm / HH:mm) ke liye. Frontend: time input.

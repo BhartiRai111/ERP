@@ -45,4 +45,4 @@ Helpers used: `DmServer.convertFromJson`, `DmServer.getConnection`, `DmServer.ge
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Machine interface ka PaperBiz side (`machineSubTestOutput` insert): analyzer se aaye lab test results. `pb-mi-toolkit`, `pb-st-plugin` se judta hai.

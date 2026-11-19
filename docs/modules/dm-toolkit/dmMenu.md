@@ -40,4 +40,4 @@ Public methods:
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Menu bar ka container (`DmMenuBar`) jise `DmClient.addMenuBarItem` user ke permission wale items se bharta hai; click par screen `invokeSetWidget(menuText)` se khulti hai. Frontend: sidebar/top menu + router.

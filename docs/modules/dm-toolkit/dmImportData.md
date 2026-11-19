@@ -280,4 +280,4 @@ Helpers used: `DmServer.getConnection`, `DmShared.iNull`, `DmShared.isValidText`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Starter/master data CSV import** (`importCSV`, `getImportDataModel`): initial masters (`initialMast`, `overheadmast`), account masters (`SubGroup`, `AcGroup`, `AcGroupPath`), `City`, `country`, `stateMast`, `currency`, single-line masters (`saveSingleLineMaster`). CSV format `ImportData_Server.getCSVFormats` (header + validation); har master ka `exportCSV` isi format ka header banata hai. Log file path aur data file path zaroori ("Log file path can not be blank.").

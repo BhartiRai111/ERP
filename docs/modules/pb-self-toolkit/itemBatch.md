@@ -192,4 +192,4 @@ Helpers used: `DmServer.convertDate`, `DmServer.getSerialNoBigInt`, `DmServer.ge
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Item batch master:** `itemBatch` table (batch no., expiry...), insert/update. Stock `ibCode` isi se judta hai (`dm-toolkit/stock`).

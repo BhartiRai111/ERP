@@ -467,4 +467,4 @@ Helpers used: `DmServer.convertDate`, `DmServer.vNull`, `DmShared.dNull`, `DmSha
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Bill adjustment (accounts):** ledger entries ko aapas me adjust (jaise receipt ko invoice se) `ledgerAdj` table se: `getLedger`, `getTxtHLedger`, `getTxtHVoucher`, `getDrCr`, `getHistory`, `saveRecord`, `getAdjustments`, `validateAdjustment`, `deleteAdjustment`/`deleteRecord`. `STAccountPosting.syncAccountAdjustments` isi se judta hai.

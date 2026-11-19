@@ -231,4 +231,4 @@ Helpers used: `DmServer.convertDate`, `DmServer.getParamList`, `DmServer.vNull`,
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Stock reservation/release:** `stockRelease` insert, `stockReserve` update (sales order ke liye reserved stock chhodna).

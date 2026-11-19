@@ -74,4 +74,4 @@ Helpers used: `DmServer.convertDate`, `DmServer.getConnection`, `DmServer.getPar
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Stock detail popup (`getShowStock`): item ka current stock dikhata hai.

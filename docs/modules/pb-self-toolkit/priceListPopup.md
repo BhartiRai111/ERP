@@ -1758,4 +1758,4 @@ Helpers used: `DmServer.chkIfDocumentUsed`, `DmServer.compileJasper`, `DmServer.
 | savePriceListGui | `if (mrTemp.getSharedKeyFieldCode().equalsIgnoreCase(""))` | "Invalid key." |
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Price list banane/dekhne ka popup (`priceListMast`, `guiPriceListHead`; `savePriceList`, `deletePriceListMaster`, `getItemDetail...`); logic `pb-self-toolkit/priceList` ke saath, rules `pb-master/priceListMaster`.

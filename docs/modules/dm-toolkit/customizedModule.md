@@ -173,4 +173,4 @@ Helpers used: `DmServer.evaluateHelper`, `DmServer.getConnection`, `DmServer.get
 | createDataSheet | `if (!sFile.exists())` | "Directory not found." |
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Customized report module** (client-specific): `initiate`, `getHelp`, `execute`, `getDBSourceFromExcel` (Excel se data source). `openSourceModule` isi ka open-source version (13 files dono). Detail dekhna baaki.

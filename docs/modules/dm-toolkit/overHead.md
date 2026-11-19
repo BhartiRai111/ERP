@@ -476,4 +476,4 @@ Helpers used: `DmServer.evaluateHelper`, `DmServer.getConnection`, `DmServer.get
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Overhead (additional charges/discounts) voucher-level:** document ke total par extra lines (freight, packing, discount, tax...). `getOverHeadTrans`, `getOverHead`, `save`/`delete` (document ke saath), **`prepareSQLLedger`** (overhead ka accounts ledger posting), `getOHHeadAccounts` (kaun sa account), `calculateDrCrAmount`, `isValidDrCrAmount`, `getVoucherGroupCode`, lookup `getTxtHPostingAC`. Configuration `dm-utility/overheadMaster`/`overheadConfiguration`.

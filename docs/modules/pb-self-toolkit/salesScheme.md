@@ -129,4 +129,4 @@ Helpers used: `DmServer.convertDate`, `DmServer.getCodeViaManualCode`, `DmServer
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Sales scheme UI (scheme lagana/dikhana; 53 files use).

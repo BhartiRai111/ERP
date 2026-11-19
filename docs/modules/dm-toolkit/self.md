@@ -263,4 +263,4 @@ Helpers used: `DmServer.getConnectionMongo`, `DmServer.getSsnFileDBName`, `DmSha
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Toolkit ka server-side infra:** `ManageUser` (login ke baad user ka cache: `DmServer.getManageUser`), `MailServer` (SMTP mail bhejna), `DmPlugin_Srvlt` (local plugin ke liye servlet), `DmPACSetup_Srvlt` / `DmPACUpdateSetup_Srvlt` (**client setup/updater ka download**), `DmDataStructure`/`DmTables` (table structure ka description), `DMJasperVariables` (report ke company/site variables), `DmLocalIPAddress`, `JSNICaller`, `ItemBatch`, `DmToolkit_Cntx` (servlets register), UI helpers (`MenuClick`, `ViaListWidget`, `SetWidgetInvokerImpl`, `DmRunAsyncIni`, `DmToolkit_Res`, `DmImageResolver`). Naye project me: mail = Spring Mail, servlets = controllers, UI helpers = frontend.

@@ -655,4 +655,4 @@ Helpers used: `DmServer.convertDate`, `DmServer.evaluateHelper`, `DmServer.getCo
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Reel/sheet search popup (department, SO order no., purchase bill no., reel no., item, BF, GSM, unit...).

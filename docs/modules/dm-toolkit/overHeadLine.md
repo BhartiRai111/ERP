@@ -279,4 +279,4 @@ Helpers used: `DmServer.evaluateHelper`, `DmServer.getConnection`, `DmServer.get
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Overhead line-level (har item line par):** `getOverHead`, `save`/`delete`, `copyOverHead` (ek line se doosri me), `getITS` (**item tax structure**: GST/tax rate slabs lagana), `getTxtHPostingAC`. Configuration `dm-utility/overheadLineConfiguration`, `itemTaxStructure`.

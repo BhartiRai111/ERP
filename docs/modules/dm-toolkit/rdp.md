@@ -60,4 +60,4 @@
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Directory poller** (file system / SFTP me nayi/badli/hatayi file par event: `FileAddedEvent`, `FileModifiedEvent`, `FileRemovedEvent`, regex filter, scheduled polling; rdp4j jaisi library ka copy, `dataman.queue` ke saath). `sftp` isi par bana hai. Naye project me Spring Integration / WatchService.

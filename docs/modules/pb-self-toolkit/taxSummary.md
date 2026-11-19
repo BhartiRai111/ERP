@@ -54,4 +54,4 @@ Other widgets (not in tab list): `grdTaxSummary` (DmGrid)
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Tax summary UI (GST type-wise totals, 365 lines).

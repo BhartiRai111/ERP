@@ -38,4 +38,4 @@ Other widgets (not in tab list): `gridCustomField` (DmGrid)
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Custom (dynamic) field popup UI (`dm-toolkit/dmGUI` ke saath).

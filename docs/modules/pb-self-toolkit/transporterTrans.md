@@ -62,4 +62,4 @@ Helpers used: `DmServer.convertDate`, `DmServer.vNull`, `DmShared.foriegnKey`, `
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Document ke saath transporter ka detail: `transporterTrans` insert.

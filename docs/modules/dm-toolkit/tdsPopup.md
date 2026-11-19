@@ -320,4 +320,4 @@ Helpers used: `DmServer.convertDate`, `DmServer.vNull`, `DmShared.dNull`, `DmSha
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+TDS entry popup ka dm-toolkit-side (10 files); `pb-self-toolkit/tdsPopup` aur `dm-toolkit/tdsTrans` ke saath: TDS section/category, deduct, ledger balance.

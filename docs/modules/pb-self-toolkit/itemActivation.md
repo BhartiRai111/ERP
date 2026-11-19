@@ -324,4 +324,4 @@ Helpers used: `DmServer.convertDate`, `DmServer.evaluateHelper`, `DmServer.getCo
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Item activate/deactivate list:** `getFillRecords` (filters status, category, group, type), `setActive`, `getCardDetail` (home card). Item master ka `isActive` flag.

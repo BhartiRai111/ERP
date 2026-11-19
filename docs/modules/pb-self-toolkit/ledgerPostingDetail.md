@@ -46,4 +46,4 @@ Other widgets (not in tab list): `grdledgerPosting` (DmGrid)
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Document ki accounts posting dekhne ka popup (UI).

@@ -386,4 +386,4 @@ Helpers used: `DmServer.convertDate`, `DmServer.formatTimestamp`, `DmServer.getC
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Document par party/site ka snapshot:** voucher save par us waqt ka party/consignee/delivery ka naam, legal/trade name, GSTIN + date, address, city/district/state/country, additional place of business `{table}` (voucher ki apni party-info table) me `recordType` ke saath rakhta hai, taaki baad me party master badalne par bhi purana document waisa hi rahe. `savePartyTransRecord`, `getPartyTransRecord`, `deletePartyTransRecord`, `updatePartyTransRecord`, `getPartyTransInfo`; lookups `getTxtHCity`, `getTxtHAdPlaceOfBusiness`, `getAdditionalPartyDetail`.

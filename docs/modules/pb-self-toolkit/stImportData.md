@@ -880,4 +880,4 @@ Helpers used: `DmServer.getCodeViaManualCode`, `DmServer.getConnection`, `DmServ
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**PaperBiz ke CSV import formats:** `itemmast`, `itemSiteList`, `assetGroupMast`, `assetGroupProperties`, `shiftMast`, `SubGroup2`... aur har master ka import/export format (master ke `exportCSV` yahin se header lete hain, `ImportData_Server.getCSVFormats`). `dm-toolkit/dmImportData` ka PaperBiz-side hissa.

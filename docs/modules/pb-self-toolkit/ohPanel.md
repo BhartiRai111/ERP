@@ -28,4 +28,4 @@
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Overhead panel UI (voucher me overhead lines, `dm-toolkit/overHead`).

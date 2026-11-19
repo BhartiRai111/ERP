@@ -326,4 +326,4 @@ Helpers used: `DmServer.convertDate`, `DmServer.evaluateHelper`, `DmServer.getCo
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Trade/finished item ke liye `itemActivation` jaisa (`setActive`, list, card).

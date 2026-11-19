@@ -39,4 +39,4 @@ Helpers used: `DmShared.xNull`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Display system WebSocket (naam se; detail dekhna baaki).

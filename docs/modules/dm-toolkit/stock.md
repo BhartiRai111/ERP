@@ -357,4 +357,13 @@ Helpers used: `DmServer.convertDate`, `DmServer.getCodeViaManualCode`, `DmServer
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Kya hai:** **inventory engine** (FIFO, batch, negative-stock rules). Store/purchase/sales/production sab stock isi se likhte hain (`Stock_Server`).
+**Tables:** `stock` (har stock line: docId, v_SNo, item, `ibCode` = item batch, department, site, `recQty`/`isuQty`, `skuValue`, `landedSkuValue`, `skuValueWithTax`, ref document), `itemStock` (receipt lots: `stockValueDocId/V_SNo/Sno`, `stockValueDate`, `receiveQty`, `balanceQty`, `skuRate`, `landedSKURate`, `skuRateWithTax`), `stockFifo` (issue ko kis receipt lot se jodna: qty aur rate), `itemBatchStock` (batch ka balance), `stockItemId` (item-id level: reel/bundle), `itemMast.allowNegativeStock`.
+**Flow:**
+- **`saveStock` / `saveStockRecord`:** stock row insert. **Issue** par pehle balance check: kam ho to **"Entry not allowed as this is generating negative stock for <item>"** (jab tak item me allowNegativeStock na ho). Item batch (`ibCode`) ho to batch balance bhi check.
+- **`issueItemStock`:** issue ko **FIFO** se jodta hai: sabse purane lots (`stockValueDate` order) se `balanceQty` kaat kar `stockFifo` rows banata hai (har lot ka rate) -> issue ki value = lots ke rate ka total. Balance na ho aur negative allowed na ho to **"Entry not allowed!"**.
+- **`salesReturnItemStock`:** return ko pehle issue hue lots se jodta hai (issued qty = receive - balance).
+- **`deleteStock`:** pehle guard: delete se negative stock banta ho to **"Transaction not allowed as this is generating negative stock for "**; kisi aur document ne is receipt ko use kiya ho to **"Document is used!"**; adjustment wala record ho to **"Transaction exist, Adjustment cannot be edit / delete."**; phir `stockFifo`, `stockItemId`, `stock` delete.
+- **`runStockFIFO_Process`:** FIFO ki **recalculation** (rates dobara). **Sirf tab jab inventory accounting active na ho:** warna **"FIFO Process cannot be executed as inventory accounting is active."**; PLT invalid ho to error.
+- `updateStockValueFromStockFifo`, `updateStockValueForStockTransferReceiveRecord`, `updateItemBatchStock`, `getValuationType`, `deleteUnusedItemStock`.
+**Naya design:** `StockService` same tables/SQL par; sabse nazuk hissa (data galat hua to inventory value galat). Isko golden-style tests chahiye (purane FIFO run se compare).

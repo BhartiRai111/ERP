@@ -227,4 +227,4 @@ Helpers used: `DmServer.vNull`, `DmShared.vNull`, `DmShared.xNull`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Voucher ke "other charges" grid (`otherChargesTrans`): item/charge, valuation type; `initialize`.

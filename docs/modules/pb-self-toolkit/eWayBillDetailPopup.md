@@ -51,4 +51,4 @@
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+E-way bill detail popup UI (`dm-toolkit/gst` ke saath).

@@ -58,4 +58,4 @@ Helpers used: `DmShared.xNull`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Image canvas widget (photo/signature dikhana/edit).

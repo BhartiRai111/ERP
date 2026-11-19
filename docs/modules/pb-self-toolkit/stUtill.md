@@ -161,4 +161,4 @@ Helpers used: `DmShared.xNull`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Common lookups: voucher type, item nature, shift, shift incharge, lot no., warehouse...

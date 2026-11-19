@@ -629,4 +629,4 @@ Helpers used: `DmServer.checkCurrentSiteRecord`, `DmServer.checkFinancialYearDat
 | deleteRecord | `if (!DmShared.xNull(rsTemp.getString("approvedBy")).equalsIgnoreCase(""))` | "Record is approved. You can't delete this record." |
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Due-based Credit/Debit Note** (bina bill ke due par): `creditDebitNoteDue(+Detail)`, `pOrder` update. Standard master CRUD (navigator, find, save, delete) + `setApproval`, `fillGridDetails`.

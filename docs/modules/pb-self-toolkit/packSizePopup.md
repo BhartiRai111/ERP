@@ -70,4 +70,4 @@ Helpers used: `DmServer.getConnection`, `DmServer.getSerialNoInteger`, `DmServer
 | saveRecord | `if (rsTemp.getLong("cnt") > 0)` | "Pack Size already exist." |
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Pack size ka quick-add popup (`packSizeMast` insert; `saveRecord`).

@@ -1277,4 +1277,4 @@ Helpers used: `DmServer.checkCurrentSiteRecord`, `DmServer.checkFinancialYearDat
 | getEgstDetail | `if (DmShared.xNull(itemDetail_Mdl.getItemGSTNature()).trim().equalsIgnoreCase(""))` | "Item GST nature is mandatory for item: " |
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**GST Credit / Debit Note** (purchase/sales ke baad correction): tables `creditDebitNote`, `creditDebitNoteDetail`, accounts posting `LedgerM`; `pBillDetail` aur e-GST record update hota hai. Lookups voucher type, party, ref bill no., adjusted bill no., GST type. Approval `creditDebitNoteApproval`.

@@ -74,4 +74,4 @@ Helpers used: `DmServer.getConnection`, `DmServer.getSsnDBName`, `DmServer.getSs
 | getApplicableDateList | (unconditional) | "Price List: Entry From not found." |
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Price list ki applicable dates ki list/delete (`getApplicableDateList`, `deleteApplicableDate`).

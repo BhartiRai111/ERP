@@ -26,4 +26,4 @@
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+File servlets: upload (`DmFileUpload_Srvlt`), download (`DmFileDownload_Srvlt`, jaise CSV export ka `DmFileDownloader_Srvlt`), image thumbnail (`DmImageFileThumbnail_Srvlt`). Naye backend me `FileController` (upload/download/thumbnail).

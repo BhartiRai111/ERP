@@ -71,4 +71,4 @@ Helpers used: `DmServer.convertDate`, `DmServer.getServerDateTime`, `DmShared.iN
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**DB schema migration scripts (versioned):** `DML_Server` me ek list hai (`Row_Mdl`: serial, **version** jaise "15.03", **date**, module Master/Sales..., **SQL script**): `ALTER TABLE ... ADD ...`, `CREATE TABLE ...`, `INSERT ...` jo app chalate hue DB ko naye version par laate the. **Ye tables badalte hain, isliye naye project me port nahi** (rule: DB schema unchanged). Par ye list **schema ka itihaas/reference** hai (kaun si column kab judi), isliye zaroorat par padh sakte hain.

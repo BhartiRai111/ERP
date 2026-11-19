@@ -183,4 +183,4 @@ Helpers used: `DmServer.chkIfDocumentUsed`, `DmServer.convertDate`, `DmServer.ge
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Production requisition `requisition`/`requisitionDetail` me (store requisition jaisi tables).

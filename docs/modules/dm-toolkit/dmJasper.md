@@ -68,4 +68,4 @@
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Jasper ka custom query executer** (SQL Server): `createDatasource`, `createStatement`, stored procedure support (`isStoredProcedure`; legacy `DmPLSqlExecutorFactory`). Jasper 7 upgrade ke saath dekhenge.

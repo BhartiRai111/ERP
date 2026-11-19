@@ -48,4 +48,4 @@ Nested: interface `CallBack`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Chhota input popup (ek value poochne wala dialog).

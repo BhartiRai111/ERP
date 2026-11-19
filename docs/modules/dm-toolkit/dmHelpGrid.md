@@ -65,4 +65,4 @@ Nested: interface `HelpGridCallBack`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Help grid (lookup grid ka purana/dusra roop) jisme popup grid se row chunna; `DmTextHelp` jaisa. (detail dekhna baaki)

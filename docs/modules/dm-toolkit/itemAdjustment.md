@@ -419,4 +419,4 @@ Helpers used: `DmServer.evaluateHelper`, `DmServer.executeScalar`, `DmServer.get
 | getItem | `if (DmShared.xNull(stockContraSubCode).trim().equalsIgnoreCase(""))` | "Adjustment account required to fetch items." |
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Stock ka "other adjustment" (landed cost):** purchase ke baad extra kharch ko stock value me jodna: `stockOtherAdjustment` + stock rows update (`updateStockOtherAdjustment`), ledger posting (`iniAcPostList`), financial year end date check (`getFinancialYearEndDate`), `validateItemAdjustment`, `deleteRecord`. Stock engine (`stock`) ke `otherAdjustment` se milta hai.

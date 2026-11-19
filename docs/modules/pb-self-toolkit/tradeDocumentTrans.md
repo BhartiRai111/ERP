@@ -62,4 +62,4 @@ Helpers used: `DmServer.convertDate`, `DmServer.getServerTimestamp`, `DmServer.v
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Document ke saath trade documents (LC waghera) ka link: `tradeDocumentTrans`, `tradeDocumentEntry` update.

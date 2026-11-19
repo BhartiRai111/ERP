@@ -95,4 +95,4 @@ Helpers used: `DmServer.convertDate`, `DmServer.getServerTimestamp`, `DmServer.v
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Contractor ledger (`contractorLedger`) me posting (job work contractor bill).

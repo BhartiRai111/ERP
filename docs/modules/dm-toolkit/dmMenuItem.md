@@ -43,4 +43,4 @@ Nested: interface `InitializeWidgetInvoker`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Menu item (`InitializeWidgetInvoker` = click par screen banana). Frontend: menu link.

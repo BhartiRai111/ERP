@@ -34,4 +34,4 @@
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Home dashboard card strip** UI (201 files use): count, color, click par menu; data har screen ke `getCardDetail` se.

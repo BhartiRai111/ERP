@@ -84,4 +84,4 @@ Helpers used: `DmServer.convertDate`, `DmServer.getConnection`, `DmServer.getSer
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**End Of Day:** `pltLockDate` (accounts/inventory lock date, jo `dm-toolkit/dmStatic.checkTransactionLockDate` check karta hai) set karta hai, aur `eod`, `eodHistory` me record. Is date se pehle entry band.

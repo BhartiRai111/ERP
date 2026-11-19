@@ -40,4 +40,4 @@ Public methods:
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Master report layout editor UI (`DmMasterReportLayout`): user report ka layout (columns/style) banata hai; `dm-base` ke `DmMasterReport*` models. Detail dekhna baaki.

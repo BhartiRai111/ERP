@@ -126,4 +126,4 @@ Helpers used: `DmServer.evaluateHelper`, `DmServer.getConnection`, `DmServer.get
 | saveRecord | `if (DmShared.xNull(tableName).equalsIgnoreCase("") \|\| DmShared.xNull(keyFieldName).equalsIgnoreCase(""))` | "Parameters Name is Blank" |
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Site list ka manage (`getSiteList`, `saveRecord`, `deleteSiteList`, lookup `getTxtHSiteList`): user ko kaun si sites allowed (`UserSite`).

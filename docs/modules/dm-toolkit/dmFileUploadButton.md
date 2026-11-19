@@ -65,4 +65,4 @@ Nested: interface `CallBack`, enum `ButtonAction`, enum `Cursor`, enum `WindowMo
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Upload button widget (13 jagah): file chun kar server ke temp folder me bhejta hai (`DmFileUpload_Srvlt`), rule/size/type ke hisaab se (`DmFileRuleType`). Record save par `AttachmentService` (dm-base) Mongo me rakhta hai. Frontend: `<FileUploadButton rule maxSize accept />`.

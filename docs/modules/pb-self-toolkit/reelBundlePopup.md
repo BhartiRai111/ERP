@@ -103,4 +103,4 @@ calculatePendingWeight("");
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Reel/bundle details popup (UI, 904 lines): reel/bundle ki list aur detail (production/store/sales me).

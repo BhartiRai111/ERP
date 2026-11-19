@@ -67,4 +67,4 @@ Nested: interface `CallBack`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Display strip: screen ke upar/neeche ek line me key-value summary (342 files). Frontend: summary bar.

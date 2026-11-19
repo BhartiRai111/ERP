@@ -88,4 +88,4 @@ Helpers used: `DmShared.xNull`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Excel report ke POI helpers (cell styles, merged cells, headers): `createAndMergeCells`, `getCellStyleHeader`, `newCell`. `dm-base` ke `XlsWriter` ke saath use hote hain.

@@ -63,4 +63,4 @@ Helpers used: `DmBaseServer.ContraText`, `DmServer.convertDate`, `DmShared.forie
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Generic ledger writer:** `saveAccountPosting(list, keyFieldName, keyFieldValue, recId, ... chequeNo, chequeDate, dueDate, isPosted, ledgerTableName, isDeleteBeforeSave)` accounts ki posting lines `LedgerM` + `Ledger` (ya diya hua ledger table) me insert karta hai, `deleteAccountPosting(docId)` hata deta hai. `pb-self-toolkit/stStatic/STAccountPosting` posting ki lines banata hai aur yahi likhta hai.

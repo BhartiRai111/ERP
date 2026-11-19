@@ -42,4 +42,4 @@ Public methods:
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+WebSocket client/server helpers (`IWebsocketReceiver`, listener, close event): notifications/chat ke liye.

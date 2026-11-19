@@ -44,4 +44,4 @@ Nested: interface `CallBack`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Document-system report launcher (`DocumentSystemReport`, UI only): report chalane ki screen (parameters + run). Detail dekhna baaki.

@@ -590,4 +590,4 @@ Helpers used: `DmServer.evaluateHelper`, `DmServer.getCodeViaManualCode`, `DmSer
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Alternative item search (item, department, BF, GSM, grain, site, unit, item nature...): `itemMaster` ke alternative items ke liye.

@@ -1008,4 +1008,6 @@ Helpers used: `DmServer.getLocalIPAddresses`, `DmServer.getMdbCollection`, `DmSe
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Kya hai:** **GST e-way bill aur e-invoice** (GSP/IRP se API). Tables `gstTrans`, `gstTransHead` (document ka GST record), `eGst`, `eGstDetail`, `eGstContractDetail`, `eGstDocDetail`, `eGstToken` (API token).
+**Server (`GST`/`EGst` classes):** `getAuthToken`, `genrateEWayBill`, `genrateEInvoice` (IRN), `genrateEWayBillViaIRN`, `getEWayBillDetail`, `cancelEWayBill`, `cancelEinvIRN` (reasons enum `EwayCancelReason`/`EinvCancelReason`), `printEWayBill`, `rectifyEwayJson`, `processEGst`, `saveEGstRecord/getEGstRecord/deleteEGstRecord`, `saveGstTrans/saveGstTransHead/updateRefGstDocument/getGstDocumentDetail/deleteGstTrans`, `getGSTS`, `getURL`. JSON files banate hain (`createFile`, `getEWayJson`).
+**Dhyan:** vendor jars (`TaxProEInvoice`, `TaxProEwb`) naye project me Maven me nahi milte; GST API ka asli endpoint/credentials config se. Naya design: `EGstService` + HTTP client (OkHttp ya Spring `RestClient`), token cache.
