@@ -156,4 +156,11 @@ Helpers used: `DmServer.getConnection`, `DmServer.getSsnDBName`, `DmServer.vNull
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Kya hai:** **approval engine (walk-through)**. Document (item, purchase order, bill...) banne par uski approval ki "chain" tay karta hai aur har kadam ka record rakhta hai. `itemMaster`/`finishedItemMaster` aur approvals screens (`pb-self-toolkit/*Approval`) use karte hain.
+**Tables:** rules `walkThroughDefault(code, userName, site_code, v_Type, departmentCode, valueUpto)`, chain `walkThroughDetail(code, v_SNo, authority, linkedUser)`, har document ki chain `WalkThroughApplicable(wtaCode, v_SNo, authority, linkedUser)`, aur history `WalkThroughFootPrint(wtaCode, v_SNo, wtfTimeStamp, linkV_Type, linkDocId, authority, linkedUser, remark, isStatus, u_Name, u_EntDt)`.
+**Flow:**
+1. **`applyWalkThrough(...)`** (document save par): `walkThroughDefault` me se document ke user/site/voucher type/department/value ke hisaab se **sabse specific rule** chunta hai (jitne zyada fields match utna upar; barabar ho to chhota `valueUpto`), phir uski `walkThroughDetail` authorities us document ke liye `WalkThroughApplicable` me copy karta hai aur pehla `WalkThroughFootPrint` likhta hai. Naya `wtaCode` (`getSerialNoBigInt`) document ke saath save hota hai.
+2. **`walkThrough(...)`** (approve / forward / back): agle ya pichhle kadam par jaata hai (`nextAuthority/prvAuthority`), naya `FootPrint` row (status, remark, user, time). **Do log ek saath karein to "Invalid move."** (agar usi kadam ka koi naya footprint pehle se aa chuka hai).
+3. **`getWalkThroughDetail(wtaCode)`**: history (latest pehle).
+4. **`deleteWalkThrough(wtaCode)`**: document delete par chain aur history dono hatata hai.
+**Naya design:** `WalkThroughService` (apply, move, history, delete) same tables par, same rule-selection query; frontend me approval timeline + Approve/Reject/Forward buttons.

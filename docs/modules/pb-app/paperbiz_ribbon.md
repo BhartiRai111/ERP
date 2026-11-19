@@ -167,4 +167,9 @@ Helpers used: `DmServer.deleteMenu`, `DmServer.executeSQL`, `DmServer.executeSca
 | repairMenu | `if (rsTemp.next())` | "Incorrect Menu Level. Module (" |
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Top menu (ribbon) aur admin actions.**
+- `getMenuInfo` (`menuCodification` + `user_permission_web` se menu ka short-hand), `getUserInfo` (naam, description, email + build version `DmBuild.getDmBuildVersion` - source nahi hai).
+- **`repairMenu`:** super-admin **`SA`** ke `user_permission_web` ko master maan kar **sab users ke menu rows sync**: SA me na ho wo rows delete (`user_permission_web`, `user_Favorite_Web`, `menuCodification`, `user_control_permission_web`), text/order/level/parent update, naye menu rows default permission ke saath insert. Galat hierarchy par **"Incorrect Menu Level. Module (...)"**. Production module active na ho to uske menu hata deta hai (`CFM.isProductionModuleActive`).
+- **`rdsTransaction` / `rdsCompany`: DB structure refresh** (`DmRefreshDataStructure`) + Mongo folders sync. **Ye tables/keys/indexes par ALTER/CREATE/DROP chalate hain, isliye naye project me nahi laaye** (aapka rule: DB schema unchanged).
+- `processRequest` -> `Chat.startChat`.
+**Naya design:** menu = frontend ka menu tree (`/api/menu`) + permission; `repairMenu` ko "menu sync" admin job banana ya band karna aapse poochna hai (ye `user_permission_web` ki **data** rows badalta hai, schema nahi, to ban sakta hai).

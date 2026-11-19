@@ -3,6 +3,12 @@
 > Status: DRAFT (auto-survey). Source: `legacy-gwt/paperbiz/store/src` (528 java files, 184227 lines). Har feature/entry ki apni file is folder me hai: SQL, fields, validators, RPC methods auto-extracted; "Notes (hand-written)" jahan likhe hain.
 > "Used by" = kitni files (baaki features/modules me) is feature ke package ko import karti hain.
 
+## Overview (hand-written)
+**Store / Inventory (stock) module.**
+- **Stock vouchers** (`stockHead` + `stockHeadDetail`): `itemOpening`, `itemReceive`, `itemIssue`, `itemTransfer`, `physicalStock`, `physicalStockPosting`, `physicalStockClearance`, `reelSheetIssue` (reel/sheet items, `stockHeadItemId`). **Site transfers:** `siteStockTransfer`, `siteStockIntransit` (`stockTransfer`). **Production receive:** `productionReceive`, `productionReceiveReel`, `productionReceiveSheet` (`production` tables). Others: `requisition`, `orderTransfer`, `itemJV` (item journal).
+- **Displays:** stock ledger, stock summary, stock batch, inventory ageing, movement analysis, item movement, supplier-wise stock, reel/bundle tracking, BF/GSM stock closing. **Reports:** 27 services (138 files).
+- Special: **batch** stock (`itemBatchStock`), **FIFO** posting, **inventory accounting** switch (`enviroCompany`), negative stock rules (item master), reel/bundle barcode (`pb-self-toolkit/stStatic`).
+
 ## Summary
 | Kind | Features | Lines |
 |---|---|---|
@@ -38,3 +44,37 @@
 | [productionReceiveReel](productionReceiveReel.md) | UI + server | 18 | 7824 | 1 | 2 | store 2 | production, productionDetail |
 | [reelSheetIssue](reelSheetIssue.md) | UI + server | 16 | 4651 | 1 | 2 | store 2 | stockHead, stockHeadDetail, stockHeadItemId |
 | [bfGsmStockClosingDisplay](bfGsmStockClosingDisplay.md) | UI + server | 17 | 4363 | 1 | 2 | store 2 | - |
+
+## Dependencies (auto from imports of this module's java files)
+
+**Other modules used** (number of import statements): `dm-toolkit` 1427, `dm-base` 1210, `pb-self-toolkit` 380, `pb-project-menu` 124
+
+**Most used shared features:**
+
+| Shared feature | Imports |
+|---|---|
+| `dm-base` / `self.shared` | 915 |
+| `dm-toolkit` / `dmStatic` | 349 |
+| `pb-self-toolkit` / `stStatic` | 143 |
+| `pb-self-toolkit` / `itemPropertyPopup` | 123 |
+| `dm-toolkit` / `dmTextBox` | 105 |
+| `dm-toolkit` / `dmTextHelp` | 100 |
+| `dm-toolkit` / `modifyReason` | 99 |
+| `dm-toolkit` / `dmMessageBox` | 88 |
+| `dm-base` / `dmBaseStatic.shared` | 70 |
+| `dm-base` / `dmBaseStatic.client` | 70 |
+| `dm-base` / `dmPrepareStatement.server` | 69 |
+| `dm-base` / `dmSession.server` | 57 |
+| `dm-toolkit` / `dmGrid` | 55 |
+| `dm-toolkit` / `dmLabel` | 48 |
+| `dm-toolkit` / `self` | 46 |
+| `dm-toolkit` / `stock` | 44 |
+| `dm-toolkit` / `dmTextHelpMulti` | 40 |
+| `pb-self-toolkit` / `itemBatch` | 37 |
+| `dm-toolkit` / `dmTopControl` | 33 |
+| `dm-toolkit` / `dmFind` | 32 |
+| `dm-toolkit` / `gst` | 32 |
+| `dm-toolkit` / `overHead` | 29 |
+| `dm-toolkit` / `isWidgetExtended` | 28 |
+| `dm-toolkit` / `dmReportLayout` | 27 |
+| `dm-toolkit` / `overHeadLine` | 27 |

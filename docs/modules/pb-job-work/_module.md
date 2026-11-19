@@ -3,6 +3,9 @@
 > Status: DRAFT (auto-survey). Source: `legacy-gwt/paperbiz/jobWork/src` (159 java files, 49194 lines). Har feature/entry ki apni file is folder me hai: SQL, fields, validators, RPC methods auto-extracted; "Notes (hand-written)" jahan likhe hain.
 > "Used by" = kitni files (baaki features/modules me) is feature ke package ko import karti hain.
 
+## Overview (hand-written)
+**Job Work module:** `jobWorkOrder`, `jobWorkChallan`, `gatePass` (`gatePass`), **`materialReceive`** (`woReceive`), **`contractorBill`** (`pBill` + TDS), masters `jobWorkMaster` (`JobWorkMast`) aur `jobWorkGroup`; displays summary/detail. **Reports:** 3.
+
 ## Summary
 | Kind | Features | Lines |
 |---|---|---|
@@ -23,3 +26,37 @@
 | [reports](reports.md) | UI + server | 18 | 2349 | 3 | 3 | jobWork 3 | - |
 | [jobWorkMaster](jobWorkMaster.md) | UI + server | 8 | 1671 | 1 | 2 | jobWork 2 | JobWorkMast |
 | [jobWorkGroup](jobWorkGroup.md) | UI + server | 8 | 1111 | 1 | 2 | jobWork 2 | jobWorkGroup |
+
+## Dependencies (auto from imports of this module's java files)
+
+**Other modules used** (number of import statements): `dm-toolkit` 552, `dm-base` 343, `pb-self-toolkit` 79, `pb-project-menu` 32
+
+**Most used shared features:**
+
+| Shared feature | Imports |
+|---|---|
+| `dm-base` / `self.shared` | 262 |
+| `dm-toolkit` / `dmStatic` | 96 |
+| `dm-toolkit` / `modifyReason` | 50 |
+| `dm-toolkit` / `overHead` | 44 |
+| `dm-toolkit` / `overHeadLine` | 41 |
+| `dm-toolkit` / `walkThrough` | 40 |
+| `pb-self-toolkit` / `stStatic` | 36 |
+| `dm-toolkit` / `dmTextBox` | 25 |
+| `dm-toolkit` / `dmMessageBox` | 22 |
+| `dm-toolkit` / `dmTextHelp` | 22 |
+| `dm-base` / `dmBaseStatic.client` | 22 |
+| `dm-base` / `dmPrepareStatement.server` | 21 |
+| `dm-toolkit` / `gst` | 21 |
+| `dm-toolkit` / `partyDetailPopup` | 21 |
+| `dm-base` / `dmBaseStatic.shared` | 17 |
+| `dm-base` / `dmSession.server` | 14 |
+| `dm-toolkit` / `dmLabel` | 14 |
+| `dm-toolkit` / `dmTopControl` | 14 |
+| `dm-toolkit` / `dmFind` | 14 |
+| `dm-toolkit` / `dmGUI` | 13 |
+| `dm-toolkit` / `dmGrid` | 13 |
+| `dm-toolkit` / `dmTermsConfig` | 12 |
+| `dm-toolkit` / `dmTextHelpMulti` | 11 |
+| `dm-toolkit` / `isWidgetExtended` | 11 |
+| `pb-self-toolkit` / `otherChargesGrid` | 10 |

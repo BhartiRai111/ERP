@@ -235,4 +235,7 @@ Helpers used: `DmServer.convertDate`, `DmServer.vNull`, `DmShared.dNull`, `DmSha
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Kya hai:** **dynamic (configurable) extra fields** kisi bhi screen par (party, price list, customer...). `DmGUI` widget screen par un fields ko banata hai jo admin ne configure kiye.
+**Tables:** config `guiConfig` (header) aur `guiConfigDetail` (code, guiRowNo, v_SNo, fields: caption/data type/`isCopy`...), values us screen ki apni table me `docId` + `v_SNo` se (`save` -> `insert into <table>`, `delete` -> `delete from <table> where docId[, v_Sno]`). Entries `guiConfigCode` (jaise `subgroup.guiConfigCode`) rakhti hain ki kaun si config laagoo hai.
+**Server:** `getGUI(docId)`, `getGUIHeader`, `getCopyGUIDetails` (ek record se config copy), `getHelp` (lookup), `addGUI`, `save`/`delete` (error **"Invalid key field."**), `getDataType`/`getFormatedValue`. Helper: `DmGUI_Server.getGUIViaConfigCode / saveViaConfigCode / deleteViaConfigCode` (entries se).
+**Naya design:** `GuiConfigService` + frontend ka `<DynamicFields config values />` (data type ke hisaab se input). Table naam config se aata hai, isliye table/column naam validate karna zaroori (SQL injection se bachav).

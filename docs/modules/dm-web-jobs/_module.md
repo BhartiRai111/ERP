@@ -3,6 +3,9 @@
 > Status: DRAFT (auto-survey). Source: `legacy-gwt/dataman_V2/webJobs/src` (142 java files, 30318 lines). Har feature/entry ki apni file is folder me hai: SQL, fields, validators, RPC methods auto-extracted; "Notes (hand-written)" jahan likhe hain.
 > "Used by" = kitni files (baaki features/modules me) is feature ke package ko import karti hain.
 
+## Overview (hand-written)
+**Web jobs = communication & scheduling:** email/SMS/WhatsApp **templates** (`wjTemplateMast`, send-to, attachments), **accounts** (`configureEmailAccount`, `configureSMSAccount`, `configureWhatsAppAccount`: `wjAccountMast`), `applyConfiguration` (`wjApplyConfig`: kis event par kaun sa template), `scheduler` (`schedulerMast`), `staffInfo`, `emailManager`, `smsManager`. Engine `dm-base` ke `dmScheduler` (baaki) me.
+
 ## Summary
 | Kind | Features | Lines |
 |---|---|---|
@@ -23,3 +26,37 @@
 | [scheduler](scheduler.md) | UI + server | 9 | 3418 | 1 | 2 | webJobs 2 | schedulerMast |
 | [configureWhatsAppAccount](configureWhatsAppAccount.md) | UI + server | 8 | 1429 | 1 | 2 | webJobs 2 | wjAccountMast |
 | [configureEmailAccount](configureEmailAccount.md) | UI + server | 12 | 2291 | 1 | 2 | webJobs 2 | wjAccountMast |
+
+## Dependencies (auto from imports of this module's java files)
+
+**Other modules used** (number of import statements): `dm-toolkit` 484, `dm-base` 363, `dm-library-menu` 22
+
+**Most used shared features:**
+
+| Shared feature | Imports |
+|---|---|
+| `dm-base` / `self.shared` | 267 |
+| `dm-toolkit` / `dmStatic` | 115 |
+| `dm-toolkit` / `modifyReason` | 63 |
+| `dm-toolkit` / `dmMessageBox` | 40 |
+| `dm-toolkit` / `dmTextBox` | 36 |
+| `dm-toolkit` / `dmGrid` | 34 |
+| `dm-toolkit` / `dmLabel` | 25 |
+| `dm-toolkit` / `dmTextHelp` | 24 |
+| `dm-base` / `dmPrepareStatement.server` | 21 |
+| `dm-base` / `dmFileManager.shared` | 18 |
+| `dm-base` / `dmBaseStatic.client` | 18 |
+| `dm-toolkit` / `self` | 15 |
+| `dm-base` / `dmSession.server` | 15 |
+| `dm-toolkit` / `dmSuggestBox` | 14 |
+| `dm-toolkit` / `dmTopControl` | 14 |
+| `dm-toolkit` / `dmFind` | 14 |
+| `dm-toolkit` / `dmFileUploadButton` | 14 |
+| `dm-toolkit` / `dmToolContainer` | 12 |
+| `dm-toolkit` / `dmGridEditPanel` | 11 |
+| `dm-toolkit` / `isWidgetExtended` | 10 |
+| `dm-toolkit` / `dmUserControl` | 9 |
+| `dm-toolkit` / `dmTextArea` | 9 |
+| `dm-base` / `dmBaseStatic.server` | 7 |
+| `dm-base` / `dmScheduler.server` | 7 |
+| `dm-toolkit` / `dmTextBoxNumeric` | 4 |

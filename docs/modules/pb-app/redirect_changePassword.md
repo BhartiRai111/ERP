@@ -114,4 +114,4 @@ Helpers used: `DmServer.getConnection`, `DmShared.xNull`
 | getUserDetail | `if (rsTemp.next())` | "Your link has been expired." |
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Password badalna (email link se):** link me `linkVerification.code` + userName, expiry check (**"Your link has been expired"**). Save par `UserMast.PassWd = MD5(lower(user) + newPassword)` aur link row delete. (Naye design me bhi same hash jab tak DB password format wahi hai.)

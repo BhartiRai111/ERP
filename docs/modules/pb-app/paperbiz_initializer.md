@@ -401,4 +401,4 @@ Helpers used: `DmServer.getConnection`, `DmServer.getSerialNoInteger`, `DmServer
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Initializer:** nayi company ke liye starter data set up karne ki screen (`getInitializerClass` list, `execute`). Isme: **numbering system** (`numberSystem`, `numberSystemFormat`: nsGroup, v_type, format, year-wise/site-wise), **GST type** (`gstType`), aur CSV se import (`importCSV`, `ImportData_Server.checkHeader/validateField`). Confirm: "Are you sure? You want to run Initializer." Ye admin/one-time kaam hai; baad me decide.

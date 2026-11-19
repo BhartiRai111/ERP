@@ -487,4 +487,4 @@ Helpers used: `DmServer.evaluateHelper`, `DmServer.getConnection`, `DmServer.get
 | getDownloadExcel | `if (DmShared.xNull(fileName).equalsIgnoreCase(""))` | "File Name not given." |
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Change log viewer.** `modifyReason/saveNew` jo MongoDB `datamodificationlog` me likhta hai, use yahan dekhte hain. Filters: From/To Date, User, Financial Year, Voucher Type, Module, Menu, Modify Reason, Mode, Site. Grid + **Old Data / New Data** (TextArea me), `getDownloadExcel` (Excel). Users list: active, `sa`/`super` ke alawa. Naye backend me ye Mongo se padhega (`dm-base` Mongo client).

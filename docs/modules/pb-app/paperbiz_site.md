@@ -54,4 +54,4 @@ Helpers used: `DmServer.getSites`, `DmShared.xNull`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Site chunne ki screen. Server: `validateSite(siteCode)` (`SiteMast` row; user ki allowed `SiteList` me hona chahiye). Chune hue site se session ka siteCode, address, GSTIN, state, country set hote hain (`SiteInfo`).

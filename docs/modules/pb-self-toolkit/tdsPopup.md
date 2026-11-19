@@ -243,4 +243,4 @@ Helpers used: `DmServer.convertDate`, `DmServer.getServerTimestamp`, `DmServer.g
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+TDS entry popup (voucher ke andar): `getTxtHTdsFor`, `getTxtHTdsCategory`, `getTxtHTdsDeduct`, `getGetLedgerBalance` (party ledger balance), `getTDSData`; `saveTdsTrans` / `deleteTdsTrans` -> `tdsTrans`. Hisaab ke helpers `dm-toolkit/dmStatic` ke TDS/TCS methods me.

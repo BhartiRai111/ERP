@@ -32,3 +32,8 @@
 | [dataman_dmBase_dmBaseJasper](dataman_dmBase_dmBaseJasper.md) | server/shared | 6 | 565 | 0 | 1 | dmToolkit 1 | - |
 | [dataman_queue_cache](dataman_queue_cache.md) | plain classes | 2 | 255 | 0 | 1 | dmBase 1 | - |
 | [net_sf_jasperreports_engine_export](net_sf_jasperreports_engine_export.md) | plain classes | 1 | 2108 | 0 | 1 | dmBase 1 | - |
+
+## Dependencies (auto from imports of this module's java files)
+
+**Other modules used** (number of import statements): none
+

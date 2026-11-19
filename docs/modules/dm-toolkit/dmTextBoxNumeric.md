@@ -54,4 +54,8 @@ Nested: enum `DecimalNature`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Kya hai:** sirf number likhne wala box (1,086 jagah). Constructor: `DmTextBoxNumeric(allowDecimalPlaces | DecimalNature, allowNegative, maxLength, mandatory)`. Jaise `(0, false, 1, false)` = 0 decimal, negative nahi, max 1 char, mandatory nahi.
+**Typing rules (key press):** sirf digits; `.` tabhi jab decimal places > 0; `-` tabhi jab `allowNegative` (aur `-` hamesha shuru me lagta hai, dobara dabane par hata/lagta nahi do baar). Baaki sab key rok di jaati hai.
+**Formatting (blur/setText par):** non-number text -> khali; negative value par agar allowNegative nahi to **0**. `DecimalNature`: `DEFAULT` = `#.##` (max 2), `CUSTOM` (int constructor) = utne decimals jitne diye (max **7**) **bina trailing zero ke** (`#.####`: "5.50" -> "5.5"), `ROUNDOFF` (nearest integer), `CEILING`, `FLOOR` (integer), `NONE` (7 tak). Trailing zeros pad nahi hote.
+Baaki `DmTextBox` jaisa: laal border mandatory, focus par select-all, disable par text yaad.
+**Frontend:** `<DmNumber decimals allowNegative maxLength mandatory nature />` (same key rules, same `#.##` jaisa formatting; display me padding nahi).

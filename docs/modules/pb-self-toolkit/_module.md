@@ -3,6 +3,9 @@
 > Status: DRAFT. Source: `legacy-gwt/paperbiz/selfToolkit/src`. Har feature ki apni file is folder me hai (SQL, fields, validators, RPC methods auto-extracted; "Notes" hand-written jahan likhe hain).
 > "Used by" = kitni files (baaki modules/features me) is feature ke package ko import karti hain.
 
+## Overview (hand-written)
+**PaperBiz common library** (795 files, 74 features): `stStatic` (account posting, approvals, barcode, credit limit, session settings), 30+ `*Approval` screens (pattern neeche), shared popups (`priceList`, `itemPropertyPopup`, `tdsPopup`, `gstDocumentInfo`, `taxSummary`, `otherChargesGrid`, `serviceGrid`, `itemBatch`, `salesScheme`, `stockReleasePopup`, `ohPanel`, `reelBundlePopup`...), `stImportData` (CSV import formats), `dashboardCardStrip` (home cards), `itemActivation` / `finishedItemActivation`.
+
 ## Summary
 | Kind | Features | Lines |
 |---|---|---|
@@ -87,3 +90,44 @@
 | [features](features.md) | UI + server | 11 | 3976 | 1 | 0 |  | - |
 | [itemUpdatePopup](itemUpdatePopup.md) | UI + server | 9 | 1534 | 0 | 0 |  | itemUpdateHistory |
 | [tradeDocumentTrans](tradeDocumentTrans.md) | server/shared | 2 | 287 | 0 | 0 |  | tradeDocumentTrans |
+
+## Dependencies (auto from imports of this module's java files)
+
+**Other modules used** (number of import statements): `dm-toolkit` 1970, `dm-base` 1793, `pb-project-menu` 143, `dm-library-menu` 10
+
+**Most used shared features:**
+
+| Shared feature | Imports |
+|---|---|
+| `dm-base` / `self.shared` | 1126 |
+| `dm-toolkit` / `dmStatic` | 637 |
+| `dm-toolkit` / `walkThrough` | 202 |
+| `dm-base` / `dmBaseStatic.client` | 201 |
+| `dm-base` / `dmPrepareStatement.server` | 172 |
+| `dm-toolkit` / `dmMessageBox` | 156 |
+| `dm-toolkit` / `dmTextBox` | 125 |
+| `dm-toolkit` / `dmImportData` | 123 |
+| `dm-base` / `dmSession.server` | 122 |
+| `dm-toolkit` / `dmToolContainer` | 96 |
+| `dm-base` / `dmBaseStatic.shared` | 96 |
+| `dm-toolkit` / `dmTextHelp` | 92 |
+| `dm-toolkit` / `dmLabel` | 77 |
+| `dm-base` / `self.server` | 66 |
+| `dm-toolkit` / `dmTextHelpMulti` | 63 |
+| `dm-toolkit` / `dmGridPaging` | 62 |
+| `dm-toolkit` / `dmGrid` | 51 |
+| `dm-toolkit` / `isWidgetExtended` | 29 |
+| `dm-toolkit` / `self` | 26 |
+| `dm-toolkit` / `gst` | 24 |
+| `dm-toolkit` / `dmTextBoxNumeric` | 21 |
+| `dm-toolkit` / `overHeadLine` | 21 |
+| `dm-toolkit` / `overHead` | 21 |
+| `dm-toolkit` / `modifyReason` | 19 |
+| `dm-toolkit` / `stock` | 18 |
+
+## Approval screens pattern (hand-written)
+30 se zyada `*Approval` features (purchase bill, sales order, GRN, indent, enquiry, requisition, job work, transporter bill...) ek hi shape ke hain:
+1. **Screen:** ek paged grid (`DmGridPaging`) jo pending/approved documents dikhata hai + **Setting popup** (From Date, To Date, Status, Type, party/document no. ke multi-select lookups; validation "From Date should be less than or equal to To Date.").
+2. **Server:** `getFillRecords(setting, helper, toEnd)` (list), `setApproval(approvedBy, isApprove, docId)` (approve/unapprove), `getCardDetail()` (dashboard card: total aur din ke hisaab se low/medium/high ageing counts), `getDefaultValues`, aur lookups `getTxtHStatus/Category/BillNo/Supplier...`.
+3. **Approval ka kaam** `stStatic/STApprovals.<document>Approval(...)` me (document ki status/approvedBy/approvalDateTime columns, walk-through ka agla kadam, accounts posting). Document me `wtaCode` (walk-through) aur `approvedBy`, `approvalDateTime` columns hote hain.
+4. **Naya design:** ek generic `ApprovalListService` (config: document table, voucher categories, columns, filters) + per-document `ApprovalHandler`; frontend ek generic `<ApprovalScreen config />`.

@@ -3,6 +3,9 @@
 > Status: DRAFT (auto-survey). Source: `legacy-gwt/paperbiz/master/src` (720 java files, 194029 lines). Har feature/entry ki apni file is folder me hai: SQL, fields, validators, RPC methods auto-extracted; "Notes (hand-written)" jahan likhe hain.
 > "Used by" = kitni files (baaki features/modules me) is feature ke package ko import karti hain.
 
+## Overview (hand-written)
+**Master module** (56 features, ~720 files): sab master data. Menu: 57 items (`self/client/Master.java`); do items ek hi screen kholte hain (Purchase/Sales price list = `priceListMaster`), item colour/size `singleLineMaster` se. **Groups:** simple masters (unit, area, grade, variety, shift, department, designation, division, classification, item category/group/make, pack size, vehicle type, godown bin, stack/rack, warehouse, manufacturer, common, DSC, other charges, HSN, machine, service, policy, deduction line parameter); item masters (`itemMaster`, `finishedItemMaster`); parties (`partyMaster`, `customerMaster`, `supplierMaster`, `employeeMaster`, `swapPartyAccountMaster`); settings/permissions (`environmentSetting`, `environmentSettingCompany`, `additionalUserPermission`, `masterSitePermission`, `prefixCounterMaster`, `tradeDocumentType/Entry`); utilities (`importData`, `reports`, `multiInvoicePrint`); pricing/scheme (`priceListMaster`, `partyPriceList`, `sitePriceList`, `changePriceList`, `scheme`, `partyScheme`, `transpoterRateContract`). **Cross-cutting:** account master family = `subgroup` table (`filterNature` PT/CT/SU/MF/EM/DV/DP), item family = `itemMast`; sab entries standard CRUD pattern (`dm-toolkit/dmTopControl`, `modifyReason`, `dmFind`, `dmTextHelp`); stored procs `getCode`, `getItemManualCode`, `get*Id`; optimistic lock `u_EntDt_LatestLine`. Pehle ka analysis (shared concerns) git history me hai: `git show 5f33b3a:docs/modules/pb-master.md`.
+
 ## Summary
 | Kind | Features | Lines |
 |---|---|---|
@@ -68,3 +71,37 @@
 | [classificationMaster](classificationMaster.md) | UI + server | 8 | 1408 | 1 | 2 | master 2 | classificationMast |
 | [manufacturerMaster](manufacturerMaster.md) | UI + server | 15 | 4929 | 1 | 2 | master 2 | SubGroup, subgroupsitelist |
 | [stackRackMaster](stackRackMaster.md) | UI + server | 8 | 1249 | 1 | 2 | master 2 | stackRackMast |
+
+## Dependencies (auto from imports of this module's java files)
+
+**Other modules used** (number of import statements): `dm-toolkit` 2114, `dm-base` 1690, `pb-self-toolkit` 165, `pb-project-menu` 115, `dm-library-menu` 11
+
+**Most used shared features:**
+
+| Shared feature | Imports |
+|---|---|
+| `dm-base` / `self.shared` | 1310 |
+| `dm-toolkit` / `dmStatic` | 504 |
+| `dm-toolkit` / `modifyReason` | 253 |
+| `dm-toolkit` / `dmTextHelp` | 170 |
+| `dm-toolkit` / `dmMessageBox` | 148 |
+| `dm-base` / `dmBaseStatic.client` | 134 |
+| `dm-toolkit` / `dmTextBox` | 132 |
+| `dm-base` / `dmPrepareStatement.server` | 108 |
+| `dm-toolkit` / `dmLabel` | 107 |
+| `dm-toolkit` / `dmGrid` | 101 |
+| `dm-toolkit` / `dmTopControl` | 84 |
+| `dm-toolkit` / `dmFind` | 83 |
+| `pb-self-toolkit` / `stStatic` | 78 |
+| `dm-base` / `dmSession.server` | 70 |
+| `dm-toolkit` / `dmSuggestBox` | 70 |
+| `dm-toolkit` / `self` | 61 |
+| `dm-toolkit` / `isWidgetExtended` | 56 |
+| `dm-toolkit` / `dmTextBoxNumeric` | 48 |
+| `dm-toolkit` / `dmUserControl` | 47 |
+| `pb-self-toolkit` / `stImportData` | 44 |
+| `dm-toolkit` / `dmToolContainer` | 35 |
+| `dm-toolkit` / `dmTextHelpMulti` | 34 |
+| `dm-toolkit` / `dmGridEditPanel` | 33 |
+| `pb-self-toolkit` / `priceList` | 30 |
+| `dm-toolkit` / `dmGUI` | 25 |

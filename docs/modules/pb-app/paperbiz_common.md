@@ -90,4 +90,9 @@ Helpers used: `DmServer.getCompanys`, `DmServer.getConnection`, `DmServer.getDMJ
 | validateKey | `if (cal.getTime().getTime() >= expiryDate.getTime().getTime())` | "License key wil be expiring on " |
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Shell ke common services:**
+- `reInitialize()`: session ka PLT/company/site/user data dobara load (company ya site badalne par).
+- `getUserPermission()`: user ke menu/control/voucher permissions + `STServer.setSsnEnviro` (site/company settings `enviro`, `enviroCompany` session me) + `setSsnUserLinkDetails` (user ka linked account).
+- `getPACWebPort()`, `getMyScoket()` (WebSocket, chat/notification).
+- **`validateKey()`:** **license key** check (**"Invalid Key."**, **"License key wil be expiring on ..."**) aur `STServer.setSsnNoOfMachine` (kitni machines/users allowed).
+- `getCFM()`: `CustomizeFunctionality` = feature flags (jaise production module active ya nahi, `CFM.isProductionModuleActive`).

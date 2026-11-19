@@ -285,4 +285,7 @@ Nested: interface `CallBack`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Kya hai:** sab grids ka base (GXT grid wrapper, 681 files). Har column `DmColumnConfig` hota hai: value provider + width + header + **`dbFieldName` + `dbFieldDataType`** (server filter/sort me yahi naam jaata hai). Helper methods: `addTextColumn(valueProvider, "Header", width, "dbField")` (aur numeric/date/checkbox variants), `initializeGrid(keyProvider, width, height, ...)`.
+- **Paged grids:** `DmGridPaging` (First/Prev/Next/Last, `reQuery`) = server paging; `DmTextHelp`/`DmFind` ke popup isi se bante hain.
+- Editable detail grids ke liye `DmGridEditPanel` (row edit popup).
+**Frontend:** AG Grid Community ke upar `DmGrid` wrapper: column def me `field`, `dbField` (server filter/sort), type (text/number/date/checkbox), width; server-side paging adapter jo `PageQuery/PageResult` bolta hai.

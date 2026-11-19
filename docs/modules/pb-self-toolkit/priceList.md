@@ -257,4 +257,4 @@ Helpers used: `DmServer.addDate`, `DmServer.convertDate`, `DmServer.getDocId`, `
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Price list ka **common server** (master ki `priceListMaster`/`partyPriceList` aur sales/purchase use karte hain): `savePriceList` (+`_ExistingFunction`, `savePriceListGUI` dynamic fields ke saath), `deletePriceList` (active rates wali delete nahi), **`getItemPriceBestFit`** (item ke liye party/site/date ke hisaab se sabse behtar rate), `getGridOhDeductionDetails`/`getOhDeductionDetails` (overhead/deduction lines), `getPurchasePriceListCode`, `getParameter`. Tables: `priceList`, `guiPriceListHead`. Rules `pb-master/priceListMaster` me.

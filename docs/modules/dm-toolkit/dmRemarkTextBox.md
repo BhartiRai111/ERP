@@ -85,4 +85,4 @@ Nested: interface `TxtRemarkKeyDownHandler`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Chhota text box jo click/key par **Remark popup** (bada multi-line box, Ok/Close) kholta hai; lambi remark ke liye (`DmRemarkTextBox(maxLength, mandatory)`). Ok par text wapas box me. Frontend: input + dialog textarea.

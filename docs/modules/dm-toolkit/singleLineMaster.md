@@ -306,4 +306,6 @@ Helpers used: `DmServer.convertToJson`, `DmServer.evaluateHelper`, `DmServer.for
 | exportCSV | `if (DmShared.xNull(fileName).equalsIgnoreCase(""))` | "File Name not given." |
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Kya hai:** **generic chhota master screen** jo kisi bhi "code + naam" table ke liye chalta hai (sirf configuration se): `SingleLineMaster(menuCaption, table, title, codeColumn, nameColumn, size, ...)`. Master menu me **Item Colour (`itemColourMast`)** aur **Item Size (`itemSizeMast`)** isi se chalte hain.
+**Server (sab SQL table/column ke naam se banta hai):** `getNavigator`, `getSuggestion`, `getMoveRec` (code, name + audit fields), `saveRecord` (duplicate check on name: **"Value already exists."**; naya code `getSerialNoBigInt`/`Integer`; `SiteList`/`Site_Code` column ho to site se bhi), `deleteRecord`, `getFind`, `exportCSV`. Edit/delete par modify reason log.
+**Naya design:** ek `SingleLineMasterService` jo config (table, columns, site-wise?) leta hai, aur table/column naam **whitelist/regex se validate** karta hai (legacy me SQL me seedha jode jaate the). Frontend ek generic screen.

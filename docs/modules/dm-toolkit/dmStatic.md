@@ -479,4 +479,35 @@ Helpers used: `DmBaseServer.deleteExpiredLinkVerification`, `DmBaseServer.fillJa
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Kya hai:** toolkit ki "static" cheezein, jo ~3,000 files use karti hain. 3 hisse: `DmServer` (3,459 lines, server), `DmClient` (1,744 lines, browser), `DmShared` (130 lines) + `DmApprovals`, `DmTransaction`.
+
+**DmServer me kya hai (backend):**
+1. **Login / session (user ka identity):**
+   - `validateUser(mode, userName, password)`: `UserMast` me active user dhoondhta hai; **password check = `MD5(lower(userName) + password)` (hex, upper) == `UserMast.PassWd`**. Mode: USERNAME / EMAIL (eMail) / mobile. Sahi ho to session me UserName, UserDescription, LinkedUser (`userName_Linked`), UserNatureCode (`userNature.manualCode`), `UserLockTimeOut` set hota hai.
+   - `validateToken(userName, tokenKey)`: `UserMast.tokenKey` se (mobile/API token login).
+   - `userLogingLog(...)`: login/logout ka log.
+   - **Naya design par asar:** DB me password MD5 me hai (schema badal nahi sakte), isliye naya login same hash se verify karega; MD5 kamzor hai, to ise "known risk" likha hai (rehash alag decision).
+2. **PLT, company, site selection:**
+   - `getPLTs(user)`: `ProductLicensedTo` (PLT = licensee/tenant, `Comp_Name`) jo user ki `UserSite` ke through company se jude hain; `userLinkAccount` se linked account (subCode).
+   - `getCompanys(plt)`: `Company` (har financial year ki row: `Comp_Code`, `V_Prefix`, `CentralData_Path` = **company DB ka naam**, `centralFileData_Path` = **Mongo file DB**, `Start_Dt`, `End_Dt`, `CYear`), user ki `UserSite` se filter.
+   - `getSites(company)`: `UserSite.SiteList` + `CostCenterList` se `SiteMast` (naam, address, GSTIN, PAN, TAN, state, country, branch, serial key, client code, drug license...). Permission nahi to **"Permission denied."**
+   - `validateSite(siteCode)`: `SiteMast` row.
+   - Ek PLT / company / site ho to khud select ho jaata hai (login flow dekhein `pb-app/paperbiz_login`).
+   - `initCompanyConfig(pltCode)`: hardcoded mapping (PLT "2" -> Comp1/India/GST, "5" -> Comp2/USA/VAT). Naye design me config se.
+3. **Menu aur permission:**
+   - `getUserMenu(module)`, `getUserPermission(moduleAllowed)`: table `user_permission_web` (`mnuModule, mnuName, mnuText, mnuLevel, parent, sNo, reportFor, permission, isActive, comp_Code, userName`), `user_control_permission_web` (control-wise: buttons/blogs), `User_Voucher_Permission` (category, V_Type, `AllowValueUpto`, `isAllowAudit`).
+   - **Date limits ban jaate hain "days" se:** `VP_Days` / `DP_Days` / `SP_days` (view / delete / save) -> `DATEADD(day, -(days-1), today)` = sabse purani date jo user dekh/delete/save kar sakta hai. 0 = koi limit nahi.
+   - `permission` string: `A` add, `E` edit, `D` delete, `P` print.
+   - `repairMenu`: super-admin `SA` ke menu se baaki users ke menu rows sync (neeche `pb-app/paperbiz_ribbon`).
+4. **Date aur lock checks (har voucher save/delete me):**
+   - `checkForwardVoucherDateTime(date, time)`: aage ki date/time ki entry nahi ("Forward date entry not allowed." / "Forward time entry not allowed.").
+   - `checkBackwardVoucherDateTime(table, dateField, timeField, v_Date, v_Time, siteField...)`: table ki `MAX(date)` se peeche ki entry nahi ("Backward date/time entry not allowed.").
+   - `checkTransactionLockDate(pltCode, siteCode, v_Date, ...)`: company DB ke `pltLockDate(accountLockDate, inventoryLockDate)` se; lock date se pehle accounts/inventory entry nahi ("Entry not allowed accounts books are locked on ..." / "... inventory books ...").
+   - `checkFinancialYearDate(companyCode, v_date, voucherPrefix, action)`: `Company.Start_Dt..End_Dt` ke bahar ki date nahi ("You can't ...").
+   - `chkIfDocumentUsed(WithV_SNo)`: document kisi aur me use hua ho to delete/edit rok.
+5. **TDS/TCS helpers:** `getPartyBalanceForTdsTcs`, `getPartyTdsTcsAcBalance`, `getPartyTdsTcsValue`, `getPartyTurnoverForTcs`, `getTcsAppliedOnValue` (party ke turnover/balance se TDS/TCS ka hisaab; GST/accounts modules use karte hain).
+6. **Baaki:** `sendMail`, `isDocumentEMailRequired`, `saveLog`, `setSsnOldData/getSsnOldData` (edit ka purana record session me), `getLocalIPAddresses`, Jasper variables (`getDMJasperVariables`...), `getEGstParam`, web-job message queue (`processWjMessageQueue`, `deleteWjMessageQueue`), SFTP polling directories, `addActiveProcess/isActiveProcessRunning` (ek process ek baar), `getItemCatFilteration`, `getUserDefinedParams`, `getUserViewCondition`, `getUserVoucherTypes`, `insertCustomizeReport`, `saveVoucherType`.
+
+**DmClient (browser) me:** menu bar banana (`addMenuBarItem`, `searchMenu`), permission getters (`getUserPermission`, `getModulePermission`, `getControlPermission`, `getVoucherPermission`), login date / financial year start-end / voucher prefix / locale / tax type, local printer mapping (`localSettingPrintMap`, `assignPrinterCodeToReportMap` - report kis printer se print), root hotkey registry (`addRootKeyEvent`), `isValidText/isValidAmount` (client alerts), style helpers.
+
+**Naye backend me:** `AuthService` (login, same MD5 verify), `SessionInfoService` (PLT/company/site load -> `SessionInfo`), `PermissionService` (menu + control + voucher limits), `DateLockService` (forward/backward/lock/financial-year checks), `TdsTcsService`. Frontend: `useSession()` (company/site/year/prefix/tax type), menu builder.

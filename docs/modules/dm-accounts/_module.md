@@ -3,6 +3,9 @@
 > Status: DRAFT (auto-survey). Source: `legacy-gwt/dataman_V2/accounts/src` (736 java files, 177750 lines). Har feature/entry ki apni file is folder me hai: SQL, fields, validators, RPC methods auto-extracted; "Notes (hand-written)" jahan likhe hain.
 > "Used by" = kitni files (baaki features/modules me) is feature ke package ko import karti hain.
 
+## Overview (hand-written)
+**Accounts module (postponed, par survey ho chuka):** `voucherEntry` (journal/payment/receipt: `LedgerM`, `Ledger`, `LedgerCostCenter`), `gstVoucherEntry` (+GST ledger), `fundTransferEntry`, `fundInTransitEntry`, `accountOpeningEntry`, `tdsTcsEntry`, `voucherAdjustmentEntry`, `bankReconciliationEntry`, cheque printing (`chequePrintSetup`, `bulkChequePrinting`), masters (`accountMaster` = `subgroup`, `accountGroup`, `ledgerGroup`, `defineCostCenter`, TDS section/category masters, `bankAccountDetail`, `addressBook`, `additionalPlaceOfBusiness`, city/state/country/currency masters), `transactionLock` (`pltLockDate`), displays (trial balance, detail trial balance, profit & loss, balance sheet, ledger detail), `tallyExport`, `egstParam`, `generateGstCsv`, `irpInfoPopup` (e-invoice), and **reports (53 services, 266 files)**. Dhyan: `environmentSettingCompany`/`enviroSettings` yahan bhi hain (master jaise), aur account master/party master ek hi `subgroup` table.
+
 ## Summary
 | Kind | Features | Lines |
 |---|---|---|
@@ -52,3 +55,37 @@
 | [tdsCategoryDescriptionMaster](tdsCategoryDescriptionMaster.md) | UI + server | 8 | 1233 | 1 | 2 | accounts 2 | tdsCat_Description |
 | [egstParam](egstParam.md) | UI + server | 6 | 2569 | 1 | 2 | accounts 2 | - |
 | [generateGstCsv](generateGstCsv.md) | UI + server | 6 | 776 | 1 | 2 | accounts 2 | - |
+
+## Dependencies (auto from imports of this module's java files)
+
+**Other modules used** (number of import statements): `dm-base` 2110, `dm-toolkit` 2060, `dm-library-menu` 183
+
+**Most used shared features:**
+
+| Shared feature | Imports |
+|---|---|
+| `dm-base` / `self.shared` | 1650 |
+| `dm-toolkit` / `dmStatic` | 659 |
+| `dm-toolkit` / `self` | 164 |
+| `dm-base` / `dmPrepareStatement.server` | 153 |
+| `dm-toolkit` / `dmMessageBox` | 149 |
+| `dm-toolkit` / `dmTextBox` | 148 |
+| `dm-toolkit` / `dmTextHelp` | 117 |
+| `dm-toolkit` / `modifyReason` | 116 |
+| `dm-base` / `dmSession.server` | 106 |
+| `dm-base` / `dmBaseStatic.client` | 99 |
+| `dm-toolkit` / `dmTextHelpMulti` | 60 |
+| `dm-toolkit` / `dmLabel` | 58 |
+| `dm-toolkit` / `dmReportLayout` | 55 |
+| `dm-base` / `dmBaseStatic.shared` | 45 |
+| `dm-toolkit` / `dmTopControl` | 43 |
+| `dm-toolkit` / `dmFind` | 42 |
+| `dm-toolkit` / `walkThrough` | 41 |
+| `dm-toolkit` / `excelReport` | 40 |
+| `dm-toolkit` / `dmGrid` | 39 |
+| `dm-toolkit` / `isWidgetExtended` | 36 |
+| `dm-toolkit` / `dmToolContainer` | 31 |
+| `dm-toolkit` / `dmTextBoxNumeric` | 29 |
+| `dm-toolkit` / `dmUserControl` | 27 |
+| `dm-toolkit` / `dmSuggestBox` | 24 |
+| `dm-toolkit` / `tdsPopup` | 23 |

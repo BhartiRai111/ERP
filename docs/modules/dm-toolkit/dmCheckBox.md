@@ -51,4 +51,4 @@ Nested: interface `CallBack`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Boolean `getValue/setValue`; click ya keyboard se toggle; `addCallBack` change par. Enable/disable aur size setters. Frontend: `<DmCheckbox>`.

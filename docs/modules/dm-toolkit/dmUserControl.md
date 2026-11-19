@@ -72,4 +72,4 @@ Public methods:
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Screen ke neeche ki **strip**: `TextBlog` (caption + value, jaise "Prepared By", "Modified By", "System Generated") aur `ControlBlog` (koi bhi widget). `addTextBlog(caption, width, leftBorder, rightBorder)`, `setTextBlog(caption, value)`, `getTextBlog(caption)`, `addGap(%)`. **Permission:** `setVisible(String[] controlNames)` se sirf allowed blogs dikhte hain (user ka control permission), `disableAll()`. `DmTopControl` Browse me allowed ones dikhata hai, New/Edit me sab disable. Frontend: `<UserControlStrip blogs />`.

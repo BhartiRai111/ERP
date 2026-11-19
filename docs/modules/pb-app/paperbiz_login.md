@@ -70,4 +70,12 @@ Helpers used: `DmServer.compareDBPassword`, `DmServer.getCompanys`, `DmServer.ge
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Login screen (shell ka pehla step).** Fields: User Name, Password (client `Login_Validation.chkLogin`).
+**Flow (`validateUser`):**
+1. `DmServer.validateUser(USERNAME, user, password)` (MD5 check, dekhein `dm-toolkit/dmStatic`). Galat ho to **"Access denied"**.
+2. Sahi ho to session status `LOGGED_IN`.
+3. `getPLTs` -> PLT list (aur login date). `pcsMain.setLocaleCompanyCode(DmLocaleCompany.getLocaleViaPltCode(plt))`.
+4. Agar PLT select ho gaya (sirf ek ho to) -> `getCompanys`; company select ho gayi to -> `getSites` (regional language, site list). Site me error aaye to company selection reset aur error message.
+5. Response `PCSData` = user, PLT/company/site lists + selected + login date + locale.
+**Aur:** `initialize()` -> mobile digit rules (base locale ke `mobileDigit`). `lockUser()` -> session status **LOCK** (lock screen). `validateDBPassword(password)` -> `compareDBPassword` (lock screen unlock me **SQL user ka DB password** match hota hai).
+**Naya design:** `POST /api/auth/login` -> JWT (`UserContext`: user, PLT, company DB, site), `POST /api/auth/select-company`, `/select-site`, `POST /api/auth/lock` / `unlock`. Same messages ("Access denied").

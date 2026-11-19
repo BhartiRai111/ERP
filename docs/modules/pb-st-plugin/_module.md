@@ -3,6 +3,9 @@
 > Status: DRAFT (auto-survey). Source: `legacy-gwt/paperbiz/stPlugin/src` (24 java files, 4096 lines). Har feature/entry ki apni file is folder me hai: SQL, fields, validators, RPC methods auto-extracted; "Notes (hand-written)" jahan likhe hain.
 > "Used by" = kitni files (baaki features/modules me) is feature ke package ko import karti hain.
 
+## Overview (hand-written)
+`pb-st-plugin`: **analyzer drivers + plugin** (24 files): Mindray (BS-240, BC-3107, BC-3600), Sysmex (XN-L, XP series), Beckman Coulter Access2, Erba EM200 (serial), message routing, radiology, swing controls. Lab results `pb-lab` tak aate hain.
+
 ## Summary
 | Kind | Features | Lines |
 |---|---|---|
@@ -22,3 +25,14 @@
 | [mi_sysmex_xn_l](mi_sysmex_xn_l.md) | plain classes | 1 | 95 | 0 | 0 |  | - |
 | [mi_sysmex_xp_series](mi_sysmex_xp_series.md) | plain classes | 1 | 96 | 0 | 0 |  | - |
 | [mi_erba_em200_serial](mi_erba_em200_serial.md) | plain classes | 1 | 95 | 0 | 0 |  | - |
+
+## Dependencies (auto from imports of this module's java files)
+
+**Other modules used** (number of import statements): `pb-mi-toolkit` 79, `dm-plugin` 23, `dm-base` 3, `dm-library-menu` 2
+
+**Most used shared features:**
+
+| Shared feature | Imports |
+|---|---|
+| `dm-base` / `jvmSerialization.shared` | 2 |
+| `dm-base` / `self.shared` | 1 |

@@ -897,4 +897,4 @@ Helpers used: `DmServer.evaluateHelper`, `DmServer.getConnection`, `DmServer.get
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Item ki **properties** ka popup (363 files): Colour, Size, Batch No., IB code (item batch), Make, BF, GSM, Item Nature, Size Unit, Grain, Grade. Lookups `getTxtHColour/Size/ItemMake/ItemGrade/Bf/Gsm/ItemNature/SizeUnit/Grain`, `getBatchNo`, `getIbCode`, `getDefaultValues`. Item category me `propertyList` se tay hota hai ki kaun si properties dikhengi.

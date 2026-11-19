@@ -310,4 +310,4 @@ Helpers used: `DmServer.evaluateHelper`, `DmServer.getConnection`, `DmServer.get
 | getDefaultValue | `if (DmShared.xNull(voucherCategory).trim().equalsIgnoreCase(""))` | "'Voucher Type' is mandatory for 'GST Document Info'!" |
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+GST document ka info popup: lookups document type, document nature, GST item type, GST item nature (`getTxtHDocumentType`, `getTxtHDocumentNature`, `getTxtHGSTItemType`, `getTxtHGSTItemNature`) aur defaults. Values dm-base enums (`GstDocumentType`, `GstDocumentNature`) se.

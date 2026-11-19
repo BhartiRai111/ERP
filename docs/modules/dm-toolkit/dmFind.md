@@ -64,4 +64,10 @@ Nested: interface `FindCallBack`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Kya hai:** entry ka **Find** (Find button par form ki jagah poori grid). 342 files use karte hain.
+- Grid (paged, `rowsPerPage` constructor se) + upar **search box**. **Column header par click** = search us column par hota hai (placeholder me us column ka naam, header highlight); search **"starts with"** (`BEGINSWITH`) us column ke `dbFieldName` par; type karte hi dobara query.
+- Buttons: First / Previous / Next / Last (paging, Last = end of file), **Filter**, **Refresh**, **Ok**, **Download** (Excel export), **Cancel**.
+- Hotkeys: Ctrl+R refresh, Ctrl+F filter, Ctrl+Up/Left/Right/Down = first/prev/next/last, Ctrl+P = download, Ctrl+K = ok, Esc = cancel. Enter row chunta hai; Down se grid par jaate hain.
+- Row chunne par screen ka `getSelectedRow` callback chalta hai (record `moveRec` se khulta hai).
+- Server contract wahi `DmHelper` (start, size, ek filter column + text, sort) -> `PageResult` (`getFind`).
+**Frontend:** `<DmFind columns pageSize source onSelect />` (AG Grid, header click = search column, same hotkeys).

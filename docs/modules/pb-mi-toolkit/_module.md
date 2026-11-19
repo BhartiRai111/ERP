@@ -3,6 +3,9 @@
 > Status: DRAFT (auto-survey). Source: `legacy-gwt/paperbiz/miToolKit/src` (49 java files, 4418 lines). Har feature/entry ki apni file is folder me hai: SQL, fields, validators, RPC methods auto-extracted; "Notes (hand-written)" jahan likhe hain.
 > "Used by" = kitni files (baaki features/modules me) is feature ke package ko import karti hain.
 
+## Overview (hand-written)
+`pb-mi-toolkit`: **lab machine interface toolkit** (49 files): ASTM aur HL7 message readers (`machineInterface/reader/astm|hl7`, LLP framing), reader/writer interfaces, records, transport (TCP, serial port). `pb-st-plugin` ke analyzers isi par bante hain.
+
 ## Summary
 | Kind | Features | Lines |
 |---|---|---|
@@ -24,3 +27,8 @@
 | [machineInterface_reader_hl7_llp](machineInterface_reader_hl7_llp.md) | plain classes | 4 | 206 | 0 | 2 | miToolKit 1, stPlugin 1 | - |
 | [miToolkit_transport_tcp](miToolkit_transport_tcp.md) | plain classes | 3 | 481 | 0 | 2 | miToolKit 2 | - |
 | [machineInterface_reader_hl7_io](machineInterface_reader_hl7_io.md) | plain classes | 2 | 138 | 0 | 0 |  | - |
+
+## Dependencies (auto from imports of this module's java files)
+
+**Other modules used** (number of import statements): `pb-project-menu` 3
+

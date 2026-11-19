@@ -71,4 +71,4 @@ Public methods:
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Alert** aur **Confirm** popups (997 files). `DmAlertMessageBox(message, widget)`: message dikhata hai aur **Ok par focus us widget par wapas** karta hai (widget = text box/lookup/numeric/button... jisme galti thi). `DmConfirmMessageBox(message, handler)`: **Yes/No**, handler me `event.getHideButton() == YES`. Standard messages codebase me hardcoded hain (jaise "Are you sure? You want to delete this record."). Frontend: `useAlert(message, focusRef)` aur `useConfirm(message)` (Promise<boolean>).

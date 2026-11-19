@@ -54,4 +54,4 @@ Helpers used: `DmServer.getCompanys`, `DmServer.getPLTs`, `DmServer.getSites`, `
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Login ke baad PLT (licensee) chunne ki screen. Server: `getCompanys(PLT)` (company list ke liye). Ek hi PLT ho to chunna skip.

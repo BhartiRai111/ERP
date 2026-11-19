@@ -176,4 +176,4 @@ Helpers used: `DmServer.getConnection`, `DmServer.getSsnCompanyCode`, `DmServer.
 | getMenuList | (unconditional) | "Please select module to open menu !" |
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Favorites (user ka apna shortcut menu).** Table `user_Favorite_Web(userName, mnuModule, mnuName, mnuText, menuSNo, moduleSNo)`. Screens: Favorite (list), Manage (menu list `getMenuList` se jodna, `getModuleList`), SetPosition (order: `menuSNo` aur `moduleSNo` update). Server: `insertRecord`, `deleteRecord`, `setPosition`, `getFillRecords`. Menu list `user_Permission_Web` se (sirf user ke allowed items). Frontend: favorites panel + drag-to-reorder.

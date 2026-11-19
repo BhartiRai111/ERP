@@ -28,4 +28,4 @@
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Card ka chhota UI component (home ke liye). Count, color (low/medium/high), click par menu kholna. Data `getCardDetail` se. Frontend: `<DashboardCard>`.

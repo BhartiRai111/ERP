@@ -72,4 +72,4 @@ Nested: interface `TextHelpMultiCallBack`, interface `TxtHelpMultiKeyDownHandler
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+`DmTextHelp` ka **multi-select** roop (507 jagah): popup me ek se zyada rows chun sakte hain; `getSelection(status, keyCodes, keyNames)` callback me codes aur naam **comma-separated** aate hain (jaise "Area List"). Baaki behaviour (type = search, paging, keys) `DmTextHelp` jaisa. Frontend: multi-select lookup.

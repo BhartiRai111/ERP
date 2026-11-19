@@ -70,4 +70,4 @@ Nested: interface `OtherCallBack`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Detail grid ka row editor popup** (voucher/line items): grid ke upar **New / Ok / Delete / Close** (aur "Other" button). `onNew` nayi row (`getNewRow`), `displayRow(row)` row ko fields me dikhata hai, `manageOk(row)` fields se row me wapas, `manageDelete`. Hotkeys root key events se. Frontend: `<DmGridEditPanel grid fields onSave onDelete />` (row ke liye dialog/inline form).

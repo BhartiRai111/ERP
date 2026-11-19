@@ -637,4 +637,4 @@ Helpers used: `DmServer.convertDate`, `DmServer.evaluateHelper`, `DmServer.getCo
 | manageRequisitionStatus | `} else if (requisitionIndentQty < 0)` | " + DmShared.xNull(rsTemp.getString(" |
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Standard approval screen** (pattern `_module.md` me). Is document ke liye: pending/approved list `getFillRecords` (Setting popup ke filters), approve/reject `setApproval(approvedBy, isApprove, docId)`, dashboard card ka count `getCardDetail` (din ke ageing buckets), lookups `getTxtH…`. Document ka approval logic `stStatic/STApprovals` me.

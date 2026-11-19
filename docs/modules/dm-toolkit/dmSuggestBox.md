@@ -49,4 +49,4 @@ Nested: interface `CallBack`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Text box + **auto-suggest** (server se naam ki list). `DmSuggestBox(maxLength, rowsPerPage, mandatory, searchDbFieldName, dataType)`: type karte hi popup me matching naam (`getSuggestion*` RPC, `BEGINSWITH` jaisa filter), chunne par text bhar jaata hai; **free text bhi allowed** (suggest sirf madad hai, jaise "Unit Name" naya naam bhi likh sakte hain). Mandatory = laal border. Frontend: combobox/autocomplete with free text.

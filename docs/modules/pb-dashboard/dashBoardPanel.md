@@ -25,4 +25,4 @@
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Home ke panel ka chhota UI component (naam + icon + cards ka group; Purchase / Sales / Finance / Inventory). Frontend: `<DashboardPanel>`.

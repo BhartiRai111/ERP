@@ -54,4 +54,4 @@ Helpers used: `DmServer.getCompanys`, `DmServer.getSites`, `DmShared.xNull`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+PLT ke baad company (financial year) chunne ki screen. Server: `getSites(company)`. `Company` row se company DB (`CentralData_Path`) aur file DB (`centralFileData_Path`), year start/end, voucher prefix aate hain. Ek hi company ho to skip.

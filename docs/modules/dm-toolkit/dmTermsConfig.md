@@ -192,4 +192,7 @@ Helpers used: `DmShared.foriegnKey`, `DmShared.iNull`, `DmShared.xNull`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Kya hai:** **terms & conditions** (payment terms, delivery terms...) jo voucher group ke hisaab se configure hote hain aur document ke saath save.
+**Tables:** config `termsConfig(code, name, tableName, voucherGroupCode)` + `termsConfigDetail(code, v_SNo, termsTypeCode, dataTypeCode, saveInField, defaultValue, mandatory)`, type master `termsTypeMast`, document ke values `termsTrans(docId, termsConfigCode, termsConfigV_SNo, termsTypeCode, v_Type, valueCode, value, dataTypeCode, saveInField, mandatory)`.
+**Flow:** `getTermsConfigCode(voucher type)` -> kaun si config (voucher group se). `getTermsConfig(configCode, docId)`: docId ho to saved values, nahi to **default values**. `save`: `termsTrans` me insert, aur `mandatory` config se update. `delete` (**"docId or termsConfigCode is mandatory!"**). `saveInField` = value document ki kis column me bhi copy hogi. `getPrintSQLQuery`: print ke liye terms (Jasper).
+Party/PO jaisi screens me `DmTermsConfig` widget (tab) laga hota hai. **Naya design:** `TermsService` + `<TermsPanel config values />`.

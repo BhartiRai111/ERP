@@ -25,4 +25,4 @@
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Lock screen: `lockUser` se session status LOCK; unlock ke liye password (user ka password `validateUser` ya SQL DB password `validateDBPassword`). `UserMast.UserLockTimeOut` (minutes) ke baad session khud lock hota hai (`DmSession.setLockTimeOut`).

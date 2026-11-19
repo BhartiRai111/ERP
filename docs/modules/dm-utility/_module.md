@@ -3,6 +3,9 @@
 > Status: DRAFT (auto-survey). Source: `legacy-gwt/dataman_V2/utility/src` (425 java files, 88956 lines). Har feature/entry ki apni file is folder me hai: SQL, fields, validators, RPC methods auto-extracted; "Notes (hand-written)" jahan likhe hain.
 > "Used by" = kitni files (baaki features/modules me) is feature ke package ko import karti hain.
 
+## Overview (hand-written)
+**Utility = system administration.** Users: `userMaster`, `userPermission` (+ `copyUserPermission`; tables `user_Voucher_Permission`, `UserSite`), `changePassword`, `menuCodification`. Company set-up: `companyMaster` (`Company`), `siteMaster`, `branchMaster`, `productLicensedTo`, `locationMaster`, `gstStructure`, `itemTaxStructure` (`its`, `itsDetail`), `currencyRate`. Numbering: `numberSystem` (+`numberSystemTemplate`, `numberSystemOld`), `docIdMaster`, `voucherType` (37 files), `transactionType`. Config masters: `overheadMaster`, `overheadConfiguration`, `overheadLineConfiguration`, `termsConditionMast`, `termsTypeMaster`, `walkThroughMaster`, `modifyReasonMaster`, `fileTypeMaster`, `guiConfig`. Data: `importProcedure`, `exportProcedure`, `dataBackup` (OS commands, Mongo). Ye masters login/permission/numbering ka data banate hain, isliye library ke saath hi chahiye.
+
 ## Summary
 | Kind | Features | Lines |
 |---|---|---|
@@ -44,3 +47,37 @@
 | [overheadMaster](overheadMaster.md) | UI + server | 8 | 1289 | 1 | 2 | utility 2 | overheadmast |
 | [dataBackup](dataBackup.md) | UI + server | 15 | 2424 | 1 | 2 | utility 2 | backupInfo |
 | [guiConfig](guiConfig.md) | UI + server | 21 | 4956 | 1 | 1 | paperbiz 1 | guiConfig, guiConfigApplicableTo |
+
+## Dependencies (auto from imports of this module's java files)
+
+**Other modules used** (number of import statements): `dm-toolkit` 1198, `dm-base` 1063, `dm-library-menu` 39
+
+**Most used shared features:**
+
+| Shared feature | Imports |
+|---|---|
+| `dm-base` / `self.shared` | 843 |
+| `dm-toolkit` / `dmStatic` | 343 |
+| `dm-toolkit` / `dmTextHelp` | 114 |
+| `dm-toolkit` / `dmMessageBox` | 111 |
+| `dm-toolkit` / `dmTextBox` | 96 |
+| `dm-toolkit` / `dmGrid` | 95 |
+| `dm-toolkit` / `dmLabel` | 72 |
+| `dm-base` / `dmPrepareStatement.server` | 66 |
+| `dm-toolkit` / `self` | 64 |
+| `dm-base` / `dmBaseStatic.client` | 54 |
+| `dm-toolkit` / `dmTopControl` | 48 |
+| `dm-toolkit` / `dmFind` | 46 |
+| `dm-base` / `dmSession.server` | 44 |
+| `dm-toolkit` / `dmGridEditPanel` | 32 |
+| `dm-toolkit` / `isWidgetExtended` | 29 |
+| `dm-toolkit` / `dmUserControl` | 25 |
+| `dm-toolkit` / `dmToolContainer` | 24 |
+| `dm-toolkit` / `dmTextBoxNumeric` | 21 |
+| `dm-toolkit` / `dmSuggestBox` | 21 |
+| `dm-toolkit` / `modifyReason` | 20 |
+| `dm-base` / `self.server` | 15 |
+| `dm-base` / `dmSession.client` | 12 |
+| `dm-toolkit` / `dmTextHelpMulti` | 9 |
+| `dm-toolkit` / `dmFileUploadButton` | 8 |
+| `dm-base` / `dmFileManager.shared` | 8 |

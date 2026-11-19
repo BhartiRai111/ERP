@@ -105,4 +105,4 @@ Helpers used: `DmServer.getConnection`, `DmServer.getConnectionMongo`, `DmServer
 | saveEditedFile | `if (!file.exists())` | "File not found : " |
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Attachment ka server hissa (`linkFileCollection` table): `getFileType` (rule se allowed type), `allocateResource`, `deleteFile`, `saveEditedFile` (image edit; **"File not found : "**), `getActualImageSize`, `updateRemarks` (file ki remark). Upload ki file pehle session ke temp folder me aati hai aur record save par Mongo GridFS me jaati hai (dekhein `dm-base` `AttachmentService`). Frontend: `<FileUploadButton rule />` + attachment list (remark, delete, preview).

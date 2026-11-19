@@ -546,4 +546,4 @@ Helpers used: `DmServer.convertDate`, `DmServer.evaluateHelper`, `DmServer.forma
 | openRecord | `if (DmShared.iNull(rsTemp.getString("cnt")).intValue() == 1)` | "Record is already cancelled, can't update Record." |
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Standard approval screen** (pattern `_module.md` me). Is document ke liye: pending/approved list `getFillRecords` (Setting popup ke filters), approve/reject `setApproval(approvedBy, isApprove, docId)`, dashboard card ka count `getCardDetail` (din ke ageing buckets), lookups `getTxtH…`. Document ka approval logic `stStatic/STApprovals` me.

@@ -59,4 +59,4 @@ Nested: interface `CallBack`
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+Grid + First/Previous/Next/Last buttons. `populateData(helper, toEndOfFile, param)` callback se screen server se page mangta hai; `setData(list, paging)` se bharta hai; `reQuery()` first page se dobara; `getHelper()` filter/sort. Page size constructor (`rowsPerPage`) se.

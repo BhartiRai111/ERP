@@ -3,6 +3,12 @@
 > Status: DRAFT (auto-survey). Source: `legacy-gwt/paperbiz/purchase/src` (477 java files, 198157 lines). Har feature/entry ki apni file is folder me hai: SQL, fields, validators, RPC methods auto-extracted; "Notes (hand-written)" jahan likhe hain.
 > "Used by" = kitni files (baaki features/modules me) is feature ke package ko import karti hain.
 
+## Overview (hand-written)
+**Purchase (kharid) module.** Flow: **Indent -> Enquiry -> Quotation -> Purchase Order -> GRN -> Purchase Bill -> Return / Finalization.**
+- Entries: `indent`, `enquiry`, `quotation`, `purchaseOrder` (`pOrder`), **`grn`** (`pChallan`, impurity/QC details), `purchaseBill` / `purchaseBillDirect` / `purchaseBillUnStockable` / `imPurchaseBill` (import) (sab `pBill` me, TDS detail ke saath), `purchaseReturn`, **`purchaseFinalization`** (`pFinalization`), `shipmentEntry` + `shipmentItemDetail` (import shipment), `indentAssign`.
+- Search/helper: `indentSearch`, `orderSearch`, `grnSearch`, `itemUpdationPopUp` (approved vendors, item update history). Displays: purchase summary/detail, pending purchase. **Reports:** 16 services (115 files).
+- Special: **TDS** lines (`pBillTdsDetail`), impurity (QC) details, approvals, accounts posting (purchase return aur bill posting).
+
 ## Summary
 | Kind | Features | Lines |
 |---|---|---|
@@ -35,3 +41,37 @@
 | [indentAssign](indentAssign.md) | UI + server | 14 | 3259 | 1 | 2 | purchase 2 | - |
 | [pendingPurchaseDisplay](pendingPurchaseDisplay.md) | UI + server | 9 | 2206 | 1 | 2 | purchase 2 | - |
 | [purchaseFinalization](purchaseFinalization.md) | UI + server | 18 | 12320 | 1 | 1 | purchase 1 | pFinalization, pFinalizationDetail, pFinalizationTdsDetail |
+
+## Dependencies (auto from imports of this module's java files)
+
+**Other modules used** (number of import statements): `dm-toolkit` 1746, `dm-base` 1167, `pb-self-toolkit` 549, `pb-project-menu` 87
+
+**Most used shared features:**
+
+| Shared feature | Imports |
+|---|---|
+| `dm-base` / `self.shared` | 928 |
+| `dm-toolkit` / `dmStatic` | 319 |
+| `pb-self-toolkit` / `stStatic` | 262 |
+| `dm-toolkit` / `overHead` | 123 |
+| `dm-toolkit` / `overHeadLine` | 113 |
+| `dm-toolkit` / `gst` | 100 |
+| `dm-toolkit` / `modifyReason` | 93 |
+| `pb-self-toolkit` / `itemPropertyPopup` | 93 |
+| `dm-toolkit` / `dmTextBox` | 89 |
+| `dm-toolkit` / `walkThrough` | 85 |
+| `dm-toolkit` / `dmTextHelp` | 84 |
+| `dm-toolkit` / `dmMessageBox` | 76 |
+| `dm-toolkit` / `partyDetailPopup` | 70 |
+| `dm-base` / `dmBaseStatic.shared` | 65 |
+| `dm-base` / `dmBaseStatic.client` | 65 |
+| `dm-toolkit` / `dmGrid` | 64 |
+| `dm-base` / `dmPrepareStatement.server` | 55 |
+| `pb-self-toolkit` / `otherChargesGrid` | 43 |
+| `dm-toolkit` / `dmLabel` | 42 |
+| `dm-base` / `dmSession.server` | 40 |
+| `dm-toolkit` / `dmTermsConfig` | 40 |
+| `pb-self-toolkit` / `serviceGrid` | 34 |
+| `dm-toolkit` / `self` | 33 |
+| `dm-toolkit` / `dmGUI` | 32 |
+| `pb-self-toolkit` / `tdsPopup` | 32 |

@@ -28,4 +28,4 @@
 No explicit rule/exception found beyond validator.
 
 ## Notes (hand-written)
-_No hand-written notes yet._
+**Home dashboard (login ke baad ki pehli screen).** User ke menu permissions ke hisaab se **cards** (`DashboardCardStrip`, `pb-self-toolkit/dashboardCardStrip`) aur **panels** (Purchase, Sales, Finance, Inventory icons ke saath, `DashBoardPanel`) banta hai: modules Master, Account, Store, General Purchase, Purchase, Sales, Production, Lab. Har card ka count us screen ke `getCardDetail()` se aata hai (din ke ageing buckets). **Har 60 second me auto-refresh** (timer). Card par click us screen/menu ko kholta hai. Frontend: `<HomeDashboard>` (cards + panels, 60s polling).

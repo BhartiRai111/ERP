@@ -3,6 +3,9 @@
 > Status: DRAFT. Source: `legacy-gwt/dataman_V2/dmToolkit/src`. Har feature ki apni file is folder me hai (SQL, fields, validators, RPC methods auto-extracted; "Notes" hand-written jahan likhe hain).
 > "Used by" = kitni files (baaki modules/features me) is feature ke package ko import karti hain.
 
+## Overview (hand-written)
+**Toolkit = shared UI widgets + shared server features** (575 files, 76 packages). 36 UI-only widgets (TextBox/TextHelp/Grid/TopControl/Find/MessageBox...) = **frontend component library**; 28 UI+server features (`modifyReason`, `walkThrough`, `dmGUI`, `dmTermsConfig`, `gst`, `eGstPopup`, `overHead`, `overHeadLine`, `partyDetailPopup`, `tdsPopup`, `accountAdjustment`, `itemAdjustment`, `voucherEntryApproval`, `dmImportData`, `dmNotifications`, `manageSite`, `printerMapping`...); `dmStatic` = login/permission/date locks/TDS-TCS helpers. Naye project me: widgets -> frontend library, server features -> `dm-toolkit` services. Detail har feature ki file me.
+
 ## Summary
 | Kind | Features | Lines |
 |---|---|---|
@@ -90,3 +93,30 @@
 | [dmMasterReportLayout](dmMasterReportLayout.md) | UI only (frontend widget) | 1 | 59 | 0 | 0 |  | - |
 | [dml](dml.md) | server/shared | 2 | 285 | 0 | 0 |  | - |
 | [openSourceModule](openSourceModule.md) | UI + server | 13 | 1506 | 1 | 0 |  | - |
+
+## Dependencies (auto from imports of this module's java files)
+
+**Other modules used** (number of import statements): `dm-base` 1049, `dm-library-menu` 6, `dm-web-cam` 1
+
+**Most used shared features:**
+
+| Shared feature | Imports |
+|---|---|
+| `dm-base` / `self.shared` | 676 |
+| `dm-base` / `dmBaseStatic.client` | 108 |
+| `dm-base` / `dmSession.server` | 78 |
+| `dm-base` / `dmPrepareStatement.server` | 70 |
+| `dm-base` / `dmFileManager.shared` | 36 |
+| `dm-base` / `self.server` | 29 |
+| `dm-base` / `dmSession.client` | 12 |
+| `dm-base` / `dmBaseStatic.shared` | 11 |
+| `dm-base` / `dmBaseStatic.server` | 9 |
+| `dm-base` / `dmFileManagerMongo.server` | 7 |
+| `dm-base` / `self.xls` | 3 |
+| `dm-base` / `dmRefreshDataStructure.server` | 2 |
+| `dm-base` / `dmScheduler.server` | 2 |
+| `dm-base` / `dmDynamicReportBuilder.shared` | 2 |
+| `dm-base` / `dmScheduler.shared` | 1 |
+| `dm-base` / `jvmSerialization.shared` | 1 |
+| `dm-base` / `dmEventbus.server` | 1 |
+| `dm-base` / `dmBaseJasper.server` | 1 |

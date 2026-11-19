@@ -3,6 +3,9 @@
 > Status: DRAFT (auto-survey). Source: `legacy-gwt/dataman_V2/dmWebCam/src` (7 java files, 439 lines). Har feature/entry ki apni file is folder me hai: SQL, fields, validators, RPC methods auto-extracted; "Notes (hand-written)" jahan likhe hain.
 > "Used by" = kitni files (baaki features/modules me) is feature ke package ko import karti hain.
 
+## Overview (hand-written)
+`dm-web-cam`: webcam capture widget (7 java, UI only). Frontend me browser camera API se.
+
 ## Summary
 | Kind | Features | Lines |
 |---|---|---|
@@ -12,3 +15,13 @@
 | Feature | Kind | Files | Lines | Services | Used by (files) | Mostly used by | Writes tables |
 |---|---|---|---|---|---|---|---|
 | [dataman_dmWebCamera_self](dataman_dmWebCamera_self.md) | UI only | 7 | 439 | 0 | 1 | dmToolkit 1 | - |
+
+## Dependencies (auto from imports of this module's java files)
+
+**Other modules used** (number of import statements): `dm-base` 1
+
+**Most used shared features:**
+
+| Shared feature | Imports |
+|---|---|
+| `dm-base` / `self.shared` | 1 |
