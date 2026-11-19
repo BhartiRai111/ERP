@@ -1,0 +1,40 @@
+# pb-self-toolkit / eWayBillDetailPopup
+
+> Auto-extracted facts from legacy GWT source (`legacy-gwt/paperbiz/selfToolkit/src/paperbiz/selfToolkit/eWayBillDetailPopup/`). Hand-written notes are in the "Notes" section.
+
+## Summary (auto-derived from SQL + validator)
+- Insert tables: -
+- Update tables: -
+- Delete cascade (in order): -
+- Duplicate checks on save: none found
+- Delete: **no in-use check in code** (relies on DB foreign keys; DB error message is returned)
+- Validations: -
+- Lookups/suggestions: -
+- CSV export: no
+
+## Files
+| file | lines |
+|---|---|
+| client/EWayBillDetailPopup.java | 158 |
+| client/EWayBillDetailPopup_Dsg.java | 159 |
+| shared/EWayBillDetailPopup_Mdl.java | 40 |
+
+## UI labels / columns (client)
+`EWay Bill No`, `EWay Bill Date`
+
+## Models (shared DTOs)
+### EWayBillDetailPopup_Mdl
+| type | field |
+|---|---|
+| String | eWayBillNo |
+| String | eWayBillDate |
+| String | v_Date |
+
+## Depends on (imports from other packages)
+`dataman.dmBase.dmBaseStatic.client`, `dataman.dmBase.self.shared`, `dataman.dmToolkit.dmLabel.client`, `dataman.dmToolkit.dmMessageBox.client`, `dataman.dmToolkit.dmStatic.client`, `dataman.dmToolkit.dmStatic.shared`, `dataman.dmToolkit.dmTextBox.client`, `dataman.dmToolkit.dmTextHelp.client`, `dataman.dmToolkit.dmTextHelpMulti.client`, `dataman.dmToolkit.dmToolContainer.client`, `paperbiz.selfToolkit.eWayBillDetailPopup.shared`, `paperbiz.selfToolkit.stStatic.client`
+
+## Business rules (derived from code conditions)
+No explicit rule/exception found beyond validator.
+
+## Notes (hand-written)
+_No hand-written notes yet._

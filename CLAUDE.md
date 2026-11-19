@@ -23,15 +23,18 @@ This is **not** a line-by-line port and there is **no compatibility layer**. Do 
 
 ## Per-module workflow
 1. **Understand (read only):** list entries, flows, tables, validations, reports, dependencies.
-2. **Analysis note:** write **one single file per module**: `docs/modules/<module>.md` (everything about that module in it: common pattern, entries, SQL, rules). Do **not** create README/index files or split a module into many files.
+2. **Spec files:** write **one folder per module** `docs/modules/<module>/` with **one file per entry** (`<entry>.md`: the full detail of that entry) plus `_module.md` for module-wide things (menu mapping, shared concerns, dependencies). No README files. Libraries (`dm-toolkit`, `pb-self-toolkit`, frontend library) are documented the same way, one file per feature/widget.
+   An entry spec must cover **both sides**: screen (fields in order with widget type, lookups/text-helps and their source, mandatory, numeric decimals, grid columns, buttons, enable/disable per mode New/Edit/Browse, default values on open, field change events) and server (CRUD flow, SQL, field-to-column mapping, validations, delete rules, errors).
 3. **Design:** REST endpoints, services, DTOs; user approves.
 4. **Code + compile:** `mvn -q compile` for the module; user approves.
 
-## Order of work
-1. Skeleton of all Maven modules (no code).
-2. **Pilot: `pb-master`** (analysis note first).
-3. Libraries as needed by the modules, starting with `dm-base`.
-4. Remaining business modules (sales, purchase, store, production, ...), then frontend per module.
+## Order of work (decided with the user)
+Goal: same project, same logic, same entry points (not same code). Backend and frontend are built **together**.
+1. Skeleton of all Maven modules (done).
+2. **Libraries first, both sides:** backend (`dm-base`, `dm-toolkit`, `pb-self-toolkit`, then the rest) and the frontend component library (DmTextBox, DmTextHelp, DmGrid, DmTopControl, DmFind, ModifyReason ...). Spec first, then code.
+3. Then modules entry by entry, starting with `master` (redo with screen-level spec), then purchase / sales / store / production / gate / asset / job work / web job / utility.
+4. **`dataman_V2/accounts` is postponed** until purchase/sales/store need it.
+- Common things needed by many entries live in the shared libraries (`dm-*`, `pb-self-toolkit`), never copied into a module.
 
 ## Repo layout
 ```
