@@ -12,6 +12,19 @@
 - Lookups/suggestions: -
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `TaxSummary`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+
+Other widgets (not in tab list): `grdTaxSummary` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `grdTaxSummary`: Tax % [Text, w50]; Taxable Amt. [Text, w125]; SGST / UGST [Text, w100]; CGST [Text, w90]; IGST [Text, w90]; Cess [Text, w90]; Cess NA [Text, w90]; VAT [Text, w90]; Total Tax [Text, w130]
+
 ## Files
 | file | lines |
 |---|---|

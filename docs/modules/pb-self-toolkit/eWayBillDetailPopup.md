@@ -12,6 +12,20 @@
 - Lookups/suggestions: -
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `EWayBillDetailPopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | EWay Bill Date | DmTextBox | `txtEWayBillNo` | `50, true` |
+| 2 | - | DmTextBox | `txtEWayDate` | `11, true` |
+- Alert: "EWay Bill No. is mandatory."
+- Alert: "EWay Bill Date should be less than or equal to current date."
+- Alert: "EWay Bill Date should be less than or equal to Invoice date."
+- Alert: "EWay Bill Date is mandatory."
+
 ## Files
 | file | lines |
 |---|---|

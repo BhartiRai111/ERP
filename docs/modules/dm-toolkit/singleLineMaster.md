@@ -14,6 +14,180 @@
 - Lookups/suggestions: getSuggestion
 - CSV export: yes
 
+## Screen spec (auto-extracted from client)
+### Screen `SingleLineMaster`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Name | DmSuggestBox | `txtField` | `0, 10, true, "Name", DmDataType.STRING` |
+
+Other widgets (not in tab list): `dmFind` (DmFind)
+
+**Grid / popup columns** (header, width, db field):
+- `dmFind`: Name [Text, w1, Name]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtField` → `getSuggestion`
+- Find popup → `getFind`
+
+**Save: model field ← widget** (`topControlSaveInitialize`):
+- `SharedKeyFieldCode` ← topControl.getDocId()
+- `SharedKeyFieldName` ← DmShared.xNull(txtField.getText())
+
+**Load (record opened): widget ← model** (`topControlMoveRecSuccess`):
+- `txtField.setText` ← data.getSharedKeyFieldName()
+- `userControl.setTextBlog` ← preparedByBlog, data.getSharedPreparedBy()
+- `userControl.setTextBlog` ← modifiedByBlog, data.getSharedModifiedBy()
+- userControl.setTextBlog(preparedByBlog, data.getSharedPreparedBy())
+- userControl.setTextBlog(modifiedByBlog, data.getSharedModifiedBy())
+
+**On New click:**
+- `clear()`
+- `txtField.setFocus(true)`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`topControl.addNewHandeller` → `newClicked()`
+```java
+clear();
+txtField.setFocus(true);
+```
+
+`topControl.addEditHandeller` → `editClicked()`
+```java
+txtField.setFocus(true);
+```
+
+`topControl.addDeleteHandeller` → `deleteClicked()`
+```java
+new DmConfirmMessageBox("Are you sure? You want to delete this record.", new DialogHideEvent.DialogHideHandler() {
+public void onDialogHide(DialogHideEvent event) {
+if (event.getHideButton() == Dialog.PredefinedButton.YES) {
+if (singleLineMasterConfig.isLogRequired()) {
+showModifyReason();
+} else {
+topControlDelete(topControl.getDocId());
+}).show();
+```
+
+`topControl.addDeleteHandeller` → `onDialogHide()`
+```java
+if (event.getHideButton() == Dialog.PredefinedButton.YES) {
+if (singleLineMasterConfig.isLogRequired()) {
+showModifyReason();
+} else {
+topControlDelete(topControl.getDocId());
+```
+
+`topControl.addCardHandeller` → `cardClicked()`
+```java
+topControlCard();
+```
+
+`topControl.addFindHandeller` → `findClicked()`
+```java
+flwForm.remove(vrtInnerForm);
+flwForm.add(dmFind);
+```
+
+`topControl.addMoveRecHandeller` → `moveRec()`
+```java
+topControlMoveRec(strFetchCode);
+```
+
+`topControl.addSaveHandeller` → `saveClicked()`
+```java
+if (singleLineMasterConfig.isLogRequired()) {
+if (DmShared.xNull(topControl.getMode()).equalsIgnoreCase("Edit")) {
+showModifyReason();
+} else {
+topControlSave();
+} else {
+topControlSave();
+```
+
+`topControl.addCloseHandeller` → `closeClicked()`
+```java
+DmClient.<SetWidgetInvoker>getStoreItem("swiEvent").closeWidget(SingleLineMaster.this);
+```
+
+`topControl.addOtherHandeller` → `otherClicked()`
+```java
+menu.show(topControl.getButton("Other"));
+```
+
+`txtField.addCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(blnCallBackWait).getSuggestion(helper, blnToEndOfFile, singleLineMasterConfig, new AsyncCallback<DmRe
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtField).show();
+public void onSuccess(DmResultPageing<List<String>> result) {
+if (result.isStatus()) {
+txtField.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtField).show();
+```
+
+`txtField.addCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtField.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtField).show();
+```
+
+`dmFind.addHelpGridCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(blnCallBackWait).getFind(helper, blnToEndOfFile, singleLineMasterConfig, new AsyncCallback<DmResultPa
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), dmFind.getTextBox()).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+dmFind.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), dmFind.getTextBox()).show();
+```
+
+`dmFind.addHelpGridCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+dmFind.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), dmFind.getTextBox()).show();
+```
+
+`dmFind.addHelpGridCallBack` → `getSelectedRow()`
+```java
+flwForm.remove(dmFind);
+flwForm.add(vrtInnerForm);
+if (blnStatus) {
+topControlMoveRec(tRow.getSharedKeyFieldCode());
+```
+
+`modifyReason.addCallBack` → `onOk()`
+```java
+try {
+SingleLineMaster.this.modifyReasonMdl = modifyReason;
+if (topControl.getMode().equalsIgnoreCase("Browse") && DmShared.iNull(topControl.getDocId()).longValue() > 0) {
+topControlDelete(topControl.getDocId());
+} else {
+topControlSave();
+} catch (Exception e) {
+new DmAlertMessageBox(e.getMessage(), (DmTextBox) null).show();
+```
+
+**Top control options:** setRefreshRequired(false), setDisplay(true)
+
+**Menu items (Other button):** Export Data
+
+_Print permission "P" is removed for this screen (replace "P" with "*")._
+
+**Modify reason popup:** yes (Edit save and Delete).
+- Confirm: "Are you sure? You want to delete this record."
+- Confirm: "Are you sure? You want to export records."
+
 ## Files
 | file | lines |
 |---|---|

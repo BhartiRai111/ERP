@@ -12,6 +12,188 @@
 - Lookups/suggestions: getTxtHDepartment, getTxtHOrderNo, getTxtHReelNo
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `GridEditPopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Bundle(s) | DmTextBoxNumeric | `txtPackCount` | `4, false, 12, true` |
+| 2 | Weight | DmTextBoxNumeric | `txtWeight` | `4, false, 12, true` |
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtWeight.setEnabled(false)`
+- `txtPackCount.setEnabled(flag)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+boolean flag = this.mode.equalsIgnoreCase("New") || this.mode.equalsIgnoreCase("Edit");
+txtWeight.setEnabled(false);
+txtPackCount.setEnabled(flag);
+```
+- Alert: "Bundle is mandatory."
+- Alert: "Bundle("
+- Alert: "Weight is mandatory."
+- Alert: "Weight("
+
+### Screen `ReelBundleSearchPopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Show Used Reels | DmGridPaging | `reelSearchGrid` | `GrdPaging_PrpAcs, 13, false` |
+| 2 | - | DmTextBox | `txtSearchValue` | `50, false` |
+| 3 | SNo. | DmTextHelp | `txtHDepartment` | `KeyField_PrpAcs, 5, true` |
+| 4 | - | DmTextHelp | `txtHOrderNo` | `TxtHOrderNo_PrpAcs, 6, true` |
+| 5 | - | DmTextBox | `txtOrderV_SNo` | `10, false` |
+| 6 | Item Name | DmTextBox | `txtItem` | `250, false` |
+| 7 | Properties | DmTextBox | `txtProperties` | `250, false` |
+| 8 | - | DmCheckBox | `cbShowUsedReels` | `` |
+
+Other widgets (not in tab list): `txtHBarcode` (DmTextBox), `txtRate` (DmTextBox), `checkUncheckAll` (DmCheckBox)
+
+**Grid / popup columns** (header, width, db field):
+- `txtHDepartment`: Name [Text, w260, name]
+- `txtHOrderNo`: Order No. [Text, w120, recId]; Order Date [Text, w80, replace(convert(varchar, soDate, 106), ' ','-')]; ItemName [Text, w220, itemName]; BF [Text, w50, bfCode]; GSM [Text, w50, gsmCode]; Width [Text, w60, sizeWidth]; Length [Text, w60, sizeLength]; Size Unit [Text, w60, sizeUnitName]; Pending Qty [Text, w100, pendingQty]
+- `reelSearchGrid`:  [Text, w30, isChecked]; Reel/Bundle No. [Text, w120, name]; SO Date [Text, w80, replace(convert(varchar, soV_Date, 106), ' ','-')]; Bill No. [Text, w120, pBillRecId]; Bill Date [Text, w80, replace(convert(varchar, pBillDate, 106), ' ','-')]; Weight [Text, w100, quantity]; Reel/Bundle(s) [Text, w100, packCount]; Godown [Text, w120, departmentName]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHDepartment` → `getTxtHDepartment`
+- `txtHOrderNo` → `getTxtHOrderNo`
+- `reelSearchGrid` → `getTxtHReelNo`
+
+**Enable/disable rules** (`manageDIsplay(flag)`, flag = editing mode):
+- `cbShowUsedReels.setVisible(false)`
+- `lblShowUsedReels.setVisible(false)`
+- `cbShowUsedReels.setVisible(true)`
+- `lblShowUsedReels.setVisible(true)`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHDepartment.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHDepartment(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<Key
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHDepartment).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHDepartment.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHDepartment).show();
+```
+
+`txtHDepartment.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHDepartment.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHDepartment).show();
+```
+
+`txtHDepartment.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (!DmShared.xNull(txtHDepartment.getTag()).equalsIgnoreCase(DmShared.xNull(txtHDepartment.getTag2nd()))) {
+clearPartially();
+txtHOrderNo.clear();
+txtOrderV_SNo.clear();
+txtHDepartment.setTag2nd(DmShared.xNull(txtHDepartment.getTag()));
+svm.setDepartmentCode(DmShared.xNull(txtHDepartment.getTag()));
+svm.setDepartmentName(DmShared.xNull(txtHDepartment.getText()));
+reQuery();
+```
+
+`txtHOrderNo.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHOrderNo(hvm, helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<T
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHOrderNo).show();
+public void onSuccess(DmResultPageing<List<TxtHSaleOrder_Mdl>> result) {
+if (!result.isStatus()) {
+result.getData().clear();
+new DmAlertMessageBox(result.getErrorMessage(), txtHOrderNo).show();
+txtHOrderNo.setData(result.getData(), result.getPaging());
+```
+
+`txtHOrderNo.addTextHelpCallBack` → `onSuccess()`
+```java
+if (!result.isStatus()) {
+result.getData().clear();
+new DmAlertMessageBox(result.getErrorMessage(), txtHOrderNo).show();
+txtHOrderNo.setData(result.getData(), result.getPaging());
+```
+
+`txtHOrderNo.addTextHelpCallBack` → `getSelectedRow()`
+```java
+selectedOrderNo_Mdl = t1Row;
+boolean flagChange = !DmShared.xNull(txtHOrderNo.getTag()).equalsIgnoreCase(DmShared.xNull(txtHOrderNo.getTag2nd()))
+|| DmShared.iNull(txtOrderV_SNo.getText()).intValue() != DmShared.iNull(t1Row.getV_SNo()).intValue();
+if (flagChange) {
+clearPartially();
+manageGrodColumns();
+txtHOrderNo.setTag2nd(DmShared.xNull(txtHOrderNo.getTag()));
+txtOrderV_SNo.setText(t1Row.getV_SNo());
+svm.setSoDocId(DmShared.xNull(txtHOrderNo.getTag()));
+svm.setSoRecId(DmShared.xNull(txtHOrderNo.getText()));
+...
+```
+
+`gridEditPopup.addCallBack` → `onOk()`
+```java
+reelSearchGrid.getDmGrid().commitChanges();
+```
+
+`reelSearchGrid.addCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(false).getTxtHReelNo(hvm, svm, helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<ReelBun
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), (DmTextBox) null).show();
+public void onSuccess(DmResultPageing<List<ReelBundleSearchPopupGrid_Mdl>> result) {
+if (!result.isStatus()) {
+new DmAlertMessageBox(result.getErrorMessage(), (DmTextBox) null).show();
+reelSearchGrid.setData(result.getData(), result.getPaging());
+reelSearchGrid.getDmGrid().commitChanges();
+checkUncheckWidget(false);
+Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+...
+```
+
+`reelSearchGrid.addCallBack` → `onSuccess()`
+```java
+if (!result.isStatus()) {
+new DmAlertMessageBox(result.getErrorMessage(), (DmTextBox) null).show();
+reelSearchGrid.setData(result.getData(), result.getPaging());
+reelSearchGrid.getDmGrid().commitChanges();
+checkUncheckWidget(false);
+Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+public void execute() {
+int checkedCount = 0;
+try {
+List<ReelBundleSearchPopupGrid_Mdl> grid_MdlList = reelSearchGrid.getDmGrid().getGrid().getStore().getAll();
+...
+```
+
+`reelSearchGrid.addCallBack` → `execute()`
+```java
+int checkedCount = 0;
+try {
+List<ReelBundleSearchPopupGrid_Mdl> grid_MdlList = reelSearchGrid.getDmGrid().getGrid().getStore().getAll();
+if (grid_MdlList.size() > 0) {
+for (ReelBundleSearchPopupGrid_Mdl grid_Mdl : reelSearchGrid.getDmGrid().getGrid().getStore().getAll()) {
+if (!DmShared.xNull(grid_Mdl.getSharedKeyFieldCode()).trim().equalsIgnoreCase("")) {
+if (DmShared.iNull(grid_Mdl.getIsChecked()).intValue() == 1) {
+++checkedCount;
+} else {
+grid_MdlList.remove(grid_Mdl);
+...
+```
+
+`reelSearchGrid.addCallBack` → `getParam()`
+```java
+return valueIntialize();
+```
+
 ## Files
 | file | lines |
 |---|---|

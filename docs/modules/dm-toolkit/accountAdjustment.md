@@ -12,6 +12,268 @@
 - Lookups/suggestions: getTxtHLedger, getTxtHVoucher, getHistory
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `AccountAdjustmentGridEdit`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Vr. No. | DmTextBox | `txtVoucherNo` | `` |
+| 2 | Date | DmTextBox | `txtVoucherDate` | `` |
+| 3 | Type | DmTextBox | `txtVoucherType` | `` |
+| 4 | A/c Name | DmTextBox | `txtAcName` | `` |
+| 5 | City | DmTextBox | `txtCity` | `` |
+| 6 | Narration | DmRemarkTextBox | `txtNarration` | `` |
+| 7 | Amount | DmTextBox | `txtAmount` | `` |
+| 8 | - | DmTextBox | `txtAmountDrCr` | `` |
+| 9 | Adjusted | DmTextBox | `txtAdjusted` | `` |
+| 10 | - | DmTextBox | `txtAdjustedDrCr` | `` |
+| 11 | Adjustment | DmTextBoxNumeric | `txtAdjustment` | `2, false, 12, true` |
+| 12 | - | DmTextBox | `txtAdjustmentDrCr` | `` |
+
+Other widgets (not in tab list): `txtRefNo` (DmTextBox)
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtVoucherNo.setEnabled(false)`
+- `txtVoucherDate.setEnabled(false)`
+- `txtVoucherType.setEnabled(false)`
+- `txtRefNo.setEnabled(false)`
+- `txtAcName.setEnabled(false)`
+- `txtCity.setEnabled(false)`
+- `txtNarration.setEnabled(false)`
+- `txtAmount.setEnabled(false)`
+- `txtAdjusted.setEnabled(false)`
+- `txtAmountDrCr.setEnabled(false)`
+- `txtAdjustedDrCr.setEnabled(false)`
+- `txtAdjustmentDrCr.setEnabled(false)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtVoucherNo.setEnabled(false);
+txtVoucherDate.setEnabled(false);
+txtVoucherType.setEnabled(false);
+txtRefNo.setEnabled(false);
+txtAcName.setEnabled(false);
+txtCity.setEnabled(false);
+txtNarration.setEnabled(false);
+txtAmount.setEnabled(false);
+txtAdjusted.setEnabled(false);
+txtAmountDrCr.setEnabled(false);
+txtAdjustedDrCr.setEnabled(false);
+txtAdjustmentDrCr.setEnabled(false);
+```
+- Alert: "Empty record is not allowed"
+- Alert: "Adjustment is mandatory."
+
+### Screen `AccountAdjustment`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Working Amount | DmTextBox | `txtWorkingAmount` | `` |
+| 2 | Pending Reference | DmTextBox | `txtPendingReference` | `` |
+| 3 | Total Referenced | DmTextBox | `txtTotalReferenced` | `` |
+
+Other widgets (not in tab list): `grdAdjustment` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `grdAdjustment`: Vr. No. [Text, w155]; Type [Text, w50]; Date [Text, w80]; Ref. No. [Text, w100]; Ledger [Text, w185]; Amount [Text, w100];  [Text, w20]; Adjusted [Text, w100];  [Text, w20]; Adjustment [Text, w100];  [Text, w20];  [Text, w30]
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtWorkingAmount.setReadOnly(true)`
+- `txtPendingReference.setReadOnly(true)`
+- `txtTotalReferenced.setReadOnly(true)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtWorkingAmount.setReadOnly(true);
+txtPendingReference.setReadOnly(true);
+txtTotalReferenced.setReadOnly(true);
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`searchPopup.addCallBack` → `select()`
+```java
+grdAdjustment.getGrid().getStore().clear();
+grdAdjustment.getGrid().getStore().addAll(selections);
+focusGrid();
+```
+
+`searchPopup.addCallBack` → `close()`
+```java
+focusGrid();
+```
+
+`voucherAdjustmentGridEdit.addCallBack` → `onOk()`
+```java
+grdAdjustment.commitChanges();
+calculate();
+```
+
+`voucherAdjustmentGridEdit.addCallBack` → `onDelete()`
+```java
+grdAdjustment.commitChanges();
+calculate();
+```
+- Confirm: "Are you sure? You want to adjust partially."
+- Alert: "You cannot adjust excess amount."
+
+### Screen `HistoryPopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+
+Other widgets (not in tab list): `grdSearch` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `grdSearch`: Main Vr. No. [Text, w100]; Type [Text, w50]; Date [Text, w80]; Adj. Vr. No. [Text, w100]; Type [Text, w50]; Date [Text, w80]; Main Ledger [Text, w238]; Narration [Text, w200]; Amount [Text, w100]; Adjustment [Text, w100]
+- Confirm: "Are you sure? You want to view entry."
+
+### Screen `SearchFilterPopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Vr. No. | DmTextBox | `txtVoucherNo` | `16, false` |
+| 2 | Vr. Date | DmTextBox | `txtVoucherDate` | `11, false` |
+| 3 | Ref. No. | DmTextBox | `txtRefNo` | `16, false` |
+| 4 | Dr/Cr | DmTextHelp | `txtHDrCr` | `KeyField_PrpAcs, 3, true, true` |
+| 5 | Vr. Type | DmTextHelpMulti | `txtHVoucherType` | `KeyField_PrpAcs, 7` |
+| 6 | Ledger | DmTextHelpMulti | `txtHAccount` | `TxtHLedger_PrpAcs, 7` |
+
+**Grid / popup columns** (header, width, db field):
+- `txtHVoucherType`: Name [Text, w150, name]
+- `txtHDrCr`: Dr/Cr [Text, w100, name]
+- `txtHAccount`: Name [Text, w150, name]; Manual Code [Text, w50, manualCode]; City [Text, w100, cityName]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHDrCr` → `getDrCr`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHAccount.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHLedger(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<TxtHLed
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHAccount).show();
+public void onSuccess(DmResultPageing<List<TxtHLedger_Mdl>> result) {
+if (result.isStatus()) {
+txtHAccount.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHAccount).show();
+```
+
+`txtHAccount.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHAccount.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHAccount).show();
+```
+
+`txtHVoucherType.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHVoucher(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFie
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHVoucherType).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHVoucherType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHVoucherType).show();
+```
+
+`txtHVoucherType.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHVoucherType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHVoucherType).show();
+```
+
+`txtHDrCr.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getDrCr(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFieldExten
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHDrCr).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHDrCr.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHDrCr).show();
+```
+
+`txtHDrCr.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHDrCr.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHDrCr).show();
+```
+- Alert: "Dr/Cr is mandatory"
+
+### Screen `SearchPopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | - | DmTextBox | `txtSearchValue` | `` |
+| 2 | - | DmGridPaging | `grdSearch` | `GrdVoucher_PrpAcs, 15, false` |
+
+**Grid / popup columns** (header, width, db field):
+- `grdSearch`:  [Text, w30]; Vr. No. [Text, w155, recId]; Type [Text, w50, v_TypeName]; Date [Text, w80, v_Date]; Ref. No. [Text, w100, refNo]; Ledger [Text, w300, acName]; Narration [Text, w182, narration]; Vr. Amount [Text, w100, amount]; Adjusted [Text, w100, adjusted]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `grdSearch` → `getLedger`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`filterPopup.addCallBack` → `select()`
+```java
+SearchPopup.this.filter = filter;
+reQuery();
+txtSearchValue.setFocus(true);
+```
+
+`filterPopup.addCallBack` → `close()`
+```java
+txtSearchValue.setFocus(true);
+```
+
+`grdSearch.addCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnToEndOfFile).getLedger(param, helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<GrdAd
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), (DmTextBox) null).show();
+public void onSuccess(DmResultPageing<List<GrdAdjustment_Mdl>> result) {
+if (result.isStatus()) {
+grdSearch.setData(result.getData(), result.getPaging());
+setTicks();
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), (DmTextBox) null).show();
+```
+
+`grdSearch.addCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+grdSearch.setData(result.getData(), result.getPaging());
+setTicks();
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), (DmTextBox) null).show();
+```
+
+`grdSearch.addCallBack` → `getParam()`
+```java
+return filter;
+```
+
 ## Files
 | file | lines |
 |---|---|

@@ -12,6 +12,54 @@
 - Lookups/suggestions: getTxtHReason
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `ModifyReason`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Reason | DmTextHelp | `txtHReason` | `KeyField_PrpAcs, 8, true` |
+| 2 | Remark | DmTextBox | `txtRemark` | `100, true` |
+
+Other widgets (not in tab list): `grid` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `txtHReason`: Name [Text, w0, Name]
+- `grid`: Reason [Text, w1]; Remark [Text, w125]; Mode [Text, w50]; Date/Time [Text, w120]; User Name [Text, w80]; A/c Unit [Text, w50]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHReason` → `getTxtHReason`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHReason.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHReason(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFiel
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHReason).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHReason.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHReason).show();
+```
+
+`txtHReason.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHReason.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHReason).show();
+```
+
+**Modify reason popup:** yes (Edit save and Delete).
+- Alert: "Mode is mandatory."
+- Alert: "Reason is mandatory."
+- Alert: "Remark is mandatory."
+- Alert: "Reason Not Found."
+- Alert: "Reason Not Found."
+
 ## Files
 | file | lines |
 |---|---|

@@ -12,6 +12,292 @@
 - Lookups/suggestions: getTxtHStatus, getTxtHTransporter, getTxtHParty, getTxtHOrderNo, getTxtHDeliveryCity, getTxtHItem, getTxtHInstructionNo
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `DispatchInstructionApprovalGridEdit`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Transporter | DmTextBox | `txtInstructionNo` | `` |
+| 2 | - | DmTextBox | `txtInstructionDate` | `` |
+| 3 | - | DmTextBox | `txtDeliveryCity` | `` |
+| 4 | - | DmTextBox | `txtDeliveryDate` | `` |
+| 5 | - | DmTextBox | `txtTransporter` | `` |
+| 6 | Reamrk | DmRemarkTextBox | `txtReamrk` | `` |
+
+Other widgets (not in tab list): `txtWTACode` (DmTextBox), `txtCurrentUser` (DmTextBox), `grdItemlDetails` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `grdItemlDetails`: C/O [Text, w30];  [Text, w25]; Quantity [Text, w80]; Unit [Text, w80]; Party Name [Text, w150]; Item Name [Text, w200]; Properties [Text, w150]; Delivery City [Text, w100]; L.SNO. [Text, w50]; Remark [Text, w100]; Order No. [Text, w100]; Plan No. [Text, w100]; Pack Size [Text, w100]; Pack Count [Text, w80]; Pack Unit [Text, w80]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `walkThrough` → `openRecord`
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtInstructionNo.setEnabled(false)`
+- `txtInstructionDate.setEnabled(false)`
+- `txtDeliveryCity.setEnabled(false)`
+- `txtDeliveryDate.setEnabled(false)`
+- `txtTransporter.setEnabled(false)`
+- `txtReamrk.setEnabled(false)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtInstructionNo.setEnabled(false);
+txtInstructionDate.setEnabled(false);
+txtDeliveryCity.setEnabled(false);
+txtDeliveryDate.setEnabled(false);
+txtTransporter.setEnabled(false);
+txtReamrk.setEnabled(false);
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`walkThrough.addCallBack` → `onClose()`
+```java
+getInstructionDetails(false);
+```
+- Alert: "Record is not updated by this user,Can't update"
+
+### Screen `DispatchInstructionApproval`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | - | DmGridPaging | `gridInstructionDetail` | `GrdPaging_PrpAcs, gridRows, false` |
+
+Other widgets (not in tab list): `txtSearchValue` (DmTextBox)
+
+**Grid / popup columns** (header, width, db field):
+- `gridInstructionDetail`:  [Text, w30];  [Text, w30]; Instruction No. [Text, w150, recId]; Instruction Date [Text, w150, replace(convert(varchar, v_Date, 106), ' ','-')]; Type [Text, w100, short_Name]; Delivery Date [Text, w150, replace(convert(varchar, ISNULL(deliveryDate,''), 106), ' ','-')]; Transporter [Text, w200, transporterName]; Delivery City [Text, w150, deliveryCityName]; Approval By [Text, w150, approvalBy]; Remark [Text, w250, remark]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `gridInstructionDetail` → `getFillRecords`
+
+**Defaults when the screen opens** (`iniDefaultValues`):
+- calls server `getDefaultValues`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`gridEdit.addGridEditCallBack` → `onClose()`
+```java
+gridInstructionDetail.getDmGrid().commitChanges();
+gridInstructionDetail.reQuery();
+```
+
+`gridInstructionDetail.addCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(true).getFillRecords(param, helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<GrdInstruc
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), (DmTextBox) null).show();
+public void onSuccess(DmResultPageing<List<GrdInstruction_Mdl>> result) {
+if (result.isStatus()) {
+gridInstructionDetail.setData(result.getData(), result.getPaging());
+```
+
+`gridInstructionDetail.addCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+gridInstructionDetail.setData(result.getData(), result.getPaging());
+```
+
+`gridInstructionDetail.addCallBack` → `getParam()`
+```java
+return instructionSearchMdl;
+```
+
+`settingPopup.addCallBack` → `onOk()`
+```java
+instructionSearchMdl = instructionSearchValue_Mdl;
+gridInstructionDetail.reQuery();
+gridInstructionDetail.getDmGrid().commitChanges();
+```
+
+`walkThrough.addCallBack` → `onClose()`
+```java
+gridInstructionDetail.reQuery();
+```
+- Confirm: "Are you sure? You want to close."
+
+### Screen `Setting`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | To Instruction Date | DmTextBox | `txtFromInstructionDate` | `11, false` |
+| 2 | - | DmTextBox | `txtToInstructionDate` | `11, false` |
+| 3 | To Delivery Date | DmTextBox | `txtFromDeliveryDate` | `11, false` |
+| 4 | - | DmTextBox | `txtToDeliveryDate` | `11, false` |
+| 5 | Party | DmTextHelpMulti | `txtHTransporter` | `TxtHtransporter_PrpAcs, 6, false` |
+| 6 | - | DmTextHelpMulti | `txtHParty` | `TxtHSupplierName_PrpAcs, 7, false` |
+| 7 | Delivery City | DmTextHelpMulti | `txtHOrderNo` | `TxtHOrderNo_PrpAcs, 7, false` |
+| 8 | - | DmTextHelpMulti | `txtHDeliveryCity` | `TxtHCity_Mdl_PrpAcs, 5, false` |
+| 9 | Instruction No. | DmTextHelpMulti | `txtHItemName` | `TxtHItemName_Mdl_PrpAcs, 5` |
+| 10 | - | DmTextHelpMulti | `txtHInstructionNo` | `TxtHInstructionNo_PrpAcs, 7` |
+| 11 | Status | DmTextHelp | `txtHStatus` | `KeyField_PrpAcs, 4, false` |
+
+**Grid / popup columns** (header, width, db field):
+- `txtHTransporter`: Name [Text, w150, name]; Manual Code [Text, w100, manualCode]; City [Text, w150, cityName]
+- `txtHParty`: Name [Text, w200, supplierName]; Manual Code [Text, w100, manualCode]; City [Text, w100, cityName]; State [Text, w150, stateName]
+- `txtHOrderNo`: Order no. [Text, w120, recId]; Order date [Text, w90, replace(convert(varchar, ISNULL(v_Date,''), 106), ' ','-')];  Party order no. [Text, w120, partyOrdNo]; Party order date [Text, w100, replace(convert(varchar, ISNULL(partyOrdDt,''), 106), ' ','-')]; Plan no. [Text, w120, planNo]; Plan date [Text, w90, replace(convert(varchar, ISNULL(planDate,''), 106), ' ','-')]; SO Delivery date [Text, w90, replace(convert(varchar, ISNULL(deliveryDate,''), 106), ' ','-')]
+- `txtHDeliveryCity`: City [Text, w100, CityName]; State [Text, w100, stateName]
+- `txtHItemName`: Item Name [Text, w250, name]; Manual Code [Text, w100, manualCode]; Sale Unit [Text, w100, itemUnitName]; SKU [Text, w100, skuUnitName]
+- `txtHInstructionNo`: Instruction No. [Text, w100, recid]; Instruction Date [Text, w80, replace(convert(varchar, ISNULL(v_Date,''), 106), ' ','-')]; Delivery Date [Text, w80, replace(convert(varchar, ISNULL(deliveryDate,''), 106), ' ','-')]; Delivery City [Text, w100, deliveryCityName]; Transporter [Text, w150, transporterName]; Remark [Text, w200, remark]
+- `txtHStatus`: Status [Text, w150, Name]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHStatus` → `getTxtHStatus`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHTransporter.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHTransporter(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<Tx
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHTransporter).show();
+public void onSuccess(DmResultPageing<List<TxtHParty_Mdl>> result) {
+if (result.isStatus()) {
+txtHTransporter.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHTransporter).show();
+```
+
+`txtHTransporter.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHTransporter.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHTransporter).show();
+```
+
+`txtHParty.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHParty(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<TxtHPart
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHParty).show();
+public void onSuccess(DmResultPageing<List<TxtHParty_Mdl>> result) {
+if (result.isStatus()) {
+txtHParty.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHParty).show();
+```
+
+`txtHParty.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHParty.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHParty).show();
+```
+
+`txtHOrderNo.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHOrderNo(
+helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<TxtHOrderNo_Mdl>>>() {
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHOrderNo).show();
+public void onSuccess(DmResultPageing<List<TxtHOrderNo_Mdl>> result) {
+if (result.isStatus()) {
+txtHOrderNo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHOrderNo).show();
+```
+
+`txtHOrderNo.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHOrderNo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHOrderNo).show();
+```
+
+`txtHDeliveryCity.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHDeliveryCity(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<K
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHDeliveryCity).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+try {
+if (result.isStatus()) {
+txtHDeliveryCity.setData(result.getData(), result.getPaging());
+} catch (Exception e) {
+new DmAlertMessageBox(e.getMessage(), txtHDeliveryCity).show();
+```
+
+`txtHDeliveryCity.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+try {
+if (result.isStatus()) {
+txtHDeliveryCity.setData(result.getData(), result.getPaging());
+} catch (Exception e) {
+new DmAlertMessageBox(e.getMessage(), txtHDeliveryCity).show();
+```
+
+`txtHItemName.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHItem(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<TxtHItemN
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHItemName).show();
+public void onSuccess(DmResultPageing<List<TxtHItemName_Mdl>> result) {
+if (result.isStatus()) {
+txtHItemName.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemName).show();
+```
+
+`txtHItemName.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHItemName.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemName).show();
+```
+
+`txtHInstructionNo.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHInstructionNo(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHInstructionNo).show();
+public void onSuccess(DmResultPageing<List<InstructionNo_Mdl>> result) {
+if (result.isStatus()) {
+txtHInstructionNo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHInstructionNo).show();
+```
+
+`txtHInstructionNo.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHInstructionNo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHInstructionNo).show();
+```
+
+`txtHStatus.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHStatus(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFiel
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHStatus).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHStatus.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHStatus).show();
+```
+
+`txtHStatus.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHStatus.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHStatus).show();
+```
+- Alert: "From Instruction Date should be less than or equal to To Instruction Date."
+- Alert: "From Delivery Date should be less than or equal to To Delivery Date."
+
 ## Files
 | file | lines |
 |---|---|

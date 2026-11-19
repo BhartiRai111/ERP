@@ -12,6 +12,19 @@
 - Lookups/suggestions: -
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `LedgerPostingDetail`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+
+Other widgets (not in tab list): `grdledgerPosting` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `grdledgerPosting`: A/c Name [Text, w300]; Amount (Dr.) [Text, w150]; Amount (Cr.) [Text, w150]
+
 ## Files
 | file | lines |
 |---|---|

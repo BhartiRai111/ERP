@@ -12,6 +12,170 @@
 - Lookups/suggestions: getTxtHCity, getTxtHAdPlaceOfBusiness
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `PartyDetailPopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Name | DmTextBox | `txtPartyName` | `100, true` |
+| 2 | Display Name | DmTextBox | `txtDisplayName` | `100, true` |
+| 3 | Legal Name | DmTextBox | `txtLegalName` | `100, false` |
+| 4 | Trade Name | DmTextBox | `txtTradeName` | `100, false` |
+| 5 | Transporter Id | DmTextBox | `txtGstin` | `15, false` |
+| 6 | - | DmTextBox | `txtGstinDate` | `11, false` |
+| 7 | - | DmTextBox | `txtTransporterId` | `15, false` |
+| 8 | Additional Place Of Business | DmTextHelp | `txtHAdPlaceOfBusiness` | `com.google.gwt.core.shared.TxtHAdPlaceOfBusiness_Mdl_PrpAcs, 4, false` |
+| 9 | Address | DmTextBox | `txtAddress1` | `100, false` |
+| 10 | - | DmTextBox | `txtAddress2` | `100, false` |
+| 11 | Pincode | DmTextHelp | `txtHCity` | `com.google.gwt.core.shared.TxtHCity_Mdl_PrpAcs, 4, false` |
+| 12 | - | DmTextBox | `txtDistrict` | `100, false` |
+| 13 | - | DmTextBoxNumeric | `txtPinCode` | `0, false, 6, false` |
+| 14 | - | DmTextBox | `txtState` | `100, false` |
+| 15 | - | DmTextBox | `txtStateNumericCode` | `100, false` |
+| 16 | - | DmTextBox | `txtCountry` | `100, false` |
+| 17 | - | DmTextBox | `txtGstCountryCode` | `100, false` |
+| 18 | Phone | DmTextBoxMobile | `txtMobileNo` | `false` |
+| 19 | - | DmTextBox | `txtPhoneNo` | `35, false` |
+| 20 | E-mail | DmTextBox | `txtEMail` | `250, false` |
+| 21 | TAN | DmTextBox | `txtPAN` | `11, false` |
+| 22 | - | DmTextBox | `txtTAN` | `11, false` |
+
+**Grid / popup columns** (header, width, db field):
+- `txtHCity`: City [Text, w0, CityName]; District [Text, w100, districtName]; State [Text, w100, stateName]; Country [Text, w100, countryName]
+- `txtHAdPlaceOfBusiness`: Place [Text, w250, name]; City [Text, w150, city]; State [Text, w150, state]; Country [Text, w100, country]; Pin [Text, w60, pin]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHCity` → `getTxtHCity`
+- `txtHAdPlaceOfBusiness` → `getTxtHAdPlaceOfBusiness`
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtPartyName.setEnabled(isNameEditable && isOkRequired)`
+- `txtLegalName.setEnabled(isGstDetailEditable && isOkRequired)`
+- `txtDisplayName.setEnabled(isGstDetailEditable && isOkRequired)`
+- `txtTradeName.setEnabled(isTradeNameEditable && isOkRequired)`
+- `txtGstin.setEnabled(isGstDetailEditable && isOkRequired)`
+- `txtGstinDate.setEnabled(isGstDetailEditable && isOkRequired)`
+- `txtTransporterId.setEnabled(isTransporterIdEditable && isOkRequired)`
+- `txtHAdPlaceOfBusiness.setEnabled(isAdPlaceOfBusinessEditable && isOkRequired)`
+- `txtAddress1.setEnabled(isAddressEditable && isOkRequired)`
+- `txtAddress2.setEnabled(isAddressEditable && isOkRequired)`
+- `txtHCity.setEnabled(isAddressEditable && isOkRequired)`
+- `txtDistrict.setEnabled(false)`
+- `txtState.setEnabled(false)`
+- `txtCountry.setEnabled(false)`
+- `txtStateNumericCode.setEnabled(false)`
+- `txtGstCountryCode.setEnabled(false)`
+- `txtPinCode.setEnabled(isAddressEditable && isOkRequired)`
+- `txtMobileNo.setEnabled(isAddressEditable && isOkRequired)`
+- `txtPhoneNo.setEnabled(isAddressEditable && isOkRequired)`
+- `txtEMail.setEnabled(isAddressEditable && isOkRequired)`
+- `txtPAN.setEnabled(isPanTanEditable && isOkRequired)`
+- `txtTAN.setEnabled(isPanTanEditable && isOkRequired)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtPartyName.setEnabled(isNameEditable && isOkRequired);
+txtLegalName.setEnabled(isGstDetailEditable && isOkRequired);
+txtDisplayName.setEnabled(isGstDetailEditable && isOkRequired);
+txtTradeName.setEnabled(isTradeNameEditable && isOkRequired);
+txtGstin.setEnabled(isGstDetailEditable && isOkRequired);
+txtGstinDate.setEnabled(isGstDetailEditable && isOkRequired);
+txtTransporterId.setEnabled(isTransporterIdEditable && isOkRequired);
+txtHAdPlaceOfBusiness.setEnabled(isAdPlaceOfBusinessEditable && isOkRequired);
+txtAddress1.setEnabled(isAddressEditable && isOkRequired);
+txtAddress2.setEnabled(isAddressEditable && isOkRequired);
+txtHCity.setEnabled(isAddressEditable && isOkRequired);
+txtDistrict.setEnabled(false);
+txtState.setEnabled(false);
+txtCountry.setEnabled(false);
+txtStateNumericCode.setEnabled(false);
+txtGstCountryCode.setEnabled(false);
+txtPinCode.setEnabled(isAddressEditable && isOkRequired);
+txtMobileNo.setEnabled(isAddressEditable && isOkRequired);
+txtPhoneNo.setEnabled(isAddressEditable && isOkRequired);
+txtEMail.setEnabled(isAddressEditable && isOkRequired);
+txtPAN.setEnabled(isPanTanEditable && isOkRequired);
+txtTAN.setEnabled(isPanTanEditable && isOkRequired);
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHCity.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHCity(DmShared.xNull(txtGstin.getText()), DmShared.xNull(txtStateNumericCode.g
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHCity).show();
+public void onSuccess(DmResultPageing<List<TxtHCity_Mdl>> result) {
+try {
+if (result.isStatus()) {
+txtHCity.setData(result.getData(), result.getPaging());
+} catch (Exception e) {
+new DmAlertMessageBox(e.getMessage(), txtHCity).show();
+```
+
+`txtHCity.addTextHelpCallBack` → `onSuccess()`
+```java
+try {
+if (result.isStatus()) {
+txtHCity.setData(result.getData(), result.getPaging());
+} catch (Exception e) {
+new DmAlertMessageBox(e.getMessage(), txtHCity).show();
+```
+
+`txtHCity.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (!DmShared.xNull(txtHCity.getTag()).equalsIgnoreCase(txtHCity.getTag2nd())) {
+resetCity();
+txtHCity.setTag2nd(DmShared.xNull(txtHCity.getTag()));
+if (blnStatus && tRow != null) {
+txtState.setText(DmShared.xNull(tRow.getStateName()));
+txtState.setTag(DmShared.xNull(tRow.getStateCode()));
+txtStateNumericCode.setText(DmShared.xNull(tRow.getStateNumericCode()));
+txtDistrict.setTag(DmShared.xNull(tRow.getDistrictCode()));
+txtDistrict.setText(DmShared.xNull(tRow.getDistrictName()));
+txtCountry.setTag(DmShared.xNull(tRow.getCountryCode()));
+...
+```
+
+`txtHAdPlaceOfBusiness.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHAdPlaceOfBusiness(DmShared.xNull(partyDetailPopup_Mdl.getSubCode()), DmShared
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHAdPlaceOfBusiness).show();
+public void onSuccess(DmResultPageing<List<TxtHAdPlaceOfBusiness_Mdl>> result) {
+try {
+if (result.isStatus()) {
+txtHAdPlaceOfBusiness.setData(result.getData(), result.getPaging());
+} catch (Exception e) {
+new DmAlertMessageBox(e.getMessage(), txtHAdPlaceOfBusiness).show();
+```
+
+`txtHAdPlaceOfBusiness.addTextHelpCallBack` → `onSuccess()`
+```java
+try {
+if (result.isStatus()) {
+txtHAdPlaceOfBusiness.setData(result.getData(), result.getPaging());
+} catch (Exception e) {
+new DmAlertMessageBox(e.getMessage(), txtHAdPlaceOfBusiness).show();
+```
+
+`txtHAdPlaceOfBusiness.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (!DmShared.xNull(txtHAdPlaceOfBusiness.getTag()).equalsIgnoreCase(txtHAdPlaceOfBusiness.getTag2nd())) {
+resetAdPlaceOfBusinessDetail();
+txtHAdPlaceOfBusiness.setTag2nd(DmShared.xNull(txtHAdPlaceOfBusiness.getTag()));
+if (isPrimaryAddress) {
+resetAdPlaceOfBusinessDetail();
+txtHAdPlaceOfBusiness.setTag2nd(DmShared.xNull(txtHAdPlaceOfBusiness.getTag()));
+if (blnStatus && t1Row != null) {
+txtAddress1.setText(DmShared.xNull(t1Row.getAddress1()));
+txtAddress2.setText(DmShared.xNull(t1Row.getAddress2()));
+txtHCity.setTag(DmShared.xNull(t1Row.getCityCode()));
+...
+```
+
 ## Files
 | file | lines |
 |---|---|

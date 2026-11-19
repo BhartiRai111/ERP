@@ -12,6 +12,113 @@
 - Lookups/suggestions: getTxtHPostingAC
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `OverHeadLineGridEdit`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Particulars | DmTextBox | `txtOverHead` | `50, true` |
+| 2 | Alias | DmTextBox | `txtOverHeadAlias` | `50, true` |
+| 3 | A/c Name | DmTextHelp | `txtHPostingAC` | `TxtHPostingAC_PrpAcs, 7, false` |
+| 4 | At Rate | DmTextBoxNumeric | `txtAtRate` | `DmTextBoxNumeric.DecimalNature.NONE, true, 6, false` |
+| 5 | Amount | DmTextBoxNumeric | `txtAmount` | `DmTextBoxNumeric.DecimalNature.NONE, true, 15, false` |
+
+**Grid / popup columns** (header, width, db field):
+- `txtHPostingAC`: Name [Text, w0, name]; Code [Text, w50, ManualCode]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHPostingAC` → `getTxtHPostingAC`
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtOverHeadAlias.setEnabled(false)`
+- `txtAtRate.setEnabled(false)`
+- `txtAmount.setEnabled(false)`
+- `txtHPostingAC.setEnabled(false)`
+- `txtOverHeadAlias.setEnabled(true)`
+- `txtAmount.setEnabled(true)`
+- `txtAtRate.setEnabled(true)`
+- `txtHPostingAC.setEnabled(true)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtOverHeadAlias.setEnabled(false);
+txtAtRate.setMandatory(false);
+txtAtRate.setEnabled(false);
+txtAmount.setMandatory(false);
+txtAmount.setEnabled(false);
+txtHPostingAC.setEnabled(false);
+if (parentRow != null) {
+if (DmShared.vNull(parentRow.getAtRateMandatory()).doubleValue() == 1) {
+txtAtRate.setMandatory(true);
+if (DmShared.vNull(parentRow.getAmountMandatory()).doubleValue() == 1) {
+txtAmount.setMandatory(true);
+if (callBack.allowEditable()) {
+if (DmShared.vNull(parentRow.getOverHeadAliasEditable()).doubleValue() == 1) {
+txtOverHeadAlias.setEnabled(true);
+if (DmShared.vNull(parentRow.getAmountEditable()).doubleValue() == 1) {
+txtAmount.setEnabled(true);
+if (DmShared.vNull(parentRow.getAtRateEditable()).doubleValue() == 1) {
+txtAtRate.setEnabled(true);
+if (DmShared.vNull(parentRow.getAcEditable()).doubleValue() == 1) {
+txtHPostingAC.setEnabled(true);
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHPostingAC.addTextHelpCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(blnCallBackWait).getTxtHPostingAC(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<Acco
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHPostingAC).show();
+public void onSuccess(DmResultPageing<List<AccountHelp_Mdl>> result) {
+if (result.isStatus()) {
+txtHPostingAC.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHPostingAC).show();
+```
+
+`txtHPostingAC.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHPostingAC.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHPostingAC).show();
+```
+
+### Screen `OverHeadLine`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+
+Other widgets (not in tab list): `grid` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `grid`: Particulars [Text]; At Rate [Text, w63]; Amount [Text, w100]
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`overHeadGridEdit.addCallBack` → `onOk()`
+```java
+calculate(getItemValue());
+grid.commitChanges();
+```
+
+`overHeadGridEdit.addCallBack` → `onDelete()`
+```java
+grid.commitChanges();
+```
+
+`overHeadGridEdit.addCallBack` → `allowEditable()`
+```java
+if (callBack != null) {
+return callBack.allowEditable();
+return true;
+```
+
 ## Files
 | file | lines |
 |---|---|

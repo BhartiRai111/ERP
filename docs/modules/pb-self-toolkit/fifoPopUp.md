@@ -12,6 +12,123 @@
 - Lookups/suggestions: getTxtHItemName, getTxtHCat, getTxtHGroup, getTxtHDepartment
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `FifoPopUp`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Status : | DmTextArea | `txtLog` | `` |
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`settings.addCallBack` → `onOk()`
+```java
+fifoSettingMdl = values;
+```
+- Alert: "FIFO Process Completed"
+
+### Screen `Settings`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Item Name | DmTextHelpMulti | `txtHItemName` | `KeyField_PrpAcs, 10` |
+| 2 | Department | DmTextHelpMulti | `txtHDepartment` | `KeyField_PrpAcs, 5` |
+| 3 | Item Category | DmTextHelpMulti | `txtHCat` | `KeyField_PrpAcs, 10` |
+| 4 | Item Group | DmTextHelpMulti | `txtHGroup` | `KeyField_PrpAcs, 10` |
+
+**Grid / popup columns** (header, width, db field):
+- `txtHGroup`: Name [Text, w1, name]
+- `txtHCat`: Name [Text, w1, name]
+- `txtHItemName`: Name [Text, w1, name]; Manual Code [Text, w100, manualCode]
+- `txtHDepartment`: Name [Text, w1, Name]
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHDepartment.addTextHelpMultiCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(blnCallBackWait).getTxtHDepartment(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<Key
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHDepartment).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHDepartment.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHDepartment).show();
+```
+
+`txtHDepartment.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHDepartment.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHDepartment).show();
+```
+
+`txtHCat.addTextHelpMultiCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(blnCallBackWait).getTxtHCat(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFieldEx
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHCat).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHCat.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHCat).show();
+```
+
+`txtHCat.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHCat.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHCat).show();
+```
+
+`txtHGroup.addTextHelpMultiCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(blnCallBackWait).getTxtHGroup(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyField
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHGroup).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHGroup.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHGroup).show();
+```
+
+`txtHGroup.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHGroup.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHGroup).show();
+```
+
+`txtHItemName.addTextHelpMultiCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(blnCallBackWait).getTxtHItemName(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFi
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHItemName).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHItemName.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemName).show();
+```
+
+`txtHItemName.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHItemName.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemName).show();
+```
+- Alert: "At least one parameter selection is mandatory!"
+
 ## Files
 | file | lines |
 |---|---|

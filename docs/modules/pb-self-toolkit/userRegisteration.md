@@ -12,6 +12,51 @@
 - Lookups/suggestions: getTxtHMobileApp
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `UserRegisteration`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | User Name | DmTextBox | `txtUserName` | `10, true` |
+| 2 | User Role | DmTextBox | `txtUserRole` | `100, true` |
+| 3 | Mobile | DmTextBoxMobile | `txtMobile` | `true` |
+| 4 | E-mail | DmTextBox | `txtEmail` | `100, true` |
+
+Other widgets (not in tab list): `txtIsAdmin` (DmTextBox), `txtNature` (DmTextBox), `txtDescription` (DmTextBox)
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtUserName.setEnabled(isNewRecord)`
+- `txtUserRole.setEnabled(false)`
+- `txtNature.setEnabled(false)`
+- `txtIsAdmin.setEnabled(false)`
+- `txtDescription.setEnabled(false)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtUserName.setEnabled(isNewRecord);
+txtUserRole.setEnabled(false);
+txtNature.setEnabled(false);
+txtIsAdmin.setEnabled(false);
+txtDescription.setEnabled(false);
+```
+
+**`manageControls()` logic (condensed code):**
+```java
+btnCancel.addClickHandler(this);
+btnOk.addClickHandler(this);
+btnDelete.addClickHandler(this);
+popupPanel.addAttachHandler(this);
+btnGenrateUserName.addClickHandler(this);
+btnChkAvailability.addClickHandler(this);
+```
+- Confirm: "Are you sure? You want to delete this user!"
+- Alert: "User Name is mandatory!"
+- Alert: "User Role is mandatory!"
+- Alert: "Mobile No. is mandatory!"
+- Alert: "Email is mandatory!"
+
 ## Files
 | file | lines |
 |---|---|

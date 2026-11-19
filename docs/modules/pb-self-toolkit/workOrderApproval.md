@@ -12,6 +12,267 @@
 - Lookups/suggestions: getTxtHStatus, getTxtHWorkOrderNo, getTxtHItemNature, getTxtHMachine, getTxtHItem
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `Setting`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | From Date | DmTextBox | `txtFromDate` | `15, false` |
+| 2 | To Date | DmTextBox | `txtToDate` | `15, false` |
+| 3 | Order No. | DmTextHelpMulti | `txtHWorkOrder` | `TxtHPurchaseOrder_PrpAcs, 7` |
+| 4 | Item Nature | DmTextHelpMulti | `txtHItemNature` | `KeyField_PrpAcs, 4` |
+| 5 | Machine | DmTextHelpMulti | `txtHMachine` | `KeyField_PrpAcs, 4` |
+| 6 | Item | DmTextHelpMulti | `txtHItemName` | `com.google.gwt.core.client.TxtHItemName_PrpAcs, 7, true` |
+| 7 | Status | DmTextHelp | `txtHStatus` | `KeyField_PrpAcs, 4, false` |
+
+**Grid / popup columns** (header, width, db field):
+- `txtHWorkOrder`: Work Order No. [Text, w120, wOrderNo]; Work Type [Text, w90, category]; Work Date [Text, w90, WOrderDate]
+- `txtHStatus`: Status [Text, w150, Name]
+- `txtHItemName`: Item Name [Text, w200, name]; Manual Code [Text, w100, manualCode]
+- `txtHItemNature`: Name [Text, w0, Name]
+- `txtHMachine`: Name [Text, w0, Name]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHStatus` → `getTxtHStatus`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtFromDate.addValueChangeHandler` → `onValueChange()`
+```java
+txtFromDate.setText(DmClient.returnDate(txtFromDate.getText()));
+```
+
+`txtToDate.addValueChangeHandler` → `onValueChange()`
+```java
+txtToDate.setText(DmClient.returnDate(txtToDate.getText()));
+```
+
+`txtHStatus.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHStatus(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFiel
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHStatus).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHStatus.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHStatus).show();
+```
+
+`txtHStatus.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHStatus.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHStatus).show();
+```
+
+`txtHWorkOrder.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHWorkOrderNo(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<Tx
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHWorkOrder).show();
+public void onSuccess(DmResultPageing<List<TxtHWorkOrder_Mdl>> result) {
+if (result.isStatus()) {
+txtHWorkOrder.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHWorkOrder).show();
+```
+
+`txtHWorkOrder.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHWorkOrder.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHWorkOrder).show();
+```
+
+`txtHItemNature.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHItemNature(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<Key
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHItemNature).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHItemNature.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemNature).show();
+```
+
+`txtHItemNature.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHItemNature.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemNature).show();
+```
+
+`txtHItemNature.addTextHelpMultiCallBack` → `getSelection()`
+```java
+if (blnStatus) {
+```
+
+`txtHMachine.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHMachine(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFie
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHMachine).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHMachine.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHMachine).show();
+```
+
+`txtHMachine.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHMachine.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHMachine).show();
+```
+
+`txtHMachine.addTextHelpMultiCallBack` → `getSelection()`
+```java
+if (blnStatus) {
+```
+
+`txtHItemName.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHItem(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<TxtHItemN
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHItemName).show();
+public void onSuccess(DmResultPageing<List<TxtHItemName_Mdl>> result) {
+if (result.isStatus()) {
+txtHItemName.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemName).show();
+```
+
+`txtHItemName.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHItemName.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemName).show();
+```
+- Alert: "From Date should be less than or equal to To Date."
+
+### Screen `WorkOrderApprovalGridEdit`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Order No. | DmTextBox | `txtWorkOrderNo` | `` |
+| 2 | Order Date | DmTextBox | `txtWorkOrderDate` | `` |
+| 3 | Item Nature | DmTextBox | `txtItemNature` | `` |
+| 4 | Machine | DmTextBox | `txtMachine` | `` |
+| 5 | Shift Incharge | DmTextBox | `txtShiftIncharge` | `` |
+
+Other widgets (not in tab list): `txtApproved` (DmTextBox), `txtStatus` (DmTextBox), `txtOrdQty` (DmTextBox), `txtWTACode` (DmTextBox), `txtCurrentUser` (DmTextBox), `txtApprovedBy` (DmTextBox), `txtApprovedDateTime` (DmTextBox), `grdItemlDetails` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `grdItemlDetails`: C/O [Text, w30];  [Text, w25]; Item Name [Text, w200]; BF [Text, w35]; GSM [Text, w40]; S.Unit [Text, w40]; Width [Text, w80]; Length [Text, w80]; Grain [Text, w50]; Qty. [Text, w80]; Unit [Text, w40]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `walkThrough` → `openRecord`
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtApproved.setEnabled(false)`
+- `txtApprovedBy.setEnabled(false)`
+- `txtApprovedDateTime.setEnabled(false)`
+- `txtStatus.setEnabled(false)`
+- `txtWorkOrderNo.setEnabled(false)`
+- `txtWorkOrderDate.setEnabled(false)`
+- `txtItemNature.setEnabled(false)`
+- `txtMachine.setEnabled(false)`
+- `txtShiftIncharge.setEnabled(false)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtApproved.setEnabled(false);
+txtApprovedBy.setEnabled(false);
+txtApprovedDateTime.setEnabled(false);
+txtStatus.setEnabled(false);
+txtWorkOrderNo.setEnabled(false);
+txtWorkOrderDate.setEnabled(false);
+txtItemNature.setEnabled(false);
+txtMachine.setEnabled(false);
+txtShiftIncharge.setEnabled(false);
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`walkThrough.addCallBack` → `onClose()`
+```java
+fillGrid(DmShared.iNull(txtWorkOrderNo.getTag()).toString());
+```
+- Alert: "Record is not updated by this user,Can't update"
+- Alert: "Record is cancelled,Please refresh record."
+- Alert: "Record is completed,Please refresh record."
+
+### Screen `WorkOrderApproval`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | - | DmGridPaging | `dmGrd` | `Grd_PrpAcs, gridRows, false` |
+
+**Grid / popup columns** (header, width, db field):
+- `dmGrd`:  [Text, w30];  [Text, w25]; Ord. Weight [Text, w80, quantity]; Unit [Text, w50, itemUnitName]; ItemNature [Text, w80, itemNature]; Item Name [Text, w200, itemName]; Order Date [Text, w80, v_Date]; Order No. [Text, w100, recId]; Shift Incharge [Text, w250, shiftIncharge]; Machine [Text, w250, machineName]; Approved By [Text, w150, approvalDateTime]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `dmGrd` → `getFillRecords`
+
+**Defaults when the screen opens** (`iniDefaultValues`):
+- calls server `getDefaultValues`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`walkThrough.addCallBack` → `onClose()`
+```java
+dmGrd.reQuery();
+```
+
+`settingPopup.addCallBack` → `onOk()`
+```java
+woApp_Mdl = approvalEntry_Mdl;
+dmGrd.getDmGrid().commitChanges();
+dmGrd.reQuery();
+```
+
+`gridEdit.addGridEditCallBack` → `onOk()`
+```java
+dmGrd.getDmGrid().commitChanges();
+dmGrd.reQuery();
+```
+
+`dmGrd.addCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(true).getFillRecords(param, helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<GrdWorkOrd
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), (DmTextBox) null).show();
+public void onSuccess(DmResultPageing<List<GrdWorkOrderApproval_Mdl>> result) {
+if (result.isStatus()) {
+dmGrd.setData(result.getData(), result.getPaging());
+```
+
+`dmGrd.addCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+dmGrd.setData(result.getData(), result.getPaging());
+```
+
+`dmGrd.addCallBack` → `getParam()`
+```java
+return woApp_Mdl;
+```
+- Confirm: "Are you sure? You want to close."
+
 ## Files
 | file | lines |
 |---|---|

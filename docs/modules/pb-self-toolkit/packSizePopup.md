@@ -12,6 +12,19 @@
 - Lookups/suggestions: -
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `PackSizePopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Packing | DmTextBox | `txtPack` | `20, true` |
+
+**Save: model field ← widget** (`topControlSaveInitialize`):
+- `PackSize` ← DmShared.xNull(txtPack.getText())
+- Alert: "Packing is mandatory."
+
 ## Files
 | file | lines |
 |---|---|

@@ -12,6 +12,226 @@
 - Lookups/suggestions: getTxtHStatus, getTxtHEnquiryNo, getTxtHSupplier
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `EnquiryApprovalGridEdit`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Enquiry No. | DmTextBox | `txtEnqNo` | `` |
+| 2 | Enquiry Date | DmTextBox | `txtEnqDate` | `` |
+| 3 | Reference No. | DmTextBox | `txtRefNo` | `` |
+| 4 | Site | DmTextBox | `txtSite` | `` |
+| 5 | Remarks | DmTextBox | `txtRemarks` | `` |
+
+Other widgets (not in tab list): `txtApproved` (DmTextBox), `txtVendorName` (DmTextBox), `txtStatus` (DmTextBox), `txtCurrentUser` (DmTextBox), `txtWTACode` (DmTextBox), `txtApprovedBy` (DmTextBox), `txtApprovedDateTime` (DmTextBox), `grdItemlDetails` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `grdItemlDetails`: C/O [Text, w30]; Vendor Name [Text, w1]
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtApproved.setEnabled(false)`
+- `txtApprovedBy.setEnabled(false)`
+- `txtVendorName.setEnabled(false)`
+- `txtApprovedDateTime.setEnabled(false)`
+- `txtRemarks.setEnabled(false)`
+- `txtRefNo.setEnabled(false)`
+- `txtStatus.setEnabled(false)`
+- `txtEnqDate.setEnabled(false)`
+- `txtEnqNo.setEnabled(false)`
+- `txtSite.setEnabled(false)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtApproved.setEnabled(false);
+txtApprovedBy.setEnabled(false);
+txtVendorName.setEnabled(false);
+txtApprovedDateTime.setEnabled(false);
+txtRemarks.setEnabled(false);
+txtRefNo.setEnabled(false);
+txtStatus.setEnabled(false);
+txtEnqDate.setEnabled(false);
+txtEnqNo.setEnabled(false);
+txtSite.setEnabled(false);
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`walkThrough.addCallBack` → `onClose()`
+```java
+fillGrid(DmShared.iNull(txtEnqNo.getTag()).toString());
+```
+- Alert: "Record is not updated by this user,so can't update."
+- Alert: "Record is cancelled,Please refresh record."
+- Alert: "Record is completed,Please refresh record."
+
+### Screen `EnquiryApproval`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | - | DmGridPaging | `dmGrd` | `Grd_PrpAcs, gridRows, false` |
+
+**Grid / popup columns** (header, width, db field):
+- `dmGrd`:  [Text, w30];  [Text, w25]; Enquiry No. [Text, w120, recId]; Enquiry Date [Text, w80, v_Date]; Enquiry Type [Text, w80, EnqType]; Ref. No. [Text, w120, referenceNo]; Vendor Name [Text, w350, VendorName]; Remark [Text, w200, remark]; Approved By [Text, w130, approvalDateTime]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `dmGrd` → `getFillRecords`
+
+**Defaults when the screen opens** (`iniDefaultValues`):
+- calls server `getDefaultValues`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`walkThrough.addCallBack` → `onClose()`
+```java
+dmGrd.reQuery();
+```
+
+`settingPopup.addCallBack` → `onOk()`
+```java
+enquiryApprovalEntry_Mdl = approvalEntry_Mdl;
+dmGrd.reQuery();
+```
+
+`gridEdit.addGridEditCallBack` → `onOk()`
+```java
+dmGrd.getDmGrid().commitChanges();
+dmGrd.reQuery();
+```
+
+`dmGrd.addCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(true).getFillRecords(param, vCatList, helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), (DmTextBox) null).show();
+public void onSuccess(DmResultPageing<List<GrdEnquiryApproval_Mdl>> result) {
+if (result.isStatus()) {
+dmGrd.setData(result.getData(), result.getPaging());
+```
+
+`dmGrd.addCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+dmGrd.setData(result.getData(), result.getPaging());
+```
+
+`dmGrd.addCallBack` → `getParam()`
+```java
+return enquiryApprovalEntry_Mdl;
+```
+- Confirm: "Are you sure? You want to close."
+
+### Screen `Setting`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | From Date | DmTextBox | `txtFromDate` | `15, false` |
+| 2 | To Date | DmTextBox | `txtToDate` | `15, false` |
+| 3 | Supplier | DmTextHelpMulti | `txtHSupplier` | `TxtHSupplier_PrpAcs, 5` |
+| 4 | Enquiry No. | DmTextHelpMulti | `txtHEnquiryNo` | `TxtHIndentNo_PrpAcs, 7` |
+| 5 | Status | DmTextHelp | `txtHStatus` | `KeyField_PrpAcs, 4, false` |
+
+**Grid / popup columns** (header, width, db field):
+- `txtHEnquiryNo`: Enquiry No. [Text, w90, enqRecId]; Enquiry Type [Text, w80, category]; Enquiry Date [Text, w80, enqDate]
+- `txtHSupplier`: Name [Text, w260, name]; Manual Code [Text, w100, manualCode]; City [Text, w80, cityName]
+- `txtHStatus`: Status [Text, w0, Name]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHStatus` → `getTxtHStatus`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtFromDate.addValueChangeHandler` → `onValueChange()`
+```java
+txtFromDate.setText(DmClient.returnDate(txtFromDate.getText()));
+```
+
+`txtToDate.addValueChangeHandler` → `onValueChange()`
+```java
+txtToDate.setText(DmClient.returnDate(txtToDate.getText()));
+```
+
+`txtHSupplier.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHSupplier(helper, blnToEndOfFile, vCatList, null, true, new AsyncCallback<DmRe
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHSupplier).show();
+public void onSuccess(DmResultPageing<List<TxtHSupplier_Mdl>> result) {
+if (result.isStatus()) {
+txtHSupplier.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHSupplier).show();
+```
+
+`txtHSupplier.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHSupplier.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHSupplier).show();
+```
+
+`txtHSupplier.addTextHelpMultiCallBack` → `getSelection()`
+```java
+if (blnStatus) {
+```
+
+`txtHStatus.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHStatus(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFiel
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHStatus).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHStatus.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHStatus).show();
+```
+
+`txtHStatus.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHStatus.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHStatus).show();
+```
+
+`txtHStatus.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (blnStatus) {
+```
+
+`txtHEnquiryNo.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHEnquiryNo(helper, blnToEndOfFile, vCatList, new AsyncCallback<DmResultPageing
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHEnquiryNo).show();
+public void onSuccess(DmResultPageing<List<TxtHEnquiryNo_Mdl>> result) {
+if (result.isStatus()) {
+txtHEnquiryNo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHEnquiryNo).show();
+```
+
+`txtHEnquiryNo.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHEnquiryNo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHEnquiryNo).show();
+```
+
+`txtHEnquiryNo.addTextHelpMultiCallBack` → `getSelection()`
+```java
+if (blnStatus) {
+```
+- Alert: "From Date should be less than or equal to To Date."
+
 ## Files
 | file | lines |
 |---|---|

@@ -12,6 +12,23 @@
 - Lookups/suggestions: -
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `PrintBarcodePopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | - | DmTextBox | `txtSearchValue` | `50, false` |
+
+Other widgets (not in tab list): `cbShowUsedReels` (DmCheckBox), `checkUncheckAll` (DmCheckBox), `grdBarcode` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `grdBarcode`:  [Text, w30]; Barcode [Text, w120, name]; Reel/Bundle No. [Text, w120, reelBundleNo]
+
+**Enable/disable rules** (`manageDIsplay(flag)`, flag = editing mode):
+- `cbShowUsedReels.setVisible(false)`
+
 ## Files
 | file | lines |
 |---|---|

@@ -12,6 +12,182 @@
 - Lookups/suggestions: getTxtHTdsFor, getTxtHTdsTcsType, getTxtHTdsTcsCategory, getTxtHTdsTcsDeductFrom
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `TdsPopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Category | DmTextHelp | `txtHTdsTcsType` | `KeyField_PrpAcs, 7, true` |
+| 2 | - | DmTextHelp | `txtHTdsTcsFor` | `KeyField_PrpAcs, 7, true` |
+| 3 | - | DmTextHelp | `txtHTdsCategory` | `KeyField_PrpAcs, 7, true` |
+| 4 | PAN | DmTextHelp | `txtHTdsDeductFrom` | `TxtHTdsDeduct, 7, true` |
+| 5 | - | DmTextBox | `txtPan` | `` |
+| 6 | Applied On Value | DmTextBoxNumeric | `txtTurnover` | `2, false, 15, false` |
+| 7 | - | DmTextBoxNumeric | `txtTransValue` | `2, false, 15, false` |
+| 8 | - | DmTextBoxNumeric | `txtLimit` | `2, false, 15, false` |
+| 9 | - | DmTextBoxNumeric | `txtAppliedOnValue` | `2, false, 15, false` |
+| 10 | On Amount | DmCheckBox | `cbIsManualTdsOnAmount` | `` |
+| 11 | - | DmTextBoxNumeric | `txtApplicableOnValue` | `2, false, 15, false` |
+| 12 | - | DmTextBoxNumeric | `txtOrignalAmount` | `2, false, 12, false` |
+| 13 | - | DmTextBoxNumeric | `txtOnAmount` | `2, false, 12, true` |
+
+Other widgets (not in tab list): `txtTan` (DmTextBox), `txtVDate` (DmTextBox), `tdsCategoryGrid` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `txtHTdsCategory`: Name [Text, w1, Name]
+- `txtHTdsTcsFor`: Name [Text, w150, name]
+- `txtHTdsTcsType`: Name [Text, w150, name]
+- `txtHTdsDeductFrom`: Name [Text, w1, Name]; City [Text, w100, CityName]; Code [Text, w100, ManualCode]
+- `tdsCategoryGrid`: Description [Text, w230]; Posting A/c [Text, w230]; (%) [Text, w50]; Amount [Text, w100]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHTdsCategory` → `getTxtHTdsTcsCategory`
+- `txtHTdsDeductFrom` → `getTxtHTdsTcsDeductFrom`
+- `txtHTdsTcsFor` → `getTxtHTdsFor`
+- `txtHTdsTcsType` → `getTxtHTdsTcsType`
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtHTdsTcsType.setEnabled(isTdsTcsTypeEditable)`
+- `txtHTdsTcsFor.setEnabled(isTdsTcsForEditable)`
+- `txtOrignalAmount.setEnabled(isOriginalAmountEditable)`
+- `txtPan.setEnabled(false)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtHTdsTcsType.setEnabled(isTdsTcsTypeEditable);
+txtHTdsTcsFor.setEnabled(isTdsTcsForEditable);
+txtOrignalAmount.setEnabled(isOriginalAmountEditable);
+txtPan.setEnabled(false);
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHTdsCategory.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHTdsTcsCategory(txtHTdsTcsType.getTag(), helper, blnToEndOfFile, new AsyncCall
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), (DmTextBox) null).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHTdsCategory.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), (DmTextBox) null).show();
+```
+
+`txtHTdsCategory.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHTdsCategory.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), (DmTextBox) null).show();
+```
+
+`txtHTdsCategory.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (!DmShared.xNull(txtHTdsCategory.getTag()).equalsIgnoreCase(txtHTdsCategory.getTag2nd())) {
+resetTdsTcsCategory();
+txtHTdsCategory.setTag2nd(txtHTdsCategory.getTag());
+calculate();
+if (blnStatus && tRow != null) {
+tdsCategory_TypeCode = DmShared.xNull(tRow.getSharedPreparedBy());
+fillTdsGridData(txtHTdsCategory.getTag(), txtVDate.getText());
+```
+
+`txtHTdsDeductFrom.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHTdsTcsDeductFrom(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<Li
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), (DmTextBox) null).show();
+public void onSuccess(DmResultPageing<List<TxtHTdsDeductFrom_Mdl>> result) {
+if (result.isStatus()) {
+txtHTdsDeductFrom.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), (DmTextBox) null).show();
+```
+
+`txtHTdsDeductFrom.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHTdsDeductFrom.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), (DmTextBox) null).show();
+```
+
+`txtHTdsDeductFrom.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (blnStatus && tRow != null) {
+getPartyTdsTcsAcBalance(DmShared.xNull(docId), DmShared.xNull(txtHTdsDeductFrom.getTag()), DmShared.xNull(txtPan.getText
+```
+
+`txtHTdsTcsFor.addTextHelpCallBack` → `populateData()`
+```java
+String restrictForCode = "";
+if (DmShared.xNull(txtHTdsTcsType.getTag()).equalsIgnoreCase(DmEnum.TDS_TCS_Type.TCS.getCode())) {
+if (isTcsAutoCalculate) {
+restrictForCode = DmEnum.TDS_For.PAYABLE.getCode();
+srvAsync.invokeRPC(blnCallBackWait).getTxtHTdsFor(restrictForCode, !DmShared.xNull(txtHTdsTcsType.getTag()).trim().equal
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), (DmTextBox) null).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHTdsTcsFor.setData(result.getData(), result.getPaging());
+...
+```
+
+`txtHTdsTcsFor.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHTdsTcsFor.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), (DmTextBox) null).show();
+```
+
+`txtHTdsTcsFor.addTextHelpCallBack` → `getSelectedRow()`
+```java
+calculate();
+```
+
+`txtHTdsTcsType.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHTdsTcsType(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<Key
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), (DmTextBox) null).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHTdsTcsType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), (DmTextBox) null).show();
+```
+
+`txtHTdsTcsType.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHTdsTcsType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), (DmTextBox) null).show();
+```
+
+`txtHTdsTcsType.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (!DmShared.xNull(txtHTdsTcsType.getTag()).equalsIgnoreCase(DmShared.xNull(txtHTdsTcsType.getTag2nd()))) {
+resetTdsTcsType();
+txtHTdsTcsType.setTag2nd(txtHTdsTcsType.getTag());
+calculate();
+} else if (!DmShared.xNull(txtHTdsTcsType.getTag()).equalsIgnoreCase(DmShared.xNull(tdsCategory_TypeCode))) {
+tdsCategoryGrid.getGrid().getStore().clear();
+calculate();
+if (blnStatus & tRow != null) {
+```
+
+`txtOnAmount.addBlurHandler` → `onBlur()`
+```java
+calculate();
+```
+- Alert: "For can not be '"
+- Alert: "Total TDS/TCS should not be greater than amount."
+
 ## Files
 | file | lines |
 |---|---|

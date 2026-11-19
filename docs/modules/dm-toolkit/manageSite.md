@@ -12,6 +12,60 @@
 - Lookups/suggestions: getTxtHSiteList
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `ManageSite`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+
+Other widgets (not in tab list): `grdSiteList` (DmGrid), `txtHSiteList` (DmHelpGridMulti)
+
+**Grid / popup columns** (header, width, db field):
+- `grdSiteList`: Site Name [Text, w200]; Delete [Text, w50]
+- `txtHSiteList`: Site Name [Text, w180, Name]
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHSiteList.addHelpGridMultiCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(blnCallBackWait).getTxtHSiteList(helper, blnToEndOfFile, DmShared.xNull(getSiteCodeList()), new Async
+public void onFailure(Throwable caught
+) {
+new DmAlertMessageBox(caught.getMessage(), (DmTextBox) null).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result
+) {
+if (result.isStatus()) {
+txtHSiteList.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(DmShared.xNull(result.getErrorMessage()), (DmTextBox) null).show();
+...
+```
+
+`txtHSiteList.addHelpGridMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHSiteList.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(DmShared.xNull(result.getErrorMessage()), (DmTextBox) null).show();
+```
+
+`txtHSiteList.addHelpGridMultiCallBack` → `getSelection()`
+```java
+if (!DmShared.xNull(keyCode).equalsIgnoreCase("")) {
+String[] codeList = keyCode.split(",");
+String[] nameList = keyName.split(",");
+List<GridSite_Mdl> grd = grdSiteList.getGrid().getStore().getAll();
+List<GridSite_Mdl> lstNew = new ArrayList<>();
+for (int i = 0; i < grd.size(); i++) {
+GridSite_Mdl tmpmdl = new GridSite_Mdl();
+if (!DmShared.xNull(grd.get(i).getSharedKeyFieldCode()).equalsIgnoreCase("")) {
+tmpmdl.setSharedKeyFieldCode(DmShared.xNull(grd.get(i).getSharedKeyFieldCode()));
+tmpmdl.setSharedKeyFieldName(DmShared.xNull(grd.get(i).getSharedKeyFieldName()));
+...
+```
+
 ## Files
 | file | lines |
 |---|---|

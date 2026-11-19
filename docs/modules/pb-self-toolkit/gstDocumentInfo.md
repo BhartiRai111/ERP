@@ -12,6 +12,165 @@
 - Lookups/suggestions: getTxtHDocumentType, getTxtHDocumentNature, getTxtHGSTItemType, getTxtHGSTItemNature
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `GSTDocumentInfo`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | GST Document Type | DmTextHelp | `txtHGstDocumentType` | `KeyField_PrpAcs, 7, true, true` |
+| 2 | GST Document Nature | DmTextHelp | `txtHGstDocumentNature` | `KeyField_PrpAcs, 7, true, true` |
+| 3 | GST Item Type | DmTextHelp | `txtHGstItemType` | `KeyField_PrpAcs, 4, true, true` |
+| 4 | GST Item Nature | DmTextHelp | `txtHGstItemNature` | `KeyField_PrpAcs, 5, true, true` |
+
+**Grid / popup columns** (header, width, db field):
+- `txtHGstDocumentType`: Name [Text, w50, name]
+- `txtHGstDocumentNature`: Name [Text, w50, name]
+- `txtHGstItemType`: Name [Text, w50, name]
+- `txtHGstItemNature`: Name [Text, w50, name]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHGstDocumentType` → `getTxtHDocumentType`
+- `txtHGstDocumentNature` → `getTxtHDocumentNature`
+- `txtHGstItemNature` → `getTxtHGSTItemNature`
+- `txtHGstItemType` → `getTxtHGSTItemType`
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtHGstDocumentType.setEnabled(flag)`
+- `txtHGstDocumentNature.setEnabled(flag)`
+- `txtHGstItemType.setEnabled(flag)`
+- `txtHGstItemNature.setEnabled(flag)`
+
+**Defaults when the screen opens** (`iniDefaultValues`):
+- calls server `getDefaultValues`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+boolean flag = false;
+if (gstdi_Mdl != null && (DmShared.xNull(mode).endsWith("New")
+|| DmShared.xNull(mode).endsWith("Edit"))) {
+flag = true;
+txtHGstDocumentType.setEnabled(flag);
+txtHGstDocumentNature.setEnabled(flag);
+txtHGstItemType.setEnabled(flag);
+txtHGstItemNature.setEnabled(flag);
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHGstDocumentType.addTextHelpCallBack` → `populateData()`
+```java
+refreshGSTDocInfoParam_Mdl();
+srvAsync.invokeRPC(blnCallBackWait).getTxtHDocumentType(voucherCategory, helper, blnToEndOfFile, new AsyncCallback<DmRes
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHGstDocumentType).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHGstDocumentType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(DmShared.xNull(result.getErrorMessage()), txtHGstDocumentType).show();
+```
+
+`txtHGstDocumentType.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHGstDocumentType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(DmShared.xNull(result.getErrorMessage()), txtHGstDocumentType).show();
+```
+
+`txtHGstDocumentType.addTextHelpCallBack` → `getSelectedRow()`
+```java
+boolean flag = false;
+if (!DmShared.xNull(txtHGstDocumentType.getTag2nd()).equalsIgnoreCase(txtHGstDocumentType.getTag())) {
+txtHGstDocumentNature.setTag("");
+txtHGstDocumentNature.setTag2nd("");
+txtHGstDocumentNature.setText("");
+txtHGstDocumentType.setTag2nd(DmShared.xNull(txtHGstDocumentType.getTag()));
+flag = true;
+if (t1Row != null) {
+if (!DmShared.xNull(t1Row.getSharedPreparedBy()).trim().equalsIgnoreCase("")) {
+DmEnum.GstDocumentNature gstDocNature = DmEnum.GstDocumentNature.getViaShortName(DmShared.xNull(t1Row.getSharedPreparedB
+...
+```
+
+`txtHGstDocumentNature.addTextHelpCallBack` → `populateData()`
+```java
+DmEnum.GstDocumentType gstDocType = DmEnum.GstDocumentType.getViaShortName(DmShared.xNull(txtHGstDocumentType.getTag()))
+srvAsync.invokeRPC(blnCallBackWait).getTxtHDocumentNature(gstDocType != null ? gstDocType.getGstDocNatureShortName() : "
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHGstDocumentNature).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHGstDocumentNature.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(DmShared.xNull(result.getErrorMessage()), txtHGstDocumentNature).show();
+```
+
+`txtHGstDocumentNature.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHGstDocumentNature.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(DmShared.xNull(result.getErrorMessage()), txtHGstDocumentNature).show();
+```
+
+`txtHGstDocumentNature.addTextHelpCallBack` → `getSelectedRow()`
+```java
+onChange();
+```
+
+`txtHGstItemNature.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHGSTItemNature(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHGstItemNature).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHGstItemNature.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(DmShared.xNull(result.getErrorMessage()), txtHGstItemNature).show();
+```
+
+`txtHGstItemNature.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHGstItemNature.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(DmShared.xNull(result.getErrorMessage()), txtHGstItemNature).show();
+```
+
+`txtHGstItemNature.addTextHelpCallBack` → `getSelectedRow()`
+```java
+onChange();
+```
+
+`txtHGstItemType.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHGSTItemType(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<Ke
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHGstItemType).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHGstItemType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(DmShared.xNull(result.getErrorMessage()), txtHGstItemType).show();
+```
+
+`txtHGstItemType.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHGstItemType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(DmShared.xNull(result.getErrorMessage()), txtHGstItemType).show();
+```
+
+`txtHGstItemType.addTextHelpCallBack` → `getSelectedRow()`
+```java
+onChange();
+```
+
 ## Files
 | file | lines |
 |---|---|

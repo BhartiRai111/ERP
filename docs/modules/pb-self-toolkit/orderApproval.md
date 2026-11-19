@@ -12,6 +12,342 @@
 - Lookups/suggestions: getTxtHStatus, getTxtHSaleOrderNo, getTxtHParty, getTxtHDeliveryCity, getTxtHItem
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `OrderApprovalGridEdit`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Plan Date | DmTextBox | `txtOrderNo` | `` |
+| 2 | - | DmTextBox | `txtOrderDate` | `` |
+| 3 | - | DmTextBox | `txtPlanNo` | `` |
+| 4 | - | DmTextBox | `txtPlanDate` | `` |
+| 5 | Party Order Date | DmTextBox | `txtParty` | `` |
+| 6 | - | DmTextBox | `txtPartyOrderNo` | `` |
+| 7 | - | DmTextBox | `txtPartyOrderDate` | `` |
+| 8 | Delivery To | DmTextBox | `txtConsignee` | `` |
+| 9 | - | DmTextBox | `txtDeliveryTo` | `` |
+| 10 | To Place | DmTextBox | `txtToPlace` | `` |
+
+Other widgets (not in tab list): `txtApproved` (DmTextBox), `txtVoucherType` (DmTextBox), `txtStatus` (DmTextBox), `txtOrdQty` (DmTextBox), `txtWTACode` (DmTextBox), `txtCurrentUser` (DmTextBox), `txtApprovedBy` (DmTextBox), `txtApprovedDateTime` (DmTextBox), `grdItemlDetails` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `grdItemlDetails`: C/O [Text, w30]; R/S [Text, w30];  [Text, w25]; Order Qty. [Text, w80]; Unit [Text, w50]; Rate [Text, w60]; SKU [Text, w50]; Res. Qty. [Text, w70]; Rel Qty. [Text, w70]; Item Name [Text, w200]; BF [Text, w30]; GSM [Text, w35]; Width [Text, w50]; Length [Text, w60]; Size Unit [Text, w64]; Grain [Text, w50]; Ream Wt. [Text, w80]; SPR [Text, w50]; RPB [Text, w50]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `walkThrough` → `openRecord`
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtApproved.setEnabled(false)`
+- `txtApprovedBy.setEnabled(false)`
+- `txtApprovedDateTime.setEnabled(false)`
+- `txtStatus.setEnabled(false)`
+- `txtOrderNo.setEnabled(false)`
+- `txtOrderDate.setEnabled(false)`
+- `txtPlanNo.setEnabled(false)`
+- `txtPlanDate.setEnabled(false)`
+- `txtParty.setEnabled(false)`
+- `txtPartyOrderNo.setEnabled(false)`
+- `txtPartyOrderDate.setEnabled(false)`
+- `txtConsignee.setEnabled(false)`
+- `txtDeliveryTo.setEnabled(false)`
+- `txtToPlace.setEnabled(false)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtApproved.setEnabled(false);
+txtApprovedBy.setEnabled(false);
+txtApprovedDateTime.setEnabled(false);
+txtStatus.setEnabled(false);
+txtOrderNo.setEnabled(false);
+txtOrderDate.setEnabled(false);
+txtPlanNo.setEnabled(false);
+txtPlanDate.setEnabled(false);
+txtParty.setEnabled(false);
+txtPartyOrderNo.setEnabled(false);
+txtPartyOrderDate.setEnabled(false);
+txtConsignee.setEnabled(false);
+txtDeliveryTo.setEnabled(false);
+txtToPlace.setEnabled(false);
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`stockReleasePopup.addCallBack` → `onClose()`
+```java
+stockReleasePopup.hide();
+```
+
+`stockReleasePopup.addCallBack` → `onApprovalOk()`
+```java
+saveStockRelease(stockRelease_Mdl, DmShared.xNull(grdItemlDetails.getGrid().getStore().get(parentRowIndex).getvSNo()));
+```
+
+`walkThrough.addCallBack` → `onClose()`
+```java
+getGridDetail(DmShared.xNull(txtOrderNo.getTag()), DmShared.xNull(txtVoucherType.getTag2nd()));
+```
+- Alert: "Record is amended, you can't modify."
+- Alert: "Record is not updated by this user,Can't update"
+- Alert: "Record is cancelled,Please refresh record."
+- Alert: "Record is completed,Please refresh record."
+
+### Screen `OrderApproval`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | - | DmGridPaging | `dmGrd` | `Grd_PrpAcs, gridRows, false` |
+
+**Grid / popup columns** (header, width, db field):
+- `dmGrd`:  [Text, w30];  [Text, w25]; Order No. [Text, w100, recId]; Order Date [Text, w80, v_Date]; Order Qty. [Text, w80, orderQty]; Unit [Text, w50, itemUnitName]; Rate [Text, w80, rate]; Item Name [Text, w200, itemName]; Item Nature [Text, w75]; BF [Text, w45, bfCode]; GSM [Text, w50, gsmCode]; Width [Text, w70, widthDisplay]; Length [Text, w70, lengthDisplay]; Size Unit [Text, w65, displaySizeUnitName]; Grain [Text, w65, grainName]; SPR [Text, w45, sheetsPerReam]; RPB [Text, w45, reamsPerBundle]; Ream Wt. [Text, w75, reamWeight]; Del. Date [Text, w80, deliveryDt]; Party [Text, w200, partyName]; SKU [Text, w50, skuName]; Consignee [Text, w200, consigneeName]; Delivery To [Text, w200, deliveryToName]; To Place [Text, w120, cityName]; Approved By [Text, w130, approvedBy]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `dmGrd` → `getFillRecords`
+
+**Defaults when the screen opens** (`iniDefaultValues`):
+- calls server `getDefaultValues`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`walkThrough.addCallBack` → `onClose()`
+```java
+dmGrd.reQuery();
+```
+
+`settingPopup.addCallBack` → `onOk()`
+```java
+saleApp_Mdl = approvalEntry_Mdl;
+dmGrd.getDmGrid().commitChanges();
+dmGrd.reQuery();
+```
+
+`gridEdit.addGridEditCallBack` → `onOk()`
+```java
+dmGrd.getDmGrid().commitChanges();
+dmGrd.reQuery();
+```
+
+`dmGrd.addCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(true).getFillRecords(param, vCatList,
+helper,
+blnToEndOfFile,
+new AsyncCallback<DmResultPageing<List<GrdOrderApproval_Mdl>>>() {
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), (DmTextBox) null).show();
+public void onSuccess(DmResultPageing<List<GrdOrderApproval_Mdl>> result) {
+if (result.isStatus() && result.getData() != null) {
+dmGrd.setData(result.getData(), result.getPaging());
+```
+
+`dmGrd.addCallBack` → `onSuccess()`
+```java
+if (result.isStatus() && result.getData() != null) {
+dmGrd.setData(result.getData(), result.getPaging());
+```
+
+`dmGrd.addCallBack` → `getParam()`
+```java
+return saleApp_Mdl;
+```
+- Confirm: "Are you sure? You want to close."
+- Confirm: "Credit limit Exceeded by Rs. "
+
+### Screen `Setting`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | From Date | DmTextBox | `txtFromDate` | `15, false` |
+| 2 | To Date | DmTextBox | `txtToDate` | `15, false` |
+| 3 | Party | DmTextHelpMulti | `txtHParty` | `TxtHSupplierName_PrpAcs, 7` |
+| 4 | Delivery To | DmTextHelpMulti | `txtHDeliveryTo` | `TxtHDeliveryTo_PrpAcs, 7` |
+| 5 | Consignee | DmTextHelpMulti | `txtHConsignee` | `TxtHConsignee_PrpAcs, 7` |
+| 6 | To Place | DmTextHelpMulti | `txtHDeliveryCity` | `TxtHDelivryCity_PrpAcs, 4` |
+| 7 | Order No. | DmTextHelpMulti | `txtHOrder` | `TxtHPurchaseOrder_PrpAcs, 7` |
+| 8 | Status | DmTextHelp | `txtHStatus` | `KeyField_PrpAcs, 4, false` |
+| 9 | Item Name | DmTextHelpMulti | `txtHItemName` | `TxtHItemName_PrpAcs, 5` |
+
+**Grid / popup columns** (header, width, db field):
+- `txtHOrder`: Sale Order No. [Text, w120, sOrderNo]; Sale Type [Text, w90, category]; Sale Date [Text, w90, replace(convert(varchar, sOrderDate, 106), ' ','-')]
+- `txtHStatus`: Status [Text, w150, Name]
+- `txtHParty`: Name [Text, w220, supplierName]; Manual Code [Text, w100, manualCode]; City Name [Text, w100, cityName]
+- `txtHDeliveryTo`: Name [Text, w220, supplierName]; Manual Code [Text, w100, manualCode]; City Name [Text, w100, cityName]
+- `txtHConsignee`: Name [Text, w220, supplierName]; Manual Code [Text, w100, manualCode]; City Name [Text, w100, cityName]
+- `txtHDeliveryCity`: City [Text, w100, cityName]; State [Text, w100, stateName]
+- `txtHItemName`: Name [Text, w250, itemName]; Manual  Code [Text, w80, manualCode]; Unit [Text, w80, itemUnitName]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHStatus` → `getTxtHStatus`
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtHParty.setEnabled(true)`
+- `txtHParty.setEnabled(true)`
+- `txtHConsignee.setEnabled(true)`
+- `txtHDeliveryTo.setEnabled(true)`
+- `txtHDeliveryCity.setEnabled(true)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtHParty.setEnabled(true);
+txtHParty.setEnabled(true);
+txtHConsignee.setEnabled(true);
+txtHDeliveryTo.setEnabled(true);
+txtHDeliveryCity.setEnabled(true);
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHStatus.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHStatus(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFiel
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHStatus).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHStatus.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHStatus).show();
+```
+
+`txtHStatus.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHStatus.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHStatus).show();
+```
+
+`txtHOrder.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHSaleOrderNo(helper, blnToEndOfFile, vCatList, new AsyncCallback<DmResultPagei
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHOrder).show();
+public void onSuccess(DmResultPageing<List<TxtHOrder_Mdl>> result) {
+if (result.isStatus()) {
+txtHOrder.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHOrder).show();
+```
+
+`txtHOrder.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHOrder.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHOrder).show();
+```
+
+`txtHParty.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHParty(helper, blnToEndOfFile, vCatList, new AsyncCallback<DmResultPageing<Lis
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHParty).show();
+public void onSuccess(DmResultPageing<List<TxtHSupplierPT_Mdl>> result) {
+if (result.isStatus()) {
+txtHParty.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHParty).show();
+```
+
+`txtHParty.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHParty.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHParty).show();
+```
+
+`txtHDeliveryTo.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHParty(helper, blnToEndOfFile, vCatList, new AsyncCallback<DmResultPageing<Lis
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHDeliveryTo).show();
+public void onSuccess(DmResultPageing<List<TxtHSupplierPT_Mdl>> result) {
+if (result.isStatus()) {
+txtHDeliveryTo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHDeliveryTo).show();
+```
+
+`txtHDeliveryTo.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHDeliveryTo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHDeliveryTo).show();
+```
+
+`txtHConsignee.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHParty(helper, blnToEndOfFile, vCatList, new AsyncCallback<DmResultPageing<Lis
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHConsignee).show();
+public void onSuccess(DmResultPageing<List<TxtHSupplierPT_Mdl>> result) {
+if (result.isStatus()) {
+txtHConsignee.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHConsignee).show();
+```
+
+`txtHConsignee.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHConsignee.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHConsignee).show();
+```
+
+`txtHDeliveryCity.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHDeliveryCity(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<K
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHDeliveryCity).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHDeliveryCity.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHDeliveryCity).show();
+```
+
+`txtHDeliveryCity.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHDeliveryCity.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHDeliveryCity).show();
+```
+
+`txtHDeliveryCity.addTextHelpMultiCallBack` → `getSelection()`
+```java
+if (blnStatus) {
+```
+
+`txtHItemName.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHItem(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFieldE
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHItemName).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHItemName.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemName).show();
+```
+
+`txtHItemName.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHItemName.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemName).show();
+```
+- Alert: "From Date should be less than or equal to To Date."
+
 ## Files
 | file | lines |
 |---|---|

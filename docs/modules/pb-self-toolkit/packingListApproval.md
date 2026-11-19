@@ -12,6 +12,269 @@
 - Lookups/suggestions: getTxtHPackingNo, getTxtHParty, getTxtHDeliveryCity, getTxtHItem, getTxtHGateNo, getTxtHStatus, getTxtHItemNature
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `PackingListApproval`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | - | DmGridPaging | `dmGrd` | `Grd_PrpAcs, gridRows, false` |
+
+**Grid / popup columns** (header, width, db field):
+- `dmGrd`:  [Text, w30];  [Text, w25]; Invoice No. [Text, w100, recId]; Type [Text, w70, type]; Date [Text, w80, date]; Item Nature [Text, w80, itemNature]; Party [Text, w200, partyName]; Consignee [Text, w180, consigneeName]; Delivery To [Text, w180, deliveryToName]; To Place [Text, w80, toPlaceName]; Gate Entry No. [Text, w100, gateRecId]; Transporter [Text, w180, transporterName]; Mode [Text, w80, trasnMode]; Approved By [Text, w130, approvedBy]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `dmGrd` → `getFillRecords`
+
+**Defaults when the screen opens** (`iniDefaultValues`):
+- calls server `getDefaultValues`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`walkThrough.addCallBack` → `onClose()`
+```java
+dmGrd.reQuery();
+```
+
+`settingPopup.addCallBack` → `onOk()`
+```java
+packingApp_Mdl = approvalEntry_Mdl;
+dmGrd.getDmGrid().commitChanges();
+dmGrd.reQuery();
+```
+
+`dmGrd.addCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(true).getFillRecords(param, helper, blnToEndOfFile, vCat, new AsyncCallback<DmResultPageing<List<GrdP
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), (DmTextBox) null).show();
+public void onSuccess(DmResultPageing<List<GrdPackingListApproval_Mdl>> result) {
+if (result.isStatus()) {
+dmGrd.setData(result.getData(), result.getPaging());
+```
+
+`dmGrd.addCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+dmGrd.setData(result.getData(), result.getPaging());
+```
+
+`dmGrd.addCallBack` → `getParam()`
+```java
+return packingApp_Mdl;
+```
+- Confirm: "Are you sure? You want to close."
+
+### Screen `Setting`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | From Date | DmTextBox | `txtFromDate` | `15, false` |
+| 2 | To Date | DmTextBox | `txtToDate` | `15, false` |
+| 3 | Item Nature | DmTextHelp | `txtHItemNature` | `KeyField_PrpAcs, 3, false` |
+| 4 | Party | DmTextHelpMulti | `txtHParty` | `TxtHSupplierName_PrpAcs, 7` |
+| 5 | Consignee | DmTextHelpMulti | `txtHConsignee` | `TxtHConsignee_PrpAcs, 7` |
+| 6 | To Place | DmTextHelpMulti | `txtHDeliveryCity` | `TxtHDelivryCity_PrpAcs, 4` |
+| 7 | Invoice No. | DmTextHelpMulti | `txtHPackingNo` | `TxtHPackingNo_PrpAcs, 7` |
+| 8 | Status | DmTextHelp | `txtHStatus` | `KeyField_PrpAcs, 4, false` |
+| 9 | Gate Entry No | DmTextHelpMulti | `txtHGateEntryNo` | `TxtHGateIn_PrpAcs, 7` |
+| 10 | Transporter | DmTextHelpMulti | `txtHTransporter` | `TxtHTransporterName_PrpAcs, 7` |
+
+**Grid / popup columns** (header, width, db field):
+- `txtHPackingNo`: Packing No. [Text, w120, recId]; Packing Type [Text, w90, category]; Packing Date [Text, w90, date]
+- `txtHStatus`: Status [Text, w150, Name]
+- `txtHParty`: Name [Text, w220, supplierName]; Manual Code [Text, w100, manualCode]; City Name [Text, w100, cityName]
+- `txtHItemNature`: Item Nature [Text, w100, name]
+- `txtHConsignee`: Name [Text, w220, supplierName]; Manual Code [Text, w100, manualCode]; City Name [Text, w100, cityName]
+- `txtHDeliveryCity`: City [Text, w0, cityName]; State [Text, w100, stateName]
+- `txtHGateEntryNo`: Gate Entry No. [Text, w120, gateNo]; Gate Type [Text, w90, category]; Date [Text, w90, gateDate]
+- `txtHTransporter`: Name [Text, w220, supplierName]; Manual Code [Text, w100, manualCode]; City Name [Text, w100, cityName]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHStatus` → `getTxtHStatus`
+- `txtHItemNature` → `getTxtHItemNature`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtFromDate.addValueChangeHandler` → `onValueChange()`
+```java
+txtFromDate.setText(DmClient.returnDate(txtFromDate.getText()));
+```
+
+`txtToDate.addValueChangeHandler` → `onValueChange()`
+```java
+txtToDate.setText(DmClient.returnDate(txtToDate.getText()));
+```
+
+`txtHStatus.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHStatus(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFiel
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHStatus).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHStatus.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHStatus).show();
+```
+
+`txtHStatus.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHStatus.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHStatus).show();
+```
+
+`txtHPackingNo.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHPackingNo(helper, blnToEndOfFile, vCat, new AsyncCallback<DmResultPageing<Lis
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHPackingNo).show();
+public void onSuccess(DmResultPageing<List<TxtHPackingNo_Mdl>> result) {
+if (result.isStatus()) {
+txtHPackingNo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHPackingNo).show();
+```
+
+`txtHPackingNo.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHPackingNo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHPackingNo).show();
+```
+
+`txtHGateEntryNo.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHGateNo(helper, blnToEndOfFile, vCat, new AsyncCallback<DmResultPageing<List<T
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHGateEntryNo).show();
+public void onSuccess(DmResultPageing<List<TxtHGateIn_Mdl>> result) {
+if (result.isStatus()) {
+txtHGateEntryNo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHGateEntryNo).show();
+```
+
+`txtHGateEntryNo.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHGateEntryNo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHGateEntryNo).show();
+```
+
+`txtHParty.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHParty(helper, blnToEndOfFile, vCat, new AsyncCallback<DmResultPageing<List<Tx
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHParty).show();
+public void onSuccess(DmResultPageing<List<TxtHSupplierPT_Mdl>> result) {
+if (result.isStatus()) {
+txtHParty.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHParty).show();
+```
+
+`txtHParty.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHParty.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHParty).show();
+```
+
+`txtHItemNature.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHItemNature(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<Key
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHItemNature).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHItemNature.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemNature).show();
+```
+
+`txtHItemNature.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHItemNature.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemNature).show();
+```
+
+`txtHTransporter.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHParty(helper, blnToEndOfFile, vCat, new AsyncCallback<DmResultPageing<List<Tx
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHTransporter).show();
+public void onSuccess(DmResultPageing<List<TxtHSupplierPT_Mdl>> result) {
+if (result.isStatus()) {
+txtHTransporter.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHTransporter).show();
+```
+
+`txtHTransporter.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHTransporter.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHTransporter).show();
+```
+
+`txtHConsignee.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHParty(helper, blnToEndOfFile, vCat, new AsyncCallback<DmResultPageing<List<Tx
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHConsignee).show();
+public void onSuccess(DmResultPageing<List<TxtHSupplierPT_Mdl>> result) {
+if (result.isStatus()) {
+txtHConsignee.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHConsignee).show();
+```
+
+`txtHConsignee.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHConsignee.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHConsignee).show();
+```
+
+`txtHDeliveryCity.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHDeliveryCity(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<K
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHDeliveryCity).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHDeliveryCity.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHDeliveryCity).show();
+```
+
+`txtHDeliveryCity.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHDeliveryCity.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHDeliveryCity).show();
+```
+
+`txtHDeliveryCity.addTextHelpMultiCallBack` → `getSelection()`
+```java
+if (blnStatus) {
+```
+- Alert: "From Date should be less than or equal to To Date."
+
 ## Files
 | file | lines |
 |---|---|

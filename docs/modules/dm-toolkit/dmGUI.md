@@ -12,6 +12,85 @@
 - Lookups/suggestions: getHelp
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `DmGUI`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+
+Other widgets (not in tab list): `textBoxDate` (DmTextBox), `textBoxNumeric` (DmTextBoxNumeric), `textHelp` (DmTextHelp), `txtHelpMulti` (DmTextHelpMulti), `textBox` (DmTextBox), `textArea` (DmTextArea), `chkBox` (DmCheckBox)
+
+**Grid / popup columns** (header, width, db field):
+- `textHelp`: Name [Text, w0]
+- `txtHelpMulti`: Name [Text, w0]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHelp` → `getHelp`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`textBoxDate.addBlurHandler` → `onBlur()`
+```java
+textBoxDate.setText(DmClient.returnDate(textBoxDate.getText()));
+```
+
+`txtHelp.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getHelp(helpSQLQuery, helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHelp).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHelp.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHelp).show();
+```
+
+`txtHelp.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHelp.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHelp).show();
+```
+
+`txtHelpMulti.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getHelp(helpSQLQuery, helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHelpMulti).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHelpMulti.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHelpMulti).show();
+```
+
+`txtHelpMulti.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHelpMulti.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHelpMulti).show();
+```
+
+### Screen `DmGUI_MultiLine`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | - | DmTextArea | `txtRemark` | `250, false` |
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`label.addClickHandler` → `onClick()`
+```java
+DmGUI_MultiLine.this.show();
+```
+
 ## Files
 | file | lines |
 |---|---|

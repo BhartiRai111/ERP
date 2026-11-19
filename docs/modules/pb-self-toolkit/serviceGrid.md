@@ -12,6 +12,323 @@
 - Lookups/suggestions: getTxtHItemName, getTxtHGstType, getTxtHValuationType
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `BifurcatedServicePopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | - | DmTextBoxNumeric | `txtService1Amt` | `2, false, 12, false` |
+| 2 | - | DmTextBoxNumeric | `txtService2Amt` | `2, false, 12, false` |
+| 3 | - | DmTextBoxNumeric | `txtService3Amt` | `2, false, 12, false` |
+| 4 | - | DmTextBoxNumeric | `txtService4Amt` | `2, false, 12, false` |
+| 5 | - | DmTextBoxNumeric | `txtService5Amt` | `2, false, 12, false` |
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtService1Amt.setEnabled(flag)`
+- `txtService2Amt.setEnabled(flag)`
+- `txtService3Amt.setEnabled(flag)`
+- `txtService4Amt.setEnabled(flag)`
+- `txtService5Amt.setEnabled(flag)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtService1Amt.setEnabled(flag);
+txtService2Amt.setEnabled(flag);
+txtService3Amt.setEnabled(flag);
+txtService4Amt.setEnabled(flag);
+txtService5Amt.setEnabled(flag);
+```
+
+### Screen `ServiceGridEdit`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Service | DmTextHelp | `txtHItemName` | `com.google.gwt.core.client.TxtHItemName_PrpAcs, 7, true` |
+| 2 | SAC | DmTextBox | `txtHsn` | `` |
+| 3 | GST Type | DmTextHelp | `txtHGstType` | `KeyField_PrpAcs, 6, true` |
+| 4 | Cess Type | DmTextBox | `txtCessEvalType` | `` |
+| 5 | Valuation Type | DmTextHelp | `txtHServiceEvalType` | `KeyField_PrpAcs, 4, true, true` |
+| 6 | Amount | DmTextBoxNumeric | `txtServiceEvalRate` | `4, false, 12, true` |
+| 7 | - | DmTextBoxNumeric | `txtAmount` | `2, false, 12, false` |
+| 8 | SGST/UGST | DmTextBoxNumeric | `txtSgstUgstPer` | `4, false, 12, false` |
+| 9 | - | DmTextBoxNumeric | `txtSgstUgst` | `2, true, 12, false` |
+| 10 | CGST | DmTextBoxNumeric | `txtCGSTPer` | `4, false, 12, false` |
+| 11 | - | DmTextBoxNumeric | `txtCGST` | `2, false, 12, false` |
+| 12 | IGST | DmTextBoxNumeric | `txtIGSTPer` | `4, false, 12, false` |
+| 13 | - | DmTextBoxNumeric | `txtIGST` | `2, true, 12, false` |
+| 14 | Cess | DmTextBoxNumeric | `txtCessPer` | `4, false, 12, false` |
+| 15 | - | DmTextBoxNumeric | `txtCess` | `2, true, 12, false` |
+| 16 | Cess Non Advol | DmTextBoxNumeric | `txtCessNaRate` | `2, false, 12, false` |
+| 17 | - | DmTextHelp | `txtHCessNaUnit` | `com.google.gwt.core.client.KeyField_PrpAcs, 5, false` |
+| 18 | - | DmTextBoxNumeric | `txtCessNa` | `2, true, 12, false` |
+| 19 | VAT | DmTextBoxNumeric | `txtIGSTPer` | `4, false, 12, false` |
+| 20 | - | DmTextBoxNumeric | `txtIGST` | `2, true, 12, false` |
+| 21 | Total Amount | DmTextBoxNumeric | `txtNetAmount` | `2, false, 12, false` |
+
+Other widgets (not in tab list): `txtSGSTPer` (DmTextBoxNumeric), `txtUGSTPer` (DmTextBoxNumeric), `txtSGST` (DmTextBoxNumeric), `txtUGST` (DmTextBoxNumeric), `txtServiceUnit` (DmTextBox), `txtSmf` (DmTextBox), `txtTempSgstUgst` (DmTextBoxNumeric), `txtTempSgst` (DmTextBoxNumeric), `txtTempUgst` (DmTextBoxNumeric), `txtTempCGST` (DmTextBoxNumeric), `txtTempIGST` (DmTextBoxNumeric), `txtTempCess` (DmTextBoxNumeric), `txtTempCessNa` (DmTextBoxNumeric), `txtTempSubTotal` (DmTextBoxNumeric), `txtTempItemValue` (DmTextBoxNumeric), `cbIsManualGstType` (DmCheckBox), `cbIsManualTax` (DmCheckBox)
+
+**Grid / popup columns** (header, width, db field):
+- `txtHItemName`: Service Name [Text, w200, name]; Manual Code [Text, w100, manualCode]; SAC [Text, w80, hsn]
+- `txtHGstType`: Name [Text, w0, name]
+- `txtHServiceEvalType`: Type [Text, w0]
+- `txtHCessNaUnit`: Name [Text, w100, unitName]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHItemName` → `getTxtHItemName`
+- `txtHGstType` → `getTxtHGstType`
+- `txtHServiceEvalType` → `getTxtHValuationType`
+- `txtHCessNaUnit` → `getCessNaUnit`
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtAmount.setEnabled(false)`
+- `txtNetAmount.setEnabled(false)`
+- `txtServiceEvalRate.setEnabled(true)`
+- `txtHItemName.setEnabled(true)`
+- `txtHServiceEvalType.setEnabled(true)`
+- `cbIsManualGstType.setEnabled(true)`
+- `cbIsManualTax.setEnabled(true)`
+- `txtHGstType.setEnabled(true)`
+- `txtHsn.setEnabled(true)`
+- `txtCessNa.setEnabled(true)`
+- `txtCessNaRate.setEnabled(true)`
+- `txtHCessNaUnit.setEnabled(true)`
+- `txtCessEvalType.setEnabled(true)`
+- `txtHItemName.setEnabled(false)`
+- `txtHServiceEvalType.setEnabled(false)`
+- `txtHItemName.setEnabled(false)`
+- `txtHServiceEvalType.setEnabled(false)`
+- `txtServiceEvalRate.setEnabled(false)`
+- `cbIsManualGstType.setEnabled(false)`
+- `cbIsManualTax.setEnabled(false)`
+- `txtHGstType.setEnabled(false)`
+- `txtHsn.setEnabled(false)`
+- `txtCessNa.setEnabled(false)`
+- `txtCessNaRate.setEnabled(false)`
+- `txtHCessNaUnit.setEnabled(false)`
+- `txtCessEvalType.setEnabled(false)`
+- `txtSgstUgstPer.setEnabled(false)`
+- `txtSGSTPer.setEnabled(false)`
+- `txtUGSTPer.setEnabled(false)`
+- `txtCGSTPer.setEnabled(false)`
+- `txtIGSTPer.setEnabled(false)`
+- `txtSGST.setEnabled(false)`
+- `txtUGST.setEnabled(false)`
+- `txtCessPer.setEnabled(false)`
+- `txtCess.setEnabled(false)`
+- `txtCessNa.setEnabled(true)`
+- `txtCessNaRate.setEnabled(true)`
+- `txtTempSgstUgst.setEnabled(false)`
+- `txtTempSgst.setEnabled(false)`
+- `txtTempUgst.setEnabled(false)`
+- `txtTempCGST.setEnabled(false)`
+- `txtTempIGST.setEnabled(false)`
+- `txtTempCess.setEnabled(false)`
+- `txtTempCessNa.setEnabled(false)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtAmount.setEnabled(false);
+txtNetAmount.setEnabled(false);
+txtServiceEvalRate.setEnabled(true);
+txtHItemName.setEnabled(true);
+txtHServiceEvalType.setEnabled(true);
+cbIsManualGstType.setEnabled(true);
+cbIsManualTax.setEnabled(true);
+txtHGstType.setEnabled(true);
+txtHsn.setEnabled(true);
+txtCessNa.setEnabled(true);
+txtCessNaRate.setEnabled(true);
+txtHCessNaUnit.setEnabled(true);
+txtCessEvalType.setEnabled(true);
+txtHGstType.setMandatory(true);
+if (serviceGrid.isServiceBifurcation) {
+if (DmShared.iNull(serviceGrid.autoBifurcatedRowCount).intValue() > 0) {
+if (DmShared.vNull(manualServiceValue).doubleValue() > 0) {
+txtHItemName.setEnabled(false);
+txtHServiceEvalType.setEnabled(false);
+this.setVisibleDelete(false);
+} else {
+txtHItemName.setEnabled(false);
+txtHServiceEvalType.setEnabled(false);
+txtServiceEvalRate.setEnabled(false);
+...
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHItemName.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHItemName(serviceGrid.balancingAcField, serviceGrid.isInService, helper, blnTo
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHItemName).show();
+public void onSuccess(DmResultPageing<List<TxtHServiceDetail_Mdl>> result) {
+if (result.isStatus()) {
+txtHItemName.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemName).show();
+```
+
+`txtHItemName.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHItemName.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemName).show();
+```
+
+`txtHItemName.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (!DmShared.xNull(txtHItemName.getTag2nd()).equalsIgnoreCase(DmShared.xNull(txtHItemName.getTag()))) {
+resetItem();
+txtHItemName.setTag2nd(DmShared.xNull(DmShared.xNull(txtHItemName.getTag())));
+if (blnStatus && t1Row != null) {
+txtSmf.setTag(DmShared.xNull(t1Row.getSmfTag()));
+txtSmf.setText(DmShared.xNull(t1Row.getSmfText()));
+boolean flagPolicyEvalRate = false;
+if (DmShared.xNull(t1Row.getUniqueId()).equalsIgnoreCase(ItemUniqueID.INWARD_INSURANCE_POLICY.getId())
+|| DmShared.xNull(t1Row.getUniqueId()).equalsIgnoreCase(ItemUniqueID.OUTWARD_INSURANCE_POLICY.getId())
+|| DmShared.xNull(t1Row.getUniqueId()).equalsIgnoreCase(ItemUniqueID.INWARD_OUTWARD_INSURANCE_POLICY.getId())) {
+...
+```
+
+`txtHGstType.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHGstType(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFie
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHGstType).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHGstType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHGstType).show();
+```
+
+`txtHGstType.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHGstType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHGstType).show();
+```
+
+`txtHGstType.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (!DmShared.xNull(txtHGstType.getTag2nd()).equalsIgnoreCase(DmShared.xNull(txtHGstType.getTag()))) {
+resetItemType();
+txtHGstType.setTag2nd(DmShared.xNull(txtHGstType.getTag()));
+if (blnStatus && t1Row != null) {
+if (!serviceGrid.isServiceBifurcation) {
+getITS(t1Row.getSharedKeyFieldCode(), txtAmount.getText(), itsBasedOn, serviceGrid.location, txtHGstType.getTag(), cbIsM
+```
+
+`txtHServiceEvalType.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHValuationType(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHServiceEvalType).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHServiceEvalType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHServiceEvalType).show();
+```
+
+`txtHServiceEvalType.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHServiceEvalType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHServiceEvalType).show();
+```
+
+`txtHServiceEvalType.addTextHelpCallBack` → `getSelectedRow()`
+```java
+calculate();
+```
+
+`txtHCessNaUnit.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getCessNaUnit(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFiel
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHCessNaUnit).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHCessNaUnit.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHCessNaUnit).show();
+```
+
+`txtHCessNaUnit.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHCessNaUnit.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHCessNaUnit).show();
+```
+
+`txtHCessNaUnit.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (blnStatus && t1Row != null) {
+```
+- Alert: "Service is mandatory."
+- Alert: "Value is Mandatory."
+- Alert: "SAC is mandatory for service "
+- Alert: "GST Type is mandatory for service "
+- Alert: "Service value can not be less than from "
+- Alert: "No item found to auto bifurctae this service amount!"
+- Alert: "Invalid amount."
+- Alert: "Valuation is Mandatory."
+- Alert: "Cess non advol rate is Mandatory !"
+- Alert: "Cess non advol rate unit is Mandatory !"
+- Alert: "Cess non advol amount is Mandatory !"
+- Alert: "Cess non advol details is not required"
+- Alert: "Cess non advol details is not required"
+- Alert: "Service a/c is required."
+- Alert: "Balancing a/c is required."
+- Alert: "SGST a/c is required."
+- Alert: "SGST-RCM a/c is required."
+- Alert: "UGST a/c is required."
+- Alert: "UGST-RCM a/c is required."
+- Alert: "CGST a/c is required."
+- Alert: "CGST-RCM a/c is required."
+- Alert: "IGST a/c is required."
+- Alert: "IGST-RCM a/c is required."
+- Alert: "IGST a/c is required."
+- Alert: "Cess-RCM a/c is required."
+- Alert: "Service already exists."
+
+### Screen `ServiceGrid`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+
+Other widgets (not in tab list): `grdServiceDetail` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `grdServiceDetail`: Service [Text, w0]; SAC [Text, w85]; Amount [Text, w85]; GST @ [Text, w85];  [Text, w85]; CGST [Text, w85]; IGST [Text, w85]; VAT [Text, w85]; Cess [Text, w85]; Cess NA [Text, w85]
+
+**Defaults when the screen opens** (`iniDefaultValues`):
+- calls server `getDefaultValues`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`serviceDetailGridEdit.addCallBack` → `onOk()`
+```java
+callBack.onOk(serviceDetail_Mdl);
+```
+
+`serviceDetailGridEdit.addCallBack` → `onDelete()`
+```java
+callBack.onDelete();
+```
+- Alert: "Place of Supply is mandatory."
+
 ## Files
 | file | lines |
 |---|---|

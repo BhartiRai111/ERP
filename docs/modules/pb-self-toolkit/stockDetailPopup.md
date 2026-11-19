@@ -12,6 +12,21 @@
 - Lookups/suggestions: -
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `StockDetailPopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Properties | DmTextBox | `txtItem` | `100, true` |
+| 2 | - | DmTextBox | `txtProperties` | `100, true` |
+
+Other widgets (not in tab list): `grdStockDetail` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `grdStockDetail`: Site [Text, w120, siteName]; Godown [Text, w120, godown]; SKU [Text, w70, unit]; Min. [Text, w80, minStock]; Max. [Text, w80, maxStock]; Re-Order [Text, w100, reOrder]; Current Stock [Text, w100, currentStock]
+
 ## Files
 | file | lines |
 |---|---|

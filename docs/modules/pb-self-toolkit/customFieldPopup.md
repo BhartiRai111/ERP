@@ -12,6 +12,19 @@
 - Lookups/suggestions: -
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `CustomFieldPopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+
+Other widgets (not in tab list): `gridCustomField` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `gridCustomField`: Custom Field Name [Text, w1]
+
 ## Files
 | file | lines |
 |---|---|

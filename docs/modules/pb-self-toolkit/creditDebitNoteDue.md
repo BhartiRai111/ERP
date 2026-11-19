@@ -12,6 +12,351 @@
 - Lookups/suggestions: getTxtHVoucher, getTxtHReferenceType, getTxtHDIfferenceType, getTxtHSupplier
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `CreditDebitNoteDue`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Voucher Type | DmTextHelp | `txtHVoucherType` | `TxtHReferenceType_PrpAcs, 4, true` |
+| 2 | Entry Date | DmTextBox | `txtEntryDate` | `20, true` |
+| 3 | Reference Type | DmTextHelp | `txtHReferenceType` | `KeyField_PrpAcs, 4, true` |
+| 4 | Entry No. | DmTextBox | `txtEntryNo` | `11, true` |
+| 5 | Party Name | DmTextHelp | `txtHParty` | `TxtHSupplier_PrpAcs, 6, true` |
+| 6 | Difference Type | DmTextHelp | `txtHDifferenceType` | `KeyField_PrpAcs, 5, true` |
+| 7 | From Date | DmTextBox | `txtFromDate` | `20, true` |
+| 8 | To Date | DmTextBox | `txtToDate` | `20, true` |
+
+Other widgets (not in tab list): `txtWTACode` (DmTextBox), `dmFind` (DmFind), `grdItemDetail` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `txtHVoucherType`: Type [Text, w0, name]
+- `txtHReferenceType`: Type [Text, w0, name]
+- `txtHDifferenceType`: Type [Text, w0]
+- `txtHParty`: Name [Text, w0, name]; Manual Code [Text, w100, manualCode]; City [Text, w150, cityName]
+- `dmFind`: Entry No. [Text, w150, recId]; Date [Text, w80, replace(convert(varchar, v_Date, 106), ' ','-')]; Type [Text, w50, description]; Difference Type [Text, w230, name]; Approval [Text, w130, approvedBy]
+- `grdItemDetail`: Entry No. [Text, w120]; Entry Date [Text, w80]; Party Bill No. [Text, w120]; Party Bill Date [Text, w80]; Item Name [Text, w210]; Quantity [Text, w80]; Rate [Text, w80]; Amount [Text, w80]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHVoucherType` → `getTxtHVoucher`
+- `txtHReferenceType` → `getTxtHReferenceType`
+- `txtHParty` → `getTxtHSupplier`
+- `txtHDifferenceType` → `getTxtHDIfferenceType`
+- Find popup → `getFind`
+
+**Save: model field ← widget** (`topControlSaveInitialize`):
+- `SharedKeyFieldCode` ← topControl.getDocId()
+- `SharedKeyFieldName` ← DmShared.xNull(txtEntryNo.getText())
+- `U_EntDt_LatestLine` ← DmShared.xNull(txtEntryNo.getTag())
+- `VoucherTypeCode` ← DmShared.xNull(txtHVoucherType.getTag())
+- `VoucherTypeName` ← DmShared.xNull(txtHVoucherType.getText())
+- `ReferenceCode` ← DmShared.xNull(txtHReferenceType.getTag())
+- `ReferenceName` ← DmShared.xNull(txtHReferenceType.getText())
+- `EntryDate` ← DmShared.xNull(txtEntryDate.getText())
+- `DiffeTypeCode` ← DmShared.xNull(txtHDifferenceType.getTag())
+- `DiffeTypeName` ← DmShared.xNull(txtHDifferenceType.getText())
+- `PartyCode` ← DmShared.xNull(txtHParty.getTag())
+- `PartyName` ← DmShared.xNull(txtHParty.getText())
+- `FromDate` ← DmShared.xNull(txtFromDate.getText())
+- `ToDate` ← DmShared.xNull(txtToDate.getText())
+- `WtaCode` ← DmShared.iNull(txtWTACode.getText()).toString()
+
+**Load (record opened): widget ← model** (`topControlMoveRecSuccess`):
+- `userControl.setTextBlog` ← preparedByBlog, DmShared.xNull(mrTemp.getSharedPreparedBy())
+- `userControl.setTextBlog` ← modifiedByBlog, DmShared.xNull(mrTemp.getSharedModifiedBy())
+- `userControl.setTextBlog` ← approvedByBlog, mrTemp.getApprovedBy()
+- `txtEntryNo.setText` ← mrTemp.getRecid().getRecIdValue()
+- `txtEntryDate.setText` ← mrTemp.getEntryDate()
+- `txtHVoucherType.setTag2nd` ← mrTemp.getVoucherTypeCode()
+- `txtHVoucherType.setTag` ← mrTemp.getVoucherTypeCode()
+- `txtHVoucherType.setText` ← mrTemp.getVoucherTypeName()
+- `txtHReferenceType.setTag` ← mrTemp.getReferenceCode()
+- `txtHReferenceType.setText` ← mrTemp.getReferenceName()
+- `txtHDifferenceType.setTag` ← mrTemp.getDiffeTypeCode()
+- `txtHDifferenceType.setText` ← mrTemp.getDiffeTypeName()
+- `txtHParty.setTag` ← mrTemp.getPartyCode()
+- `txtHParty.setText` ← mrTemp.getPartyName()
+- `txtFromDate.setText` ← mrTemp.getFromDate()
+- `txtToDate.setText` ← mrTemp.getToDate()
+- `txtWTACode.setText` ← mrTemp.getWtaCode()
+- userControl.setTextBlog(preparedByBlog, DmShared.xNull(mrTemp.getSharedPreparedBy()))
+- userControl.setTextBlog(modifiedByBlog, DmShared.xNull(mrTemp.getSharedModifiedBy()))
+- userControl.setTextBlog(approvedByBlog, mrTemp.getApprovedBy())
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtEntryNo.setEnabled(false)`
+- `txtEntryNo.setEnabled(false)`
+- `txtHVoucherType.setEnabled(false)`
+
+**On New click:**
+- `onAdd()`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtEntryNo.setEnabled(false);
+if (topControl.getMode().equalsIgnoreCase("Edit")) {
+txtEntryNo.setEnabled(false);
+txtHVoucherType.setEnabled(false);
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`topControl.addNewHandeller` → `newClicked()`
+```java
+onAdd();
+```
+
+`topControl.addEditHandeller` → `editClicked()`
+```java
+onEdit();
+```
+
+`topControl.addDeleteHandeller` → `deleteClicked()`
+```java
+if (DmShared.xNull(userControl.getTextBlog(approvedByBlog)).equalsIgnoreCase("")) {
+new DmConfirmMessageBox("Are you sure? You want to delete this record.", new DialogHideEvent.DialogHideHandler() {
+public void onDialogHide(DialogHideEvent event) {
+if (event.getHideButton() == Dialog.PredefinedButton.YES) {
+topControlDelete(topControl.getDocId());
+showModifyReason();
+}).show();
+} else {
+topControl.btnClick("");
+new DmAlertMessageBox("Record is approved. You can't delete this record.", (DmTextBox) null).show();
+...
+```
+
+`topControl.addDeleteHandeller` → `onDialogHide()`
+```java
+if (event.getHideButton() == Dialog.PredefinedButton.YES) {
+topControlDelete(topControl.getDocId());
+showModifyReason();
+```
+
+`topControl.addCardHandeller` → `cardClicked()`
+```java
+topControlCard();
+```
+
+`topControl.addFindHandeller` → `findClicked()`
+```java
+flwForm.remove(vrtInnerForm);
+flwForm.add(dmFind);
+```
+
+`topControl.addMoveRecHandeller` → `moveRec()`
+```java
+topControlMoveRec(strFetchCode);
+```
+
+`topControl.addSaveHandeller` → `saveClicked()`
+```java
+saveValidation();
+```
+
+`topControl.addCloseHandeller` → `closeClicked()`
+```java
+DmClient.<SetWidgetInvoker>getStoreItem("swiEvent").closeWidget(CreditDebitNoteDue.this);
+```
+
+`walkThrough.addCallBack` → `onClose()`
+```java
+topControlMoveRec(topControl.getDocId());
+```
+
+`txtHVoucherType.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHVoucher(DmShared.xNull(voucherCategory), helper, blnToEndOfFile, new AsyncCal
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHVoucherType).show();
+public void onSuccess(DmResultPageing<List<TxtHVoucherType_Mdl>> result) {
+if (result.isStatus()) {
+txtHVoucherType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHVoucherType).show();
+```
+
+`txtHVoucherType.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHVoucherType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHVoucherType).show();
+```
+
+`txtHReferenceType.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHReferenceType(DmShared.xNull(voucherCategory), helper, blnToEndOfFile, new As
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHReferenceType).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHReferenceType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHReferenceType).show();
+```
+
+`txtHReferenceType.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHReferenceType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHReferenceType).show();
+```
+
+`txtHReferenceType.addTextHelpCallBack` → `getSelectedRow()`
+```java
+txtHReferenceType.setTag2nd(DmShared.xNull(t1Row.getSharedPreparedBy()));
+grdItemDetail.getGrid().getStore().clear();
+```
+
+`txtHParty.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHSupplier(txtHReferenceType.getTag2nd(), false, txtHReferenceType.getTag(), he
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHParty).show();
+public void onSuccess(DmResultPageing<List<TxtHSupplier_Mdl>> result) {
+if (result.isStatus()) {
+txtHParty.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHParty).show();
+```
+
+`txtHParty.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHParty.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHParty).show();
+```
+
+`txtHParty.addTextHelpCallBack` → `getSelectedRow()`
+```java
+grdItemDetail.getGrid().getStore().clear();
+```
+
+`txtHDifferenceType.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHDIfferenceType(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHDifferenceType).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHDifferenceType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHDifferenceType).show();
+```
+
+`txtHDifferenceType.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHDifferenceType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHDifferenceType).show();
+```
+
+`txtHDifferenceType.addTextHelpCallBack` → `getSelectedRow()`
+```java
+grdItemDetail.getGrid().getStore().clear();
+```
+
+`dmFind.addHelpGridCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getFind(topControl.getPermissions(), helper, blnToEndOfFile, new AsyncCallback<DmRes
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), dmFind.getTextBox()).show();
+public void onSuccess(DmResultPageing<List<Find_Mdl>> result) {
+if (result.isStatus()) {
+dmFind.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), dmFind.getTextBox()).show();
+```
+
+`dmFind.addHelpGridCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+dmFind.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), dmFind.getTextBox()).show();
+```
+
+`dmFind.addHelpGridCallBack` → `getSelectedRow()`
+```java
+flwForm.remove(dmFind);
+flwForm.add(vrtInnerForm);
+if (blnStatus) {
+topControlMoveRec(tRow.getSharedKeyFieldCode());
+```
+
+`grdPopup.addCallBack` → `onOk()`
+```java
+grdItemDetail.getGrid().getSelectionModel().getSelectedItem().setQty(DmShared.xNull(popup_Mdl.getQty()));
+grdItemDetail.getGrid().getSelectionModel().getSelectedItem().setRate(DmShared.xNull(popup_Mdl.getRate()));
+grdItemDetail.getGrid().getSelectionModel().getSelectedItem().setAmount(DmShared.xNull(popup_Mdl.getAmount()));
+grdItemDetail.commitChanges();
+```
+
+`grdPopup.addCallBack` → `onClose()`
+```java
+grdPopup.hide();
+```
+
+`modifyReason.addCallBack` → `onOk()`
+```java
+try {
+CreditDebitNoteDue.this.modifyReasonMdl = modifyReason;
+if (topControl.getMode().equalsIgnoreCase("Browse") && DmShared.iNull(topControl.getDocId()).longValue() > 0) {
+topControlDelete(topControl.getDocId());
+} else {
+topControlSave();
+} catch (Exception e) {
+new DmAlertMessageBox(e.getMessage(), (DmTextBox) null).show();
+```
+
+**Top control options:** setOtherRequired(false), setRefreshRequired(false), setDisplay(true)
+
+**Modify reason popup:** yes (Edit save and Delete).
+- Confirm: "Are you sure? You want to delete this record."
+- Confirm: "Requisition Quantity changed for <b>"
+- Alert: "Record is approved. You can't delete this record."
+- Alert: "Please select 'Difference Type'."
+- Alert: "Please select 'Ref. Type.'"
+- Alert: "Please enter 'From Date.'"
+- Alert: "Please enter 'To Date.'"
+- Alert: "Please select 'To Date.'"
+- Alert: "Please fill 'Entry Date'"
+- Alert: "Please select 'Ref. Type'"
+- Alert: "Please select 'Difference Type'"
+- Alert: "Please select 'Party Name'"
+- Alert: "Please fill 'From Date'"
+- Alert: "Please fill 'To Date'"
+- Alert: "Record is approved. You can't modify this record."
+
+### Screen `GridEditPopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Quantity | DmTextBoxNumeric | `txtQty` | `2, false, 12, true` |
+| 2 | Rate | DmTextBoxNumeric | `txtRate` | `2, false, 12, true` |
+| 3 | Amount | DmTextBoxNumeric | `txtAmount` | `2, false, 12, true` |
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtQty.setEnabled(isEditable)`
+- `txtRate.setEnabled(isEditable)`
+- `txtAmount.setEnabled(isEditable)`
+- `flwOk.setVisible(isEditable)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtQty.setEnabled(isEditable);
+txtRate.setEnabled(isEditable);
+txtAmount.setEnabled(isEditable);
+flwOk.setVisible(isEditable);
+```
+
 ## Files
 | file | lines |
 |---|---|

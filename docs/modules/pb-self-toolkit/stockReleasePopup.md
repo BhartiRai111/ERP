@@ -12,6 +12,120 @@
 - Lookups/suggestions: -
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `StockReleaseGridEditPopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Site Name | DmTextBox | `txtSiteName` | `` |
+| 2 | Warehouse | DmTextBox | `txtDepartment` | `` |
+| 3 | Item | DmTextBox | `txtItemName` | `` |
+| 4 | - | DmTextBox | `txtProperties` | `` |
+| 5 | Stock Release Qty | DmTextBoxNumeric | `txtStockReserveQty` | `4, false, 12, false` |
+| 6 | - | DmTextBoxNumeric | `txtStockReleaseQty` | `4, false, 12, true` |
+
+Other widgets (not in tab list): `txtStockReserveQtyBox` (DmTextBox), `txtStockReleaseQtyBox` (DmTextBox)
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtSiteName.setEnabled(false)`
+- `txtDepartment.setEnabled(false)`
+- `txtItemName.setEnabled(false)`
+- `txtStockReserveQty.setEnabled(false)`
+- `txtStockReleaseQty.setEnabled(super.isOkEnable())`
+- `txtProperties.setReadOnly(true)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtSiteName.setEnabled(false);
+txtDepartment.setEnabled(false);
+txtItemName.setEnabled(false);
+txtStockReserveQty.setEnabled(false);
+txtStockReleaseQty.setEnabled(super.isOkEnable());
+txtProperties.setReadOnly(true);
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`propertyPopup.addCallBack` → `onOk()`
+```java
+itemProperty_Mdl = property_Mdl;
+txtProperties.setText(DmShared.xNull(property_Mdl.getPropertiesCsv()));
+txtProperties.setTag(itemProperty_Mdl.getIbCode());
+txtProperties.setFocus(true);
+```
+
+`propertyPopup.addCallBack` → `onClose()`
+```java
+txtProperties.setFocus(true);
+```
+
+`aProperties.addClickHandler` → `onClick()`
+```java
+showPropertyPopUp();
+```
+
+`txtProperties.addKeyUpHandler` → `onKeyUp()`
+```java
+if (event.getNativeKeyCode() == KeyCodes.KEY_SPACE) {
+if (event.getSource() == txtProperties) {
+showPropertyPopUp();
+```
+
+`txtProperties.addKeyDownHandler` → `onKeyDown()`
+```java
+if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+if (event.getSource() == txtProperties) {
+if (!DmShared.xNull(txtItemName.getTag2nd()).trim().equalsIgnoreCase("")) {
+try {
+ItemPropertyPopup_Vld.validateProperties(StockReleasePopup_Vld.getApplicableProperties(itemProperty_Mdl.getPropertyList(
+} catch (DmException e) {
+showPropertyPopUp();
+```
+- Alert: "Release qty. can not be zero!"
+- Alert: "Release qty. can not be greater than reserved qty.!"
+
+### Screen `StockReleasePopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+
+Other widgets (not in tab list): `txtItemName` (DmTextBox), `txtOrderPlan` (DmTextBox), `txtStockReserveQty` (DmTextBoxNumeric), `txtStockReserveQtyBox` (DmTextBox), `txtStockReleasedQty` (DmTextBoxNumeric), `txtStockReleasedQtyBox` (DmTextBox), `txtStockReleaseQty` (DmTextBoxNumeric), `txtStockReleaseQtyBox` (DmTextBox), `grdStockDetail` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `grdStockDetail`: Site [Text, w180]; Warehouse [Text, w180]; Stock Reserve [Text, w100]; Stock Release [Text, w100]; Properties [Text, w620]
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtItemName.setEnabled(false)`
+- `txtOrderPlan.setEnabled(false)`
+- `txtStockReleaseQty.setEnabled(false)`
+- `txtStockReserveQty.setEnabled(false)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtItemName.setEnabled(false);
+txtOrderPlan.setEnabled(false);
+txtStockReleaseQty.setEnabled(false);
+txtStockReserveQty.setEnabled(false);
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`stockPopupGridEdit.addCallBack` → `onOk()`
+```java
+grdStockDetail.commitChanges();
+calculate();
+```
+
+`stockPopupGridEdit.addCallBack` → `onDelete()`
+```java
+grdStockDetail.commitChanges();
+calculate();
+```
+
 ## Files
 | file | lines |
 |---|---|

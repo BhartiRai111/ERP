@@ -12,6 +12,381 @@
 - Lookups/suggestions: getTxtHDepartment, getTxtHPBillNo, getTxtHReelNo, getTxtHItem, getTxtHBF, getTxtHGSM, getTxtHUnit
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `Features`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Show Used Reels | DmGridPaging | `reelSearchGrid` | `GrdPaging_PrpAcs, 13, false` |
+| 2 | - | DmTextBox | `txtSearchValue` | `50, false` |
+| 3 | PBill No. | DmCheckBox | `cbPBillNo` | `` |
+| 4 | Reel/Bundle No. | DmTextHelpMulti | `txtHDepartment` | `com.google.gwt.core.client.KeyField_PrpAcs, 5` |
+| 5 | - | DmTextHelpMulti | `txtHOrderNo` | `com.google.gwt.core.client.TxtHOrderNo_PrpAcs, 6` |
+| 6 | - | DmTextHelpMulti | `txtHPBillNo` | `com.google.gwt.core.client.TxtHPBillNo_PrpAcs, 6` |
+| 7 | - | DmTextHelpMulti | `txtHReelNo` | `com.google.gwt.core.client.GrdPaging_PrpAcs, 10` |
+| 8 | Length | DmTextHelpMulti | `txtHItem` | `com.google.gwt.core.client.GridItem_PrpAcs, 10` |
+| 9 | - | DmTextHelp | `txtHBF` | `com.google.gwt.core.client.KeyField_PrpAcs, 6, false` |
+| 10 | - | DmTextHelp | `txtHGSM` | `com.google.gwt.core.client.KeyField_PrpAcs, 6, false` |
+| 11 | - | DmTextBox | `txtWidth` | `50, false` |
+| 12 | - | DmTextBox | `txtLength` | `50, false` |
+| 13 | Weight | DmTextHelp | `txtHReamWeight` | `TxtHGateEntryNo_PrpAcs, 6, false` |
+| 14 | - | DmTextBox | `txtSheetPerReam` | `50, false` |
+| 15 | - | DmTextBox | `txtBundle` | `50, false` |
+| 16 | - | DmTextBox | `txtWeight` | `50, false` |
+| 17 | - | DmCheckBox | `cbShowUsedReels` | `` |
+
+Other widgets (not in tab list): `txtHBarCode` (DmTextBox), `txtRate` (DmTextBox), `txtHUnit` (DmTextHelp), `checkUncheckAll` (DmCheckBox)
+
+**Grid / popup columns** (header, width, db field):
+- `txtHDepartment`: Name [Text, w260, name]
+- `txtHOrderNo`: Order No. [Text, w120, recId]; Order Date [Text, w80, replace(convert(varchar, soDate, 106), ' ','-')]
+- `txtHPBillNo`: Bill No. [Text, w120, recId]; ShortName [Text, w80, VTypeShortName]; Date [Text, w80, replace(convert(varchar, soDate, 106), ' ','-')]
+- `txtHItem`: Name [Text, w250, name]; Manual Code [Text, w100, manualCode]; Stock [Text, w100, currentStock]
+- `txtHReelNo`: Reel/Bundle No. [Text, w120, name]; Item Nature [Text, w120, name]; SO No. [Text, w120, soRecId]; SO Date [Text, w80, soV_Date]; Item Name [Text, w180, itemName]; BF [Text, w50, bf]; GSM [Text, w50, gsm]; Width [Text, w60, width]; Size Unit [Text, w60, sizeUnit]; Weight [Text, w70, weight]
+- `txtHBF`: Name [Text, w1, name]
+- `txtHGSM`: Name [Text, w1, name]
+- `txtHUnit`: Name [Text, w1, unitName]
+- `txtHReamWeight`: Ream Weight [Text, w80, reamWeight]; Bundle(s) [Text, w80, bundle]; Sheet [Text, w60, sheetsPerReam]; Ream(s) [Text, w80, reamsPerBundle]; stock [Text, w80]; godown [Text, w180, godownName]
+- `reelSearchGrid`:  [Text, w30, isChecked]; Godown [Text, w120, departmentName]; Reel/Bundle No. [Text, w120, name]; Item Nature [Text, w70, itemNatureName]; Item Name [Text, w180, itemName]; BF [Text, w30, bf]; GSM [Text, w30, gsm]; Width [Text, w60, width]; Length [Text, w60, length]; Size Unit [Text, w60, sizeUnit]; Weight [Text, w70, weight]; Rate [Text, w70, rate]; SO No. [Text, w120, soRecId]; SO Date [Text, w80, replace(convert(varchar, soV_Date, 106), ' ','-')]; Bill No. [Text, w120, pBillRecId]; Bill Date [Text, w80, replace(convert(varchar, pBillDate, 106), ' ','-')]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHBF` → `getTxtHBF`
+- `txtHGSM` → `getTxtHGSM`
+- `txtHUnit` → `getTxtHUnit`
+- `txtHReamWeight` → `getTxtReamWeight`
+- `reelSearchGrid` → `getTxtHReelNo`
+
+**Enable/disable rules** (`manageDIsplay(flag)`, flag = editing mode):
+- `cbShowUsedReels.setVisible(false)`
+- `lblShowUsedReels.setVisible(false)`
+- `cbShowUsedReels.setVisible(true)`
+- `lblShowUsedReels.setVisible(true)`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHDepartment.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHDepartment(DmShared.xNull(""), helper, blnToEndOfFile, new AsyncCallback<DmRe
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHDepartment).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHDepartment.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHDepartment).show();
+```
+
+`txtHDepartment.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHDepartment.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHDepartment).show();
+```
+
+`txtHDepartment.addTextHelpMultiCallBack` → `getSelection()`
+```java
+if (!DmShared.xNull(txtHDepartment.getTag()).equalsIgnoreCase(DmShared.xNull(txtHDepartment.getTag2nd()))) {
+clearPartially();
+txtHDepartment.setTag2nd(DmShared.xNull(txtHDepartment.getTag()));
+svm.setDepartmentCode(DmShared.xNull(txtHDepartment.getTag()));
+svm.setDepartmentName(DmShared.xNull(txtHDepartment.getText()));
+reQuery();
+```
+
+`txtHOrderNo.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getSoOrderNo(hvm, helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<Grd
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHOrderNo).show();
+public void onSuccess(DmResultPageing<List<GrdOrdertDetails_Mdl>> result) {
+if (!result.isStatus()) {
+result.getData().clear();
+new DmAlertMessageBox(result.getErrorMessage(), txtHOrderNo).show();
+txtHOrderNo.setData(result.getData(), result.getPaging());
+```
+
+`txtHOrderNo.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (!result.isStatus()) {
+result.getData().clear();
+new DmAlertMessageBox(result.getErrorMessage(), txtHOrderNo).show();
+txtHOrderNo.setData(result.getData(), result.getPaging());
+```
+
+`txtHOrderNo.addTextHelpMultiCallBack` → `getSelection()`
+```java
+if (!DmShared.xNull(txtHOrderNo.getTag()).equalsIgnoreCase(DmShared.xNull(txtHOrderNo.getTag2nd()))) {
+clearPartially();
+txtHOrderNo.setTag2nd(DmShared.xNull(txtHOrderNo.getTag()));
+svm.setSoDocId(DmShared.xNull(txtHOrderNo.getTag()));
+svm.setSoRecId(DmShared.xNull(txtHOrderNo.getText()));
+reQuery();
+```
+
+`txtHPBillNo.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHPBillNo(hvm, helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<G
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHPBillNo).show();
+public void onSuccess(DmResultPageing<List<GrdOrdertDetails_Mdl>> result) {
+if (!result.isStatus()) {
+result.getData().clear();
+new DmAlertMessageBox(result.getErrorMessage(), txtHPBillNo).show();
+txtHPBillNo.setData(result.getData(), result.getPaging());
+```
+
+`txtHPBillNo.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (!result.isStatus()) {
+result.getData().clear();
+new DmAlertMessageBox(result.getErrorMessage(), txtHPBillNo).show();
+txtHPBillNo.setData(result.getData(), result.getPaging());
+```
+
+`txtHPBillNo.addTextHelpMultiCallBack` → `getSelection()`
+```java
+if (!DmShared.xNull(txtHPBillNo.getTag()).equalsIgnoreCase(DmShared.xNull(txtHPBillNo.getTag2nd()))) {
+clearPartially();
+txtHPBillNo.setTag2nd(DmShared.xNull(txtHPBillNo.getTag()));
+svm.setpBillDocId(DmShared.xNull(txtHPBillNo.getTag()));
+svm.setpBillRecId(DmShared.xNull(txtHPBillNo.getText()));
+reQuery();
+```
+
+`txtHReelNo.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHReelNo(false, hvm, svm, DmShared.xNull(txtHReelNo.getTag()), helper, blnToEnd
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHReelNo).show();
+public void onSuccess(DmResultPageing<List<ReelSheetSearchPopupGrid_Mdl>> result) {
+if (!result.isStatus()) {
+result.getData().clear();
+new DmAlertMessageBox(result.getErrorMessage(), txtHReelNo).show();
+txtHReelNo.setData(result.getData(), result.getPaging());
+```
+
+`txtHReelNo.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (!result.isStatus()) {
+result.getData().clear();
+new DmAlertMessageBox(result.getErrorMessage(), txtHReelNo).show();
+txtHReelNo.setData(result.getData(), result.getPaging());
+```
+
+`txtHReelNo.addTextHelpMultiCallBack` → `getSelection()`
+```java
+if (!DmShared.xNull(txtHReelNo.getTag()).equalsIgnoreCase(DmShared.xNull(txtHReelNo.getTag2nd()))) {
+clearPartially();
+txtHReelNo.setTag2nd(DmShared.xNull(txtHReelNo.getTag()));
+reQuery();
+```
+
+`txtHItem.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHItem(hvm, "", false, false,
+helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<TxtHItemName_Mdl>>>() {
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHItem).show();
+public void onSuccess(DmResultPageing<List<TxtHItemName_Mdl>> result) {
+if (result.isStatus()) {
+txtHItem.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItem).show();
+```
+
+`txtHItem.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHItem.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItem).show();
+```
+
+`txtHItem.addTextHelpMultiCallBack` → `getSelection()`
+```java
+if (!DmShared.xNull(txtHItem.getTag()).equalsIgnoreCase(DmShared.xNull(txtHItem.getTag2nd()))) {
+clearReelNoTxtHelp();
+txtHItem.setTag2nd(DmShared.xNull(txtHItem.getTag()));
+svm.setItemCode(DmShared.xNull(txtHItem.getTag()));
+svm.setItemName(DmShared.xNull(txtHItem.getText()));
+reQuery();
+```
+
+`txtHBF.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHBF(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFieldExt
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHBF).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHBF.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHBF).show();
+```
+
+`txtHBF.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHBF.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHBF).show();
+```
+
+`txtHBF.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (!DmShared.xNull(txtHBF.getTag()).equalsIgnoreCase(DmShared.xNull(txtHBF.getTag2nd()))) {
+clearReelNoTxtHelp();
+txtHBF.setTag2nd(DmShared.xNull(txtHBF.getTag()));
+svm.setBfCode(DmShared.xNull(txtHBF.getTag()));
+svm.setBfName(DmShared.xNull(txtHBF.getText()));
+reQuery();
+```
+
+`txtHGSM.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHGSM(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFieldEx
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHGSM).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHGSM.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHGSM).show();
+```
+
+`txtHGSM.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHGSM.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHGSM).show();
+```
+
+`txtHGSM.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (!DmShared.xNull(txtHGSM.getTag()).equalsIgnoreCase(DmShared.xNull(txtHGSM.getTag2nd()))) {
+clearReelNoTxtHelp();
+txtHGSM.setTag2nd(DmShared.xNull(txtHGSM.getTag()));
+svm.setGsmCode(DmShared.xNull(txtHGSM.getTag()));
+svm.setGsmName(DmShared.xNull(txtHGSM.getText()));
+reQuery();
+if (blnStatus && t1Row != null) {
+```
+
+`txtHUnit.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHUnit(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFieldE
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHUnit).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHUnit.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHUnit).show();
+```
+
+`txtHUnit.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHUnit.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHUnit).show();
+```
+
+`txtHUnit.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (!DmShared.xNull(txtHUnit.getTag()).equalsIgnoreCase(DmShared.xNull(txtHUnit.getTag2nd()))) {
+clearReelNoTxtHelp();
+txtHUnit.setTag2nd(DmShared.xNull(txtHUnit.getTag()));
+svm.setUnitCode(DmShared.xNull(txtHUnit.getTag()));
+svm.setUnitName(DmShared.xNull(txtHUnit.getText()));
+reQuery();
+if (blnStatus && t1Row != null) {
+```
+
+`txtHReamWeight.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtReamWeight(svm, hvm.getItemNature(), helper, blnToEndOfFile, new AsyncCallback
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHReamWeight).show();
+public void onSuccess(DmResultPageing<List<TxtHReamWeight_Mdl>> result) {
+if (result.isStatus()) {
+txtHReamWeight.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHReamWeight).show();
+```
+
+`txtHReamWeight.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHReamWeight.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHReamWeight).show();
+```
+
+`txtHReamWeight.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (!DmShared.xNull(txtHReamWeight.getTag()).equalsIgnoreCase(DmShared.xNull(txtHReamWeight.getTag2nd()))) {
+clearReelNoTxtHelp();
+txtHReamWeight.setTag2nd(DmShared.xNull(txtHReamWeight.getTag()));
+svm.setReamsWeightCode(DmShared.xNull(txtHReamWeight.getTag()));
+svm.setReamsWeightName(DmShared.xNull(txtHReamWeight.getText()));
+reQuery();
+if (blnStatus && t1Row != null) {
+txtSheetPerReam.setText(DmShared.xNull(t1Row.getNoOfReams()));
+txtBundle.setTag2nd(DmShared.xNull(t1Row.getNoOfBundle()));
+txtSheetPerReam.setEnabled(false);
+...
+```
+
+`reelSearchGrid.addCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(false).getTxtHReelNo(true, hvm, svm, DmShared.xNull(txtHReelNo.getTag()), helper, blnToEndOfFile, new
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), (DmTextBox) null).show();
+public void onSuccess(DmResultPageing<List<ReelSheetSearchPopupGrid_Mdl>> result) {
+if (!result.isStatus()) {
+new DmAlertMessageBox(result.getErrorMessage(), (DmTextBox) null).show();
+reelSearchGrid.setData(result.getData(), result.getPaging());
+reelSearchGrid.getDmGrid().commitChanges();
+checkUncheckWidget(false);
+Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+...
+```
+
+`reelSearchGrid.addCallBack` → `onSuccess()`
+```java
+if (!result.isStatus()) {
+new DmAlertMessageBox(result.getErrorMessage(), (DmTextBox) null).show();
+reelSearchGrid.setData(result.getData(), result.getPaging());
+reelSearchGrid.getDmGrid().commitChanges();
+checkUncheckWidget(false);
+Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+public void execute() {
+int checkedCount = 0;
+try {
+List<ReelSheetSearchPopupGrid_Mdl> grid_MdlList = reelSearchGrid.getDmGrid().getGrid().getStore().getAll();
+...
+```
+
+`reelSearchGrid.addCallBack` → `execute()`
+```java
+int checkedCount = 0;
+try {
+List<ReelSheetSearchPopupGrid_Mdl> grid_MdlList = reelSearchGrid.getDmGrid().getGrid().getStore().getAll();
+if (grid_MdlList.size() > 0) {
+for (ReelSheetSearchPopupGrid_Mdl grid_Mdl : reelSearchGrid.getDmGrid().getGrid().getStore().getAll()) {
+if (!DmShared.xNull(grid_Mdl.getSharedKeyFieldCode()).trim().equalsIgnoreCase("")) {
+if (DmShared.iNull(grid_Mdl.getIsChecked()).intValue() == 1) {
+++checkedCount;
+} else {
+grid_MdlList.remove(grid_Mdl);
+...
+```
+
 ## Files
 | file | lines |
 |---|---|

@@ -12,6 +12,340 @@
 - Lookups/suggestions: getTxtHItem, getTxtHStatus, getTxtHIndenter, getTxtHDepartment, getTxtHIndentNo
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `IndentApprovalGridEdit`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Ind. No. | DmTextBox | `txtIndNo` | `` |
+| 2 | Ind. Date | DmTextBox | `txtIndDate` | `` |
+| 3 | Ind. Type | DmTextBox | `txtIndCat` | `` |
+| 4 | Department | DmTextBox | `txtDepartment` | `` |
+| 5 | Site | DmTextBox | `txtSite` | `` |
+
+Other widgets (not in tab list): `txtCurrentUser` (DmTextBox), `grdItemDetails` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `grdItemDetails`: C/O [Text, w30]; Stock [Text, w40]; Item Name [Text, w1]; Properties [Text, w227]; Pack Size [Text, w227]; Appr. PC. [Text, w80]; Ind. PC. [Text, w80]; Appr. Qty. [Text, w80]; Ind. Qty. [Text, w80]; Unit [Text, w80]; Req. Date [Text, w80]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `walkThrough` → `openRecord`
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtIndCat.setEnabled(false)`
+- `txtIndDate.setEnabled(false)`
+- `txtIndNo.setEnabled(false)`
+- `txtSite.setEnabled(false)`
+- `txtDepartment.setEnabled(false)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtIndCat.setEnabled(false);
+txtIndDate.setEnabled(false);
+txtIndNo.setEnabled(false);
+txtSite.setEnabled(false);
+txtDepartment.setEnabled(false);
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`itemDetailGridEdit.addCallBack` → `onOk()`
+```java
+grdItemDetails.commitChanges();
+```
+
+`itemDetailGridEdit.addCallBack` → `onDelete()`
+```java
+grdItemDetails.commitChanges();
+```
+
+`walkThrough.addCallBack` → `onClose()`
+```java
+fillGrid(DmShared.iNull(txtIndNo.getTag()).toString());
+```
+- Alert: "Record is not updated by this user,so can't update."
+- Alert: "Indent is cancelled,Please refresh record."
+- Alert: "Indent is completed,Please refresh record."
+
+### Screen `IndentApproval`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | - | DmGridPaging | `dmGrd` | `Grd_PrpAcs, gridRows, false` |
+
+**Grid / popup columns** (header, width, db field):
+- `dmGrd`:  [Text, w30];  [Text, w25]; Appr. PC. [Text, w83, aprPc]; Ind. PC. [Text, w83, indPc]; Appr. Qty. [Text, w83, aprQty]; Ind. Qty. [Text, w83]; SKU [Text, w50, unitName]; Item Name [Text, w150, itemName]; Properties [Text, w235]; Pack Size [Text, w100]; Req. Date [Text, w80, reqDate]; Indent No. [Text, w80, recId]; Indent Date [Text, w80, v_Date]; Vr. Type [Text, w80, IndType]; Approved By [Text, w130, approvalDateTime]; Department [Text, w80, depName]; Indentor [Text, w150, indentorName]; Site [Text, w120, siteName]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `dmGrd` → `getFillRecords`
+
+**Defaults when the screen opens** (`iniDefaultValues`):
+- calls server `getDefaultValues`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`walkThrough.addCallBack` → `onClose()`
+```java
+dmGrd.reQuery();
+```
+
+`settingPopup.addCallBack` → `onOk()`
+```java
+indentApproval_Mdl = approvalEntry_Mdl;
+dmGrd.reQuery();
+```
+
+`gridEdit.addGridEditCallBack` → `onOk()`
+```java
+dmGrd.getDmGrid().commitChanges();
+dmGrd.reQuery();
+```
+
+`dmGrd.addCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(true).getFillRecords(param, vCatList, helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), (DmTextBox) null).show();
+public void onSuccess(DmResultPageing<List<GrdIndentApproval_Mdl>> result) {
+if (result.isStatus()) {
+dmGrd.setData(result.getData(), result.getPaging());
+```
+
+`dmGrd.addCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+dmGrd.setData(result.getData(), result.getPaging());
+```
+
+`dmGrd.addCallBack` → `getParam()`
+```java
+return indentApproval_Mdl;
+```
+- Confirm: "Are you sure? You want to close."
+
+### Screen `ItemDetailGridEdit`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Item Name | DmTextBox | `txtItemName` | `50, false` |
+| 2 | Properties | DmTextBox | `txtProperties` | `100, false` |
+| 3 | Pack Unit | DmTextBox | `txtPackSize` | `` |
+| 4 | - | DmTextBox | `txtPackUnit` | `` |
+| 5 | - | DmTextBoxNumeric | `txtApprPackCount` | `4, true, 10, false` |
+| 6 | - | DmTextBox | `txtApprPackUnit` | `` |
+| 7 | - | DmTextBoxNumeric | `txtApprovedQty` | `4, true, 10, false` |
+| 8 | - | DmTextBox | `txtAprUnit` | `20, false` |
+| 9 | - | DmTextBoxNumeric | `txtIndPackCount` | `4, true, 10, false` |
+| 10 | - | DmTextBox | `txtIndPackUnit` | `` |
+| 11 | - | DmTextBoxNumeric | `txtIndQty` | `4, true, 10, false` |
+| 12 | - | DmTextBox | `txtIndUnit` | `20, false` |
+| 13 | Required Date | DmTextBox | `txtReqDate` | `11, false` |
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtItemName.setEnabled(false)`
+- `txtReqDate.setEnabled(false)`
+- `txtIndQty.setEnabled(false)`
+- `txtProperties.setEnabled(false)`
+- `txtPackSize.setEnabled(false)`
+- `txtIndPackCount.setEnabled(false)`
+- `txtApprPackCount.setEnabled(false)`
+- `txtApprPackCount.setEnabled(true)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtItemName.setEnabled(false);
+txtReqDate.setEnabled(false);
+txtIndQty.setEnabled(false);
+txtProperties.setEnabled(false);
+txtPackSize.setEnabled(false);
+txtIndPackCount.setEnabled(false);
+if (DmShared.xNull(txtPackSize.getTag()).trim().equalsIgnoreCase("")) {
+txtApprPackCount.setEnabled(false);
+} else {
+txtApprPackCount.setEnabled(true);
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`propertyPopup.addCallBack` → `onOk()`
+```java
+propertyPopup_Mdl = property_Mdl;
+txtProperties.setText(DmShared.xNull(property_Mdl.getPropertiesCsv()));
+txtProperties.setTag(propertyPopup_Mdl.getIbCode());
+txtItemName.setFocus(true);
+```
+
+`propertyPopup.addCallBack` → `onClose()`
+```java
+txtProperties.setFocus(true);
+```
+
+`btnPopup.addClickHandler` → `onClick()`
+```java
+showPropertyPopUp();
+```
+- Alert: "Pack count is mandatory"
+- Alert: "Apr. Pack Count. should be less than or equal to Indent Pack Count."
+- Alert: "Apr. Qty. should be less than or equal to Indent Qty."
+
+### Screen `Setting`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | From Date | DmTextBox | `txtFromDate` | `15, false` |
+| 2 | To Date | DmTextBox | `txtToDate` | `15, false` |
+| 3 | Department | DmTextHelpMulti | `txtHDepartment` | `TxtHDepartment_Mdl_PrpAcs, 4` |
+| 4 | Indentor | DmTextHelpMulti | `txtHIndenter` | `KeyField_PrpAcs, 5` |
+| 5 | Item Name | DmTextHelpMulti | `txtHItemName` | `TxtHItemName_Mdl_PrpAcs, 5` |
+| 6 | Indent No. | DmTextHelpMulti | `txtHIndentNo` | `TxtHIndentNo_PrpAcs, 7` |
+| 7 | Status | DmTextHelp | `txtHStatus` | `KeyField_PrpAcs, 4, false` |
+
+**Grid / popup columns** (header, width, db field):
+- `txtHIndentNo`: Indent No. [Text, w90, indRecId]; Indent Type [Text, w80, category]; Indent Date [Text, w80, indDate]
+- `txtHDepartment`: Name [Text, w0, Name];  Manual Code [Text, w100, manualCode]
+- `txtHIndenter`: Name [Text, w0, Name]
+- `txtHItemName`: Item Name [Text, w200, name]; Manual Code [Text, w100, manualCode]; SKU [Text, w50, skuName]
+- `txtHStatus`: Status [Text, w150, Name]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHStatus` → `getTxtHStatus`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtFromDate.addValueChangeHandler` → `onValueChange()`
+```java
+txtFromDate.setText(DmClient.returnDate(txtFromDate.getText()));
+```
+
+`txtToDate.addValueChangeHandler` → `onValueChange()`
+```java
+txtToDate.setText(DmClient.returnDate(txtToDate.getText()));
+```
+
+`txtHIndenter.addTextHelpMultiCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(blnCallBackWait).getTxtHIndenter(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFi
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHIndenter).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHIndenter.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHIndenter).show();
+```
+
+`txtHIndenter.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHIndenter.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHIndenter).show();
+```
+
+`txtHIndenter.addTextHelpMultiCallBack` → `getSelection()`
+```java
+if (blnStatus) {
+```
+
+`txtHStatus.addTextHelpCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(blnCallBackWait).getTxtHStatus(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFiel
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHStatus).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHStatus.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHStatus).show();
+```
+
+`txtHStatus.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHStatus.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHStatus).show();
+```
+
+`txtHDepartment.addTextHelpMultiCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(blnCallBackWait).getTxtHDepartment(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<Key
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHDepartment).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHDepartment.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHDepartment).show();
+```
+
+`txtHDepartment.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHDepartment.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHDepartment).show();
+```
+
+`txtHDepartment.addTextHelpMultiCallBack` → `getSelection()`
+```java
+if (blnStatus) {
+```
+
+`txtHItemName.addTextHelpMultiCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(blnCallBackWait).getTxtHItem(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<TxtHItemN
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHItemName).show();
+public void onSuccess(DmResultPageing<List<TxtHItemName_Mdl>> result) {
+if (result.isStatus()) {
+txtHItemName.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemName).show();
+```
+
+`txtHItemName.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHItemName.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemName).show();
+```
+
+`txtHIndentNo.addTextHelpMultiCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(blnCallBackWait).getTxtHIndentNo(helper, blnToEndOfFile, vCatList, new AsyncCallback<DmResultPageing<
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHIndentNo).show();
+public void onSuccess(DmResultPageing<List<TxtHIndentNo_Mdl>> result) {
+if (result.isStatus()) {
+txtHIndentNo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHIndentNo).show();
+```
+
+`txtHIndentNo.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHIndentNo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHIndentNo).show();
+```
+
+`txtHIndentNo.addTextHelpMultiCallBack` → `getSelection()`
+```java
+if (blnStatus) {
+```
+- Alert: "From Date should be less than or equal to To Date."
+
 ## Files
 | file | lines |
 |---|---|

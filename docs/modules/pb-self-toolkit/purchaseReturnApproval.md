@@ -12,6 +12,164 @@
 - Lookups/suggestions: getTxtHStatus, getTxtHBillNo, getTxtHSupplier
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `PurchaseReturnApproval`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | - | DmGridPaging | `dmGrd` | `Grd_PrpAcs, gridRows, false` |
+
+**Grid / popup columns** (header, width, db field):
+- `dmGrd`:  [Text, w30];  [Text, w25]; Return No. [Text, w100, recId];  Date [Text, w100, v_date]; Return Type [Text, w100, short_Name]; Supplier [Text, w200, suppName]; Bifurcate Service [Text, w103]; SO. Reff. No. [Text, w80]; SO. Reff. Date [Text, w100]; Bill No. [Text, w200, partyBillNo]; Bill Date [Text, w200, replace(convert(varchar, partyBillDate, 106), ' ','-')]; Net Amount [Text, w200, oh_Amt_Net]; Reason [Text, w200, reason]; Approved By [Text, w130, approvedBy]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `dmGrd` → `getFillRecords`
+
+**Defaults when the screen opens** (`iniDefaultValues`):
+- calls server `getDefaultValues`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`walkThrough.addCallBack` → `onClose()`
+```java
+dmGrd.reQuery();
+```
+
+`settingPopup.addCallBack` → `onOk()`
+```java
+setting_Mdl = new Setting_Mdl();
+setting_Mdl = approvalEntry_Mdl;
+dmGrd.getDmGrid().commitChanges();
+dmGrd.reQuery();
+```
+
+`dmGrd.addCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(true).getFillRecords(param, helper, blnToEndOfFile, vCatPR, new AsyncCallback<DmResultPageing<List<Gr
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), (DmTextBox) null).show();
+public void onSuccess(DmResultPageing<List<GrdPurchaseReturnApproval_Mdl>> result) {
+if (result.isStatus()) {
+dmGrd.setData(result.getData(), result.getPaging());
+```
+
+`dmGrd.addCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+dmGrd.setData(result.getData(), result.getPaging());
+```
+
+`dmGrd.addCallBack` → `getParam()`
+```java
+return setting_Mdl;
+```
+- Confirm: "Are you sure? You want to close."
+
+### Screen `Setting`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | From Date | DmTextBox | `txtFromDate` | `15, false` |
+| 2 | To Date | DmTextBox | `txtToDate` | `15, false` |
+| 3 | Status | DmTextHelp | `txtHStatus` | `KeyField_PrpAcs, 2, true, false` |
+| 4 | Supplier | DmTextHelpMulti | `txtHSupplier` | `TxtHVendor_PrpAcs, 5` |
+| 5 | Bill No. | DmTextHelpMulti | `txtHBillNo` | `TxtHBillNo_PrpAcs, 7` |
+
+**Grid / popup columns** (header, width, db field):
+- `txtHBillNo`: Bill No. [Text, w100, recId]; Type [Text, w80, category ]; V_Date [Text, w100, replace(convert(varchar, v_Date, 106), ' ','-')]; Bill No. [Text, w100, partyBillNo]; Bill Date [Text, w100, replace(convert(varchar, partyBillDate, 106), ' ','-')]; Supplier [Text, w200, suppName]
+- `txtHSupplier`: Name [Text, w250, name]; Manual Code [Text, w100, manualCode]; City [Text, w100, cityName]
+- `txtHStatus`: Status [Text, w1, Name]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHStatus` → `getTxtHStatus`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtFromDate.addValueChangeHandler` → `onValueChange()`
+```java
+txtFromDate.setText(DmClient.returnDate(txtFromDate.getText()));
+```
+
+`txtToDate.addValueChangeHandler` → `onValueChange()`
+```java
+txtToDate.setText(DmClient.returnDate(txtToDate.getText()));
+```
+
+`txtHSupplier.addTextHelpMultiCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(blnCallBackWait).getTxtHSupplier(true, null, helper, blnToEndOfFile, vCatPR, new AsyncCallback<DmResu
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHSupplier).show();
+public void onSuccess(DmResultPageing<List<TxtHSupplier_Mdl>> result) {
+if (result.isStatus()) {
+txtHSupplier.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHSupplier).show();
+```
+
+`txtHSupplier.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHSupplier.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHSupplier).show();
+```
+
+`txtHSupplier.addTextHelpMultiCallBack` → `getSelection()`
+```java
+if (blnStatus) {
+```
+
+`txtHStatus.addTextHelpCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(blnCallBackWait).getTxtHStatus(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFiel
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHStatus).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHStatus.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHStatus).show();
+```
+
+`txtHStatus.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHStatus.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHStatus).show();
+```
+
+`txtHBillNo.addTextHelpMultiCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(blnCallBackWait).getTxtHBillNo(vCatPR, helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHBillNo).show();
+public void onSuccess(DmResultPageing<List<TxtHBillNo_Mdl>> result) {
+if (result.isStatus()) {
+txtHBillNo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHBillNo).show();
+```
+
+`txtHBillNo.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHBillNo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHBillNo).show();
+```
+
+`txtHBillNo.addTextHelpMultiCallBack` → `getSelection()`
+```java
+if (blnStatus) {
+```
+- Alert: "From Date should be less than or equal to To Date."
+
 ## Files
 | file | lines |
 |---|---|

@@ -12,6 +12,88 @@
 - Lookups/suggestions: getTxtHItemName, getTxtHValuationType
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `GridEditPopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Name | DmTextHelp | `txtHItemName` | `com.google.gwt.core.client.TxtHItemName_PrpAcs, 7, true` |
+| 2 | Valuation Type | DmTextHelp | `txtHValuationType` | `KeyField_PrpAcs, 4, true, true` |
+| 3 | Value | DmTextBoxNumeric | `txtValue` | `4, false, 12, false` |
+
+Other widgets (not in tab list): `txtUnit` (DmTextBox), `txtOverHead` (DmTextBox)
+
+**Grid / popup columns** (header, width, db field):
+- `txtHItemName`: Name [Text, w200, name]; Manual Code [Text, w100, manualCode]
+- `txtHValuationType`: Type [Text, w0]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHValuationType` → `getTxtHValuationType`
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtHItemName.setEnabled(false)`
+- `txtHValuationType.setEnabled(false)`
+- `txtOverHead.setEnabled(false)`
+- `txtValue.setEnabled(flag)`
+- `flwOk.setVisible(flag)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+boolean flag = DmShared.xNull(headerEntry.topControl.getMode()).equalsIgnoreCase("New")
+|| DmShared.xNull(headerEntry.topControl.getMode()).equalsIgnoreCase("Edit");
+txtHItemName.setEnabled(false);
+txtHValuationType.setEnabled(false);
+txtOverHead.setEnabled(false);
+txtValue.setEnabled(flag);
+flwOk.setVisible(flag);
+txtValue.setFocus(true);
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHValuationType.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHValuationType(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHValuationType).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHValuationType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHValuationType).show();
+```
+
+`txtHValuationType.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHValuationType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHValuationType).show();
+```
+- Alert: "Name is mandatory."
+- Alert: "Valuation Type is Mandatory."
+
+### Screen `OtherChargesGrid`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+
+Other widgets (not in tab list): `gridOtherCharges` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `gridOtherCharges`: Item Name [Text]; Valuation Type [Text, w120]; Value [Text, w120]; Quantity [Text, w120]; Amount [Text, w85]
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`gridEditPopup.addCallBack` → `onOk()`
+```java
+callBack.onOk(calculate(popup_Mdl));
+```
+
 ## Files
 | file | lines |
 |---|---|

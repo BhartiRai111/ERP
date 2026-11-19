@@ -1,0 +1,264 @@
+# pb-job-work / jobWorkGroup
+
+> Auto-extracted facts from legacy GWT source (`legacy-gwt/paperbiz/jobWork/src/jobWorkGroup/`). Hand-written notes are in the "Notes" section.
+
+## Summary (auto-derived from SQL + validator)
+- Insert tables: jobWorkGroup
+- Update tables: jobWorkGroup
+- Delete cascade (in order): jobWorkGroup
+- Duplicate checks on save:
+  - `SELECT COUNT(dm.name) AS cnt FROM jobWorkGroup as dm WHERE LOWER(dm.name) = :name AND dm.code <> :code`
+- Delete: **no in-use check in code** (relies on DB foreign keys; DB error message is returned)
+- Validations: Job Work Group (Text)
+- Lookups/suggestions: getSuggestionJobWorkGroup
+- CSV export: no
+
+## Screen spec (auto-extracted from client)
+### Screen `JobWorkGroup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Job Work Group | DmSuggestBox | `txtJobWorkGroupName` | `35, 10, true, "Name", DmDataType.STRING` |
+
+Other widgets (not in tab list): `dmFind` (DmFind)
+
+**Grid / popup columns** (header, width, db field):
+- `dmFind`: Job Work Group [Text, w0, name]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtJobWorkGroupName` → `getSuggestionJobWorkGroup`
+- Find popup → `getFind`
+
+**Save: model field ← widget** (`topControlSaveInitialize`):
+- `SharedKeyFieldCode` ← topControl.getDocId()
+- `SharedKeyFieldName` ← DmShared.xNull(txtJobWorkGroupName.getText())
+
+**Load (record opened): widget ← model** (`topControlMoveRecSuccess`):
+- `txtJobWorkGroupName.setText` ← data.getSharedKeyFieldName()
+- `userControl.setTextBlog` ← preparedByBlog, data.getSharedPreparedBy()
+- `userControl.setTextBlog` ← modifiedByBlog, data.getSharedModifiedBy()
+- userControl.setTextBlog(preparedByBlog, data.getSharedPreparedBy())
+- userControl.setTextBlog(modifiedByBlog, data.getSharedModifiedBy())
+
+**On New click:**
+- `clear()`
+- `txtJobWorkGroupName.setFocus(true)`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`modifyReason.addCallBack` → `onOk()`
+```java
+try {
+JobWorkGroup.this.modifyReasonMdl = modifyReason;
+if (topControl.getMode().equalsIgnoreCase("Browse") && DmShared.iNull(topControl.getDocId()).longValue() > 0) {
+topControlDelete(topControl.getDocId());
+} else {
+topControlSave();
+} catch (Exception e) {
+new DmAlertMessageBox(e.getMessage(), (DmTextBox) null).show();
+```
+
+`topControl.addNewHandeller` → `newClicked()`
+```java
+clear();
+txtJobWorkGroupName.setFocus(true);
+```
+
+`topControl.addEditHandeller` → `editClicked()`
+```java
+txtJobWorkGroupName.setFocus(true);
+```
+
+`topControl.addDeleteHandeller` → `deleteClicked()`
+```java
+new DmConfirmMessageBox("Are you sure? You want to delete this record.", new DialogHideEvent.DialogHideHandler() {
+public void onDialogHide(DialogHideEvent event) {
+if (event.getHideButton() == Dialog.PredefinedButton.YES) {
+showModifyReason();
+}).show();
+```
+
+`topControl.addDeleteHandeller` → `onDialogHide()`
+```java
+if (event.getHideButton() == Dialog.PredefinedButton.YES) {
+showModifyReason();
+```
+
+`topControl.addCardHandeller` → `cardClicked()`
+```java
+topControlCard();
+```
+
+`topControl.addFindHandeller` → `findClicked()`
+```java
+flwForm.remove(vrtInnerForm);
+flwForm.add(dmFind);
+```
+
+`topControl.addMoveRecHandeller` → `moveRec()`
+```java
+topControlMoveRec(strFetchCode);
+```
+
+`topControl.addSaveHandeller` → `saveClicked()`
+```java
+if (DmShared.xNull(topControl.getMode()).equalsIgnoreCase("Edit")) {
+showModifyReason();
+} else {
+topControlSave();
+```
+
+`topControl.addCloseHandeller` → `closeClicked()`
+```java
+DmClient.<SetWidgetInvoker>getStoreItem("swiEvent").closeWidget(JobWorkGroup.this);
+```
+
+`txtJobWorkGroupName.addCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(blnCallBackWait).getSuggestionJobWorkGroup(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtJobWorkGroupName).show();
+public void onSuccess(DmResultPageing<List<String>> result) {
+if (result.isStatus()) {
+txtJobWorkGroupName.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtJobWorkGroupName).show();
+```
+
+`txtJobWorkGroupName.addCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtJobWorkGroupName.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtJobWorkGroupName).show();
+```
+
+`dmFind.addHelpGridCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(blnCallBackWait).getFind(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<Find_Mdl>>>()
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), dmFind.getTextBox()).show();
+public void onSuccess(DmResultPageing<List<Find_Mdl>> result) {
+if (result.isStatus()) {
+dmFind.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), dmFind.getTextBox()).show();
+```
+
+`dmFind.addHelpGridCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+dmFind.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), dmFind.getTextBox()).show();
+```
+
+`dmFind.addHelpGridCallBack` → `getSelectedRow()`
+```java
+flwForm.remove(dmFind);
+flwForm.add(vrtInnerForm);
+if (blnStatus) {
+topControlMoveRec(tRow.getSharedKeyFieldCode());
+```
+
+**Top control options:** setOtherRequired(false), setRefreshRequired(false), setDisplay(true)
+
+_Print permission "P" is removed for this screen (replace "P" with "*")._
+
+**Modify reason popup:** yes (Edit save and Delete).
+- Confirm: "Are you sure? You want to delete this record."
+
+## Files
+| file | lines |
+|---|---|
+| client/JobWorkGroup.java | 392 |
+| client/JobWorkGroup_Dsg.java | 117 |
+| server/JobWorkGroup_SrvImpl.java | 504 |
+| shared/Find_Mdl.java | 13 |
+| shared/JobWorkGroup_Mdl.java | 26 |
+| shared/JobWorkGroup_Srv.java | 24 |
+| shared/JobWorkGroup_SrvAsync.java | 24 |
+| shared/JobWorkGroup_Vld.java | 11 |
+
+## UI labels / columns (client)
+`Job Work Group`
+
+## Models (shared DTOs)
+### Find_Mdl (extends `KeyField implements Serializable, IsSerializable`)
+### JobWorkGroup_Mdl (extends `KeyField implements Serializable, IsSerializable`)
+| type | field |
+|---|---|
+| ModifyReason_Mdl | modifyReasonMdl |
+
+## RPC interface
+| method | params | returns |
+|---|---|---|
+| getNavigator |  | DmResult<List<KeyFieldExtended>> |
+| getSuggestionJobWorkGroup | DmHelper helper, boolean blnToEndOfFile | DmResultPageing<List<String>> |
+| getMoveRec | String strKey | DmResult<JobWorkGroup_Mdl> |
+| saveRecord | JobWorkGroup_Mdl mrTemp | DmResult<String> |
+| deleteRecord | String strKey, ModifyReason_Mdl modifyReasonMdl | DmResult<String> |
+| getFind | DmHelper pageing, boolean blnToEndOfFile | DmResultPageing<List<Find_Mdl>> |
+
+## Validator `JobWorkGroup_Vld`
+```java
+public class JobWorkGroup_Vld {
+    public static void chkSave(JobWorkGroup_Mdl mrTemp) {
+        DmShared.isValidText(mrTemp.getSharedKeyFieldName().trim(), "Job Work Group", 100);
+    }
+}
+```
+
+## Server `JobWorkGroup_SrvImpl.java` (504 lines)
+Helpers used: `DmServer.convertToJson`, `DmServer.evaluateHelper`, `DmServer.formatTimestamp`, `DmServer.getCodeViaManualCode`, `DmServer.getConnection`, `DmServer.getLocalIPAddresses`, `DmServer.getSerialNoInteger`, `DmServer.getServerTimestamp`, `DmServer.getSsnDBName`, `DmServer.getSsnOldData`, `DmServer.getSsnUserName`, `DmServer.getUserWithDateTime`, `DmServer.setSsnOldData`, `DmShared.iNull`, `DmShared.removeSpace`, `DmShared.xNull`
+
+### `getNavigator`
+`public DmResult<List<KeyFieldExtended>> getNavigator()`
+
+- SQL 1: `Select dm.code as code From jobWorkGroup as dm Order By dm.name;`
+
+### `getSuggestionJobWorkGroup`
+`public DmResultPageing<List<String>> getSuggestionJobWorkGroup(DmHelper helper, boolean blnToEndOfFile)`
+
+- SQL 1: `Select dm.name as name From jobWorkGroup as dm`
+
+### `getMoveRec`
+`public DmResult<JobWorkGroup_Mdl> getMoveRec(String strKey)`
+
+- SQL 1: `SELECT dm.code AS CODE, dm.name AS NAME , dm.u_Name as u_Name, dm.preparedBy as preparedBy, dm.preparedByIP , dm.preparedDt,dm.u_EntDt FROM jobWorkGroup AS dm Where dm.code= :code`
+- Params: `:code` ← `strKey`
+
+### `deleteRecord`
+`public DmResult<String> deleteRecord(String strKey, ModifyReason_Mdl modifyReasonMdl)`
+
+- SQL 1: `Delete From jobWorkGroup Where code= :code`
+- Params: `:code` ← `strKey`
+
+### `saveRecord`
+`public DmResult<String> saveRecord(JobWorkGroup_Mdl mrTemp)`
+
+- SQL 1: `SELECT COUNT(dm.name) AS cnt FROM jobWorkGroup as dm WHERE LOWER(dm.name) = :name AND dm.code <> :code`
+- SQL 2: `Insert Into jobWorkGroup(code,name,preparedBy,preparedDt,preparedByIP) Values (:code,:name,:preparedBy, :preparedDt, :preparedByIP)`
+- SQL 3: `Update jobWorkGroup Set name = :name, U_Name = :uName, U_EntDt = :U_EntDt Where code = :code`
+- Params: `:name` ← `DmShared.xNull(mrTemp.getSharedKeyFieldName()).toLowerCase()`; `:code` ← `DmShared.xNull(mrTemp.getSharedKeyFieldCode())`; `:code` ← `DmShared.iNull(mrTemp.getSharedKeyFieldCode()).toString()`; `:name` ← `DmShared.xNull(mrTemp.getSharedKeyFieldName())`; `:preparedBY` ← `DmServer.getSsnUserName(this)`; `:preparedDt` ← `timestamp`; `:preparedByIP` ← `DmServer.getLocalIPAddresses(this)`; `:name` ← `DmShared.xNull(mrTemp.getSharedKeyFieldName())`; `:uName` ← `DmServer.getSsnUserName(this)`; `:U_EntDt` ← `timestamp`; `:code` ← `DmShared.iNull(mrTemp.getSharedKeyFieldCode()).toString()`
+- Errors: "Invalid key." | "Name already exists."
+- Other calls: `JobWorkGroup_Vld.chkSave`
+
+### `getFind`
+`public DmResultPageing<List<Find_Mdl>> getFind(DmHelper helper, boolean blnToEndOfFile)`
+
+- SQL 1: `SELECT dm.code , dm.name FROM jobWorkGroup AS dm`
+
+## Depends on (imports from other packages)
+`dataman.dmBase.dmBaseStatic.client`, `dataman.dmBase.dmPrepareStatement.server`, `dataman.dmBase.dmSession.server`, `dataman.dmBase.self.shared`, `dataman.dmToolkit.dmFind.client`, `dataman.dmToolkit.dmLabel.client`, `dataman.dmToolkit.dmMessageBox.client`, `dataman.dmToolkit.dmStatic.client`, `dataman.dmToolkit.dmStatic.server`, `dataman.dmToolkit.dmStatic.shared`, `dataman.dmToolkit.dmSuggestBox.client`, `dataman.dmToolkit.dmTextBox.client`, `dataman.dmToolkit.dmTopControl.client`, `dataman.dmToolkit.dmUserControl.client`, `dataman.dmToolkit.isWidgetExtended.client`, `dataman.dmToolkit.modifyReason.client`, `dataman.dmToolkit.modifyReason.shared`, `paperbiz.jobWork.jobWorkGroup.shared`, `paperbiz.projectMenu.self.shared`
+
+## Business rules (derived from code conditions)
+| method | when | error message |
+|---|---|---|
+| saveRecord | `if (mrTemp.getSharedKeyFieldCode().equalsIgnoreCase(""))` | "Invalid key." |
+| saveRecord | `if (rsTemp.getLong("cnt") > 0)` | "Name already exists." |
+
+## Notes (hand-written)
+_No hand-written notes yet._

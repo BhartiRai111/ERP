@@ -12,6 +12,93 @@
 - Lookups/suggestions: getTxtHTdsFor, getTxtHTdsCategory, getTxtHTdsDeduct
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `TdsPopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Category | DmTextHelp | `txtHTdsCategory` | `KeyField_PrpAcs, 7, true` |
+| 2 | On Amount | DmTextBoxNumeric | `txtTdsOnAmount` | `2, false, 15, true` |
+| 3 | Deduct Form | DmTextHelp | `txtHTdsDeduct` | `TxtHTdsDeduct, 7, true` |
+| 4 | Type | DmTextBox | `txtTdsTcsType` | `20, false` |
+
+Other widgets (not in tab list): `txtVDate` (DmTextBox), `tdsCategoryGrid` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `txtHTdsCategory`: Name [Text, w1, Name]
+- `txtHTdsDeduct`: Name [Text, w1, Name]; City [Text, w100, CityName]; Code [Text, w100, ManualCode]
+- `tdsCategoryGrid`: Description [Text, w1]; Posting A/c [Text, w200]; (%) [Text, w80]; Amount [Text, w100]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHTdsCategory` → `getTxtHTdsCategory`
+- `txtHTdsDeduct` → `getTxtHTdsDeduct`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHTdsCategory.addTextHelpCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(blnCallBackWait).getTxtHTdsCategory(txtTdsTcsType.getTag(), helper, blnToEndOfFile, new AsyncCallback
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), (DmTextBox) null).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHTdsCategory.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), (DmTextBox) null).show();
+```
+
+`txtHTdsCategory.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHTdsCategory.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), (DmTextBox) null).show();
+```
+
+`txtHTdsCategory.addTextHelpCallBack` → `getSelectedRow()`
+```java
+fillTdsGridData(txtHTdsCategory.getTag(), txtVDate.getText());
+if (blnStatus && tRow != null) {
+```
+
+`txtHTdsDeduct.addTextHelpCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(blnCallBackWait).getTxtHTdsDeduct(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<TxtH
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), (DmTextBox) null).show();
+public void onSuccess(DmResultPageing<List<TxtHTdsDeductFrom_Mdl>> result) {
+if (result.isStatus()) {
+txtHTdsDeduct.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), (DmTextBox) null).show();
+```
+
+`txtHTdsDeduct.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHTdsDeduct.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), (DmTextBox) null).show();
+```
+
+`txtHTdsDeduct.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (blnStatus && tRow != null) {
+lblLedgerBalance.setText("");
+lblFinYrCredit.setText("");
+lblFinYrDebit.setText("");
+lblLedgerTcs.setText("");
+lblLedgerTds.setText("");
+getLedgerBalance(String.valueOf(txtHTdsDeduct.getTag()));
+```
+
+`txtTdsOnAmount.addBlurHandler` → `onBlur()`
+```java
+calculate();
+```
+
 ## Files
 | file | lines |
 |---|---|

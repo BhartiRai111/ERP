@@ -12,6 +12,27 @@
 - Lookups/suggestions: -
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `AdLinePopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | - | DmTextBoxNumeric | `txtDeduction1Per` | `4, false, 8, false` |
+| 2 | - | DmTextBoxNumeric | `txtDeduction1Amt` | `2, false, 12, false` |
+| 3 | - | DmTextBoxNumeric | `txtDeduction2Per` | `4, false, 8, false` |
+| 4 | - | DmTextBoxNumeric | `txtDeduction2Amt` | `2, false, 12, false` |
+| 5 | - | DmTextBoxNumeric | `txtDeduction3Per` | `4, false, 8, false` |
+| 6 | - | DmTextBoxNumeric | `txtDeduction3Amt` | `2, false, 12, false` |
+| 7 | - | DmTextBoxNumeric | `txtDeduction4Per` | `4, false, 8, false` |
+| 8 | - | DmTextBoxNumeric | `txtDeduction4Amt` | `2, false, 12, false` |
+| 9 | - | DmTextBoxNumeric | `txtDeduction5Per` | `4, false, 8, false` |
+| 10 | - | DmTextBoxNumeric | `txtDeduction5Amt` | `2, false, 12, false` |
+| 11 | Total Deduction | DmTextBoxNumeric | `txtTotalDeductionAmt` | `2, false, 12, false` |
+
+Other widgets (not in tab list): `txtBaseAmt` (DmTextBoxNumeric)
+
 ## Files
 | file | lines |
 |---|---|

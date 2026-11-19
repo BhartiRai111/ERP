@@ -12,6 +12,22 @@
 - Lookups/suggestions: -
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `IPLApplicableWithOption`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+
+Other widgets (not in tab list): `grdDtApplicable` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `grdDtApplicable`: Applicable From [Text, w198]; Applicable To [Text, w198]
+- Confirm: "Are you sure? You want to delete "
+- Alert: "Invalid Applicable From."
+- Alert: "Please Select a Date"
+
 ## Files
 | file | lines |
 |---|---|

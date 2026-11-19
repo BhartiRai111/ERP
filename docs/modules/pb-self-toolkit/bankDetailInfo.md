@@ -12,6 +12,87 @@
 - Lookups/suggestions: getTxtHBankAC
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `BankDetailInfo`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Bank Name | DmTextHelp | `txtHBankAC` | `TxtHBankAc_PrpAcs, 8` |
+| 2 | A/C Holder Name | DmTextBox | `txtAcHolderName` | `20, false` |
+| 3 | A/C No | DmTextBox | `txtAcNo` | `20, false` |
+| 4 | IFSC Code | DmTextBox | `txtIFSCCode` | `20, false` |
+| 5 | Branch | DmTextBox | `txtBranch` | `20, false` |
+| 6 | Address | DmTextBox | `txtBranchAddress` | `20, false` |
+
+Other widgets (not in tab list): `txtBankName` (DmTextBox)
+
+**Grid / popup columns** (header, width, db field):
+- `txtHBankAC`: Bank [Text, w100, bankName]; Account Name [Text, w170, acHolderName]; Account No. [Text, w130, accountNo]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHBankAC` → `getTxtHBankAC`
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtHBankAC.setEnabled(flag)`
+- `txtAcNo.setReadOnly(true)`
+- `txtBranch.setReadOnly(true)`
+- `txtIFSCCode.setReadOnly(true)`
+- `txtBranchAddress.setReadOnly(true)`
+- `txtBankName.setReadOnly(true)`
+- `txtAcHolderName.setReadOnly(true)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+boolean flag = false;
+if (topControl != null) {
+flag = topControl.getMode().equalsIgnoreCase("New") || topControl.getMode().equalsIgnoreCase("Edit");
+txtHBankAC.setEnabled(flag);
+txtAcNo.setReadOnly(true);
+txtBranch.setReadOnly(true);
+txtIFSCCode.setReadOnly(true);
+txtBranchAddress.setReadOnly(true);
+txtBankName.setReadOnly(true);
+txtAcHolderName.setReadOnly(true);
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHBankAC.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHBankAC(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<TxtHBan
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHBankAC).show();
+public void onSuccess(DmResultPageing<List<TxtHBankAc_Mdl>> result) {
+if (result.isStatus()) {
+resetTxtHBankAc();
+txtHBankAC.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHBankAC).show();
+```
+
+`txtHBankAC.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+resetTxtHBankAc();
+txtHBankAC.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHBankAC).show();
+```
+
+`txtHBankAC.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (blnStatus && t1Row != null) {
+txtAcNo.setText(DmShared.xNull(t1Row.getAccountNo()));
+txtBranch.setText(DmShared.xNull(t1Row.getBranch()));
+txtIFSCCode.setText(DmShared.xNull(t1Row.getIfscCode()));
+txtBranchAddress.setText(DmShared.xNull(t1Row.getBranchAddress()));
+txtBankName.setText(DmShared.xNull(t1Row.getSharedKeyFieldName()));
+txtAcHolderName.setText(DmShared.xNull(t1Row.getAcAccountHolder()));
+callBack.onChange(fillData());
+```
+
 ## Files
 | file | lines |
 |---|---|

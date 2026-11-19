@@ -12,6 +12,395 @@
 - Lookups/suggestions: getTxtHColour, getTxtHSize, getTxtHItemMake, getTxtHItemGrade, getTxtHBf, getTxtHGsm, getTxtHItemNature, getTxtHSizeUnit, getTxtHGrain
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `ItemPropertyPopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Item Make | DmTextHelp | `txtHItemMake` | `KeyField_PrpAcs, 5, true` |
+| 2 | Batch No. | DmTextHelp | `txtHBatchNo` | `TxtHBatchNo_PrpAcs, 5, true` |
+| 3 | Lot No. | DmTextBox | `txtLotNo` | `50, true` |
+| 4 | Mfg. Date | DmTextBox | `txtMfgDate` | `50, true` |
+| 5 | Best Before | DmTextBoxNumeric | `txtBestBefore` | `0, false, 3, true` |
+| 6 | Expiry Date | DmTextBox | `txtExpiryDate` | `150, true` |
+| 7 | Colour | DmTextHelp | `txtHColour` | `KeyField_PrpAcs, 5, true` |
+| 8 | Size | DmTextHelp | `txtHSize` | `KeyField_PrpAcs, 5, true` |
+| 9 | MRP | DmTextBoxNumeric | `txtMRP` | `2, false, 12, true` |
+| 10 | BF | DmTextHelp | `txtHBf` | `com.google.gwt.core.client.KeyField_PrpAcs, 5, true` |
+| 11 | GSM | DmTextHelp | `txtHGsm` | `com.google.gwt.core.client.KeyField_PrpAcs, 5, true` |
+| 12 | Width | DmTextBoxNumeric | `txtWidth` | `4, false, 12, true` |
+| 13 | Length | DmTextBoxNumeric | `txtLength` | `4, false, 12, true` |
+| 14 | Size Unit | DmTextHelp | `txtHSizeUnit` | `KeyField_PrpAcs, 4, true` |
+| 15 | Sheets per Ream | DmTextBoxNumeric | `txtSheetsPerReam` | `4, false, 12, true` |
+| 16 | Reams per Bundle | DmTextBoxNumeric | `txtReamsPerBundle` | `4, false, 12, true` |
+| 17 | Reams Weight | DmTextBoxNumeric | `txtReamsWeight` | `4, false, 12, true` |
+| 18 | Item Nature | DmTextHelp | `txtHItemNature` | `com.google.gwt.core.client.KeyField_PrpAcs, 5, true` |
+| 19 | Grain | DmTextHelp | `txtHGrain` | `KeyField_PrpAcs, 5, true` |
+| 20 | Item Grade | DmTextHelp | `txtHItemGrade` | `KeyField_PrpAcs, 10, true` |
+
+Other widgets (not in tab list): `txtRateForSKUQty` (DmTextBox)
+
+**Grid / popup columns** (header, width, db field):
+- `txtHItemMake`: Name [Text, w0, companyName]
+- `txtHColour`: Name [Text, w0, Name]
+- `txtHSize`: Name [Text, w0, Name]
+- `txtHSizeUnit`: Name [Text, w0, Name]
+- `txtHBatchNo`: Batch No [Text, w120, batchNo]; Expiry Date [Text, w80, expiryDate]; Mfg Date [Text, w80, manufacturingDate]; Properties [Text, w250, propertyDispCsv]
+- `txtHBf`: Name [Text, w50, name]
+- `txtHGsm`: Name [Text, w50, name]
+- `txtHItemGrade`: Name [Text, w170, name]; Short Name [Text, w70, shortName]
+- `txtHItemNature`: Name [Text, w75, name]
+- `txtHGrain`: Grain [Text, w0, name]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHColour` → `getTxtHColour`
+- `txtHItemMake` → `getTxtHItemMake`
+- `txtHItemGrade` → `getTxtHItemGrade`
+- `txtHBatchNo` → `getBatchNo`
+- `txtHItemNature` → `getTxtHItemNature`
+- `txtHBf` → `getTxtHBf`
+- `txtHGsm` → `getTxtHGsm`
+- `txtHSize` → `getTxtHSize`
+- `txtHSizeUnit` → `getTxtHSizeUnit`
+- `txtHGrain` → `getTxtHGrain`
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtHBatchNo.setEnabled(false)`
+- `txtHItemNature.setEnabled(false)`
+- `txtLotNo.setEnabled(false)`
+- `txtHItemMake.setEnabled(false)`
+- `txtHSize.setEnabled(false)`
+- `txtHColour.setEnabled(false)`
+- `txtHItemGrade.setEnabled(false)`
+- `txtMRP.setEnabled(false)`
+- `txtMfgDate.setEnabled(false)`
+- `txtBestBefore.setEnabled(false)`
+- `txtExpiryDate.setEnabled(false)`
+- `txtHBf.setEnabled(false)`
+- `txtHGsm.setEnabled(false)`
+- `txtWidth.setEnabled(false)`
+- `txtLength.setEnabled(false)`
+- `txtHSizeUnit.setEnabled(false)`
+- `txtHGrain.setEnabled(false)`
+- `txtSheetsPerReam.setEnabled(false)`
+- `txtReamsPerBundle.setEnabled(false)`
+- `txtReamsWeight.setEnabled(false)`
+- `txtHBatchNo.setEnabled(true)`
+- `txtHItemNature.setEnabled(true)`
+- `txtRateForSKUQty.setReadOnly(true)`
+- `txtLotNo.setEnabled(!viewOnlyPartial)`
+- `txtHItemMake.setEnabled(!viewOnlyPartial)`
+- `txtHSize.setEnabled(!viewOnlyPartial)`
+- `txtHColour.setEnabled(!viewOnlyPartial)`
+- `txtHItemGrade.setEnabled(!viewOnlyPartial)`
+- `txtMfgDate.setEnabled(bestBefore)`
+- `txtBestBefore.setEnabled(bestBefore)`
+- `txtExpiryDate.setEnabled(!bestBefore)`
+- `txtMRP.setEnabled(!viewOnlyPartial)`
+- `txtHItemNature.setEnabled(!viewOnlyPartial)`
+- `txtHBf.setEnabled(!viewOnlyPartial)`
+- `txtHGsm.setEnabled(!viewOnlyPartial)`
+- `txtWidth.setEnabled(!viewOnlyPartial)`
+- `txtLength.setEnabled(!viewOnlyPartial)`
+- `txtSheetsPerReam.setEnabled(!viewOnlyAll)`
+- `txtReamsPerBundle.setEnabled(!viewOnlyAll)`
+- `txtReamsWeight.setEnabled(!viewOnlyAll)`
+- `txtHSizeUnit.setEnabled(!viewOnlyPartial)`
+- `txtHGrain.setEnabled(!viewOnlyPartial)`
+- `txtHItemNature.setEnabled(false)`
+
+**Defaults when the screen opens** (`getDefaultValues`):
+- calls server `getDefaultValues`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+boolean flag = DmShared.xNull(mode).equalsIgnoreCase("New") || DmShared.xNull(mode).equalsIgnoreCase("Edit");
+boolean flagTemp = flag;
+txtHBatchNo.setEnabled(false);
+txtHItemNature.setEnabled(false);
+txtLotNo.setEnabled(false);
+txtHItemMake.setEnabled(false);
+txtHSize.setEnabled(false);
+txtHColour.setEnabled(false);
+txtHItemGrade.setEnabled(false);
+txtMRP.setEnabled(false);
+txtMfgDate.setEnabled(false);
+txtBestBefore.setEnabled(false);
+txtExpiryDate.setEnabled(false);
+txtHBf.setEnabled(false);
+txtHGsm.setEnabled(false);
+txtWidth.setEnabled(false);
+txtLength.setEnabled(false);
+txtHSizeUnit.setEnabled(false);
+txtHGrain.setEnabled(false);
+txtSheetsPerReam.setEnabled(false);
+txtReamsPerBundle.setEnabled(false);
+txtReamsWeight.setEnabled(false);
+if (flag) {
+if (flagBatchHelpAdded) {
+...
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHColour.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHColour(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFiel
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHColour).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHColour.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHColour).show();
+```
+
+`txtHColour.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHColour.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHColour).show();
+```
+
+`txtHItemMake.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHItemMake(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFi
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHItemMake).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHItemMake.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemMake).show();
+```
+
+`txtHItemMake.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHItemMake.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemMake).show();
+```
+
+`txtHItemGrade.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHItemGrade(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyF
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHItemGrade).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHItemGrade.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemGrade).show();
+```
+
+`txtHItemGrade.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHItemGrade.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemGrade).show();
+```
+
+`txtHBatchNo.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getBatchNo(DmShared.xNull(fillData.getItemCode()), DmShared.xNull(fillData.getItemNa
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHBatchNo).show();
+public void onSuccess(DmResultPageing<List<BatchNo_Mdl>> result) {
+if (result.isStatus()) {
+txtHBatchNo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHBatchNo).show();
+```
+
+`txtHBatchNo.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHBatchNo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHBatchNo).show();
+```
+
+`txtHBatchNo.addTextHelpCallBack` → `getSelectedRow()`
+```java
+boolean isBatchNoChange = false;
+if (DmShared.xNull(txtHBatchNo.getTag2nd()).equalsIgnoreCase(txtHBatchNo.getTag())) {
+resetBatchNo();
+txtHBatchNo.setTag2nd(DmShared.xNull(txtHBatchNo.getTag()));
+isBatchNoChange = true;
+if (blnStatus && t1Row != null) {
+if (isBatchNoChange) {
+txtLotNo.setText(DmShared.xNull(t1Row.getLotNo()));
+txtHColour.setText(DmShared.xNull(t1Row.getColour()));
+txtHColour.setTag(DmShared.xNull(t1Row.getColourCode()));
+...
+```
+
+`txtHItemNature.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHItemNature(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<Key
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHItemNature).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHItemNature.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemNature).show();
+```
+
+`txtHItemNature.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHItemNature.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemNature).show();
+```
+
+`txtHItemNature.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (!DmShared.xNull(txtHItemNature.getTag2nd()).equalsIgnoreCase(txtHItemNature.getTag())) {
+resetItemNature();
+txtHItemNature.setTag2nd(DmShared.xNull(txtHItemNature.getTag()));
+if (blnStatus && t1Row != null) {
+inPropertyList = DmShared.xNull(t1Row.getSharedModifiedBy());
+itemNatureManualCode = DmShared.xNull(t1Row.getSharedPreparedBy());
+manageDisplay();
+```
+
+`txtHBf.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHBf(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFieldExt
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHBf).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHBf.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHBf).show();
+```
+
+`txtHBf.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHBf.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHBf).show();
+```
+
+`txtHBf.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (blnStatus && t1Row != null) {
+```
+
+`txtHGsm.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHGsm(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFieldEx
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHGsm).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHGsm.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHGsm).show();
+```
+
+`txtHGsm.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHGsm.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHGsm).show();
+```
+
+`txtHGsm.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (!DmShared.xNull(txtHGsm.getTag2nd()).equalsIgnoreCase(DmShared.xNull(txtHGsm.getTag()))) {
+txtHGsm.setTag2nd(DmShared.xNull(txtHGsm.getTag()));
+calculate();
+if (blnStatus && t1Row != null) {
+```
+
+`txtHSize.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHSize(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFieldE
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHSize).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHSize.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHSize).show();
+```
+
+`txtHSize.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHSize.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHSize).show();
+```
+
+`txtHSizeUnit.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHSizeUnit(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFi
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHSizeUnit).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHSizeUnit.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHSizeUnit).show();
+```
+
+`txtHSizeUnit.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHSizeUnit.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHSizeUnit).show();
+```
+
+`txtHSizeUnit.addTextHelpCallBack` → `getSelectedRow()`
+```java
+boolean isSizeUnitChange = false;
+if (!DmShared.xNull(txtHSizeUnit.getTag2nd()).equalsIgnoreCase(DmShared.xNull(txtHSizeUnit.getTag()))) {
+txtHSizeUnit.setTag2nd(DmShared.xNull(txtHSizeUnit.getTag()));
+calculate();
+if (blnStatus && t1Row != null) {
+```
+
+`txtHGrain.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHGrain(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyField
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHGrain).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHGrain.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHGrain).show();
+```
+
+`txtHGrain.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHGrain.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHGrain).show();
+```
+
+`txtHGrain.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (blnStatus && t1Row != null) {
+```
+- Alert: "Item is not valid with selected properties!"
+- Alert: "Invalid 'Size Unit Name'!"
+- Alert: "Define size unit in Enviro "
+
 ## Files
 | file | lines |
 |---|---|

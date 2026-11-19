@@ -12,6 +12,251 @@
 - Lookups/suggestions: getTxtHStatus, getTxtHPurchaseOrder, getTxtHSupplierPT, getTxtHItem
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `PurchaseOrderApprovalGridEdit`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Order No. | DmTextBox | `txtPurchaseNo` | `` |
+| 2 | Order Date | DmTextBox | `txtPurchaseDate` | `` |
+| 3 | Customer | DmTextBox | `txtCustomer` | `` |
+| 4 | Supplier | DmTextBox | `txtSupplier` | `` |
+| 5 | Delivery To | DmTextBox | `txtDeliveryTo` | `` |
+| 6 | Direct Supply | DmTextBox | `txtDirectSupply` | `` |
+| 7 | Bif. Service | DmTextBox | `txtBifurcateService` | `` |
+| 8 | Delivery City | DmTextBox | `txtDeliveryCity` | `` |
+
+Other widgets (not in tab list): `txtApproved` (DmTextBox), `txtStatus` (DmTextBox), `txtItemGroup` (DmTextBox), `txtItemName` (DmTextBox), `txtReqDate` (DmTextBox), `txtOrdQty` (DmTextBox), `txtRate` (DmTextBox), `txtSKU` (DmTextBox), `txtCurrentUser` (DmTextBox), `txtWTACode` (DmTextBox), `txtRemarks` (DmTextBox), `txtApprovedBy` (DmTextBox), `txtApprovedDateTime` (DmTextBox), `grdItemlDetails` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `grdItemlDetails`: C/O [Text, w30];  [Text, w25]; PC. [Text, w80]; Qty. [Text, w80]; Unit [Text, w60]; Rate [Text, w60]; Amount [Text, w80]; Req. Date [Text, w80]; Item Name [Text, w120]; Item Nature [Text, w75]; BF [Text, w45]; GSM [Text, w45]; Width [Text, w70]; Length [Text, w70]; Size Unit [Text, w65]; Grain [Text, w65]; Remark [Text, w120]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `walkThrough` → `openRecord`
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtApproved.setEnabled(false)`
+- `txtApprovedBy.setEnabled(false)`
+- `txtApprovedDateTime.setEnabled(false)`
+- `txtStatus.setEnabled(false)`
+- `txtRate.setEnabled(false)`
+- `txtItemGroup.setEnabled(false)`
+- `txtItemName.setEnabled(false)`
+- `txtReqDate.setEnabled(false)`
+- `txtSKU.setEnabled(false)`
+- `txtOrdQty.setEnabled(false)`
+- `txtPurchaseNo.setEnabled(false)`
+- `txtPurchaseDate.setEnabled(false)`
+- `txtRemarks.setEnabled(false)`
+- `txtSupplier.setEnabled(false)`
+- `txtDirectSupply.setEnabled(false)`
+- `txtBifurcateService.setEnabled(false)`
+- `txtCustomer.setEnabled(false)`
+- `txtDeliveryTo.setEnabled(false)`
+- `txtDeliveryCity.setEnabled(false)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtApproved.setEnabled(false);
+txtApprovedBy.setEnabled(false);
+txtApprovedDateTime.setEnabled(false);
+txtStatus.setEnabled(false);
+txtRate.setEnabled(false);
+txtItemGroup.setEnabled(false);
+txtItemName.setEnabled(false);
+txtReqDate.setEnabled(false);
+txtSKU.setEnabled(false);
+txtOrdQty.setEnabled(false);
+txtPurchaseNo.setEnabled(false);
+txtPurchaseDate.setEnabled(false);
+txtRemarks.setEnabled(false);
+txtSupplier.setEnabled(false);
+txtDirectSupply.setEnabled(false);
+txtBifurcateService.setEnabled(false);
+txtCustomer.setEnabled(false);
+txtDeliveryTo.setEnabled(false);
+txtDeliveryCity.setEnabled(false);
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`walkThrough.addCallBack` → `onClose()`
+```java
+fillGrid(DmShared.iNull(txtPurchaseNo.getTag()).toString());
+```
+- Alert: "Record is not updated by this user,Can't update"
+- Alert: "Record is cancelled,Please refresh record."
+- Alert: "Record is completed,Please refresh record."
+
+### Screen `PurchaseOrderApproval`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | - | DmGridPaging | `dmGrd` | `Grd_PrpAcs, gridRows, false` |
+
+**Grid / popup columns** (header, width, db field):
+- `dmGrd`:  [Text, w30];  [Text, w25]; Order No. [Text, w115, recId]; Order Date [Text, w80, v_Date]; PC. [Text, w50, orderPackCount]; Qty. [Text, w50, orderQty]; Unit [Text, w50, unitName]; Rate [Text, w50, rate]; Item Name [Text, w165, itemName]; Item Nature [Text, w75]; BF [Text, w45]; GSM [Text, w50]; Width [Text, w70]; Length [Text, w70]; Size Unit [Text, w65]; Grain [Text, w65]; Req. Date [Text, w80, requiredDate]; Supplier [Text, w233, supplierName]; Direct Supply [Text, w82]; Bifurcate Service [Text, w103]; Customer [Text, w220]; Delivery To [Text, w220]; SO. Reff. No. [Text, w80]; SO. Reff. Date [Text, w100]; Tolerance [Text, w100]; Remarks [Text, w150, remark]; Approved By [Text, w130, approvedBy]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `dmGrd` → `getFillRecords`
+
+**Defaults when the screen opens** (`iniDefaultValues`):
+- calls server `getDefaultValues`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`walkThrough.addCallBack` → `onClose()`
+```java
+dmGrd.reQuery();
+```
+
+`gridEdit.addGridEditCallBack` → `onOk()`
+```java
+dmGrd.getDmGrid().commitChanges();
+dmGrd.reQuery();
+```
+
+`dmGrd.addCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(true).getFillRecords(param, helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<GrdPurchas
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), (DmTextBox) null).show();
+public void onSuccess(DmResultPageing<List<GrdPurchaseOrderApproval_Mdl>> result) {
+if (result.isStatus()) {
+dmGrd.setData(result.getData(), result.getPaging());
+```
+
+`dmGrd.addCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+dmGrd.setData(result.getData(), result.getPaging());
+```
+
+`dmGrd.addCallBack` → `getParam()`
+```java
+return purchaseApp_Mdl;
+```
+- Confirm: "Are you sure? You want to close."
+
+### Screen `Setting`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | From Date | DmTextBox | `txtFromDate` | `15, false` |
+| 2 | To Date | DmTextBox | `txtToDate` | `15, false` |
+| 3 | Item Name | DmTextHelpMulti | `txtHItemName` | `TxtHItemName_PrpAcs, 5` |
+| 4 | Order No. | DmTextHelpMulti | `txtHPurchaseOrder` | `TxtHPurchaseOrder_PrpAcs, 7` |
+| 5 | Supplier | DmTextHelpMulti | `txtHSupplier` | `TxtHSupplierName_PrpAcs, 7` |
+| 6 | Status | DmTextHelp | `txtHStatus` | `KeyField_PrpAcs, 4, false` |
+
+**Grid / popup columns** (header, width, db field):
+- `txtHPurchaseOrder`: Purchase Order No. [Text, w120, pOrderNo]; Purchase Type [Text, w90, category]; Purchase Date [Text, w90, replace(convert(varchar, pOrderDate, 106), ' ','-')]
+- `txtHSupplier`: Name [Text, w250, name]; Manual Code [Text, w100, manualCode]; City Name [Text, w100, cityName]
+- `txtHItemName`: Name [Text, w250, name]; Unit [Text, w50, purchaseUnitName]
+- `txtHStatus`: Status [Text, w150, Name]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHStatus` → `getTxtHStatus`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtFromDate.addValueChangeHandler` → `onValueChange()`
+```java
+txtFromDate.setText(DmClient.returnDate(txtFromDate.getText()));
+```
+
+`txtToDate.addValueChangeHandler` → `onValueChange()`
+```java
+txtToDate.setText(DmClient.returnDate(txtToDate.getText()));
+```
+
+`txtHStatus.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHStatus(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFiel
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHStatus).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHStatus.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHStatus).show();
+```
+
+`txtHStatus.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHStatus.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHStatus).show();
+```
+
+`txtHItemName.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHItem(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<TxtHItemN
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHItemName).show();
+public void onSuccess(DmResultPageing<List<TxtHItemName_Mdl>> result) {
+if (result.isStatus()) {
+txtHItemName.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemName).show();
+```
+
+`txtHItemName.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHItemName.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemName).show();
+```
+
+`txtHPurchaseOrder.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHPurchaseOrder(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHPurchaseOrder).show();
+public void onSuccess(DmResultPageing<List<TxtHPurchaseOrder_Mdl>> result) {
+if (result.isStatus()) {
+txtHPurchaseOrder.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHPurchaseOrder).show();
+```
+
+`txtHPurchaseOrder.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHPurchaseOrder.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHPurchaseOrder).show();
+```
+
+`txtHSupplier.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHSupplierPT(true, null, helper, blnToEndOfFile, new AsyncCallback<DmResultPage
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHSupplier).show();
+public void onSuccess(DmResultPageing<List<TxtHSupplierPT_Mdl>> result) {
+if (result.isStatus()) {
+txtHSupplier.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHSupplier).show();
+```
+
+`txtHSupplier.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHSupplier.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHSupplier).show();
+```
+- Alert: "From Date should be less than or equal to To Date."
+
 ## Files
 | file | lines |
 |---|---|

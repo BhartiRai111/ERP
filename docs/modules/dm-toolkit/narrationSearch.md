@@ -12,6 +12,48 @@
 - Lookups/suggestions: -
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `NarrationSearch`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | - | DmGridPaging | `gridNarration` | `GrdNarration_PrpAcs, 13, false` |
+| 2 | - | DmTextBox | `txtSearchValue` | `50, false` |
+
+**Grid / popup columns** (header, width, db field):
+- `gridNarration`: Narration [Text, w980, name]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `gridNarration` → `getNarration`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`gridNarration.addCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(true).getNarration(tableName, codeField, nameField, helper, blnToEndOfFile, new AsyncCallback<DmResul
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), (DmTextBox) null).show();
+public void onSuccess(DmResultPageing<List<NarrationSearch_Mdl>> result) {
+if (result.isStatus()) {
+gridNarration.setData(result.getData(), result.getPaging());
+gridNarration.getDmGrid().commitChanges();
+```
+
+`gridNarration.addCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+gridNarration.setData(result.getData(), result.getPaging());
+gridNarration.getDmGrid().commitChanges();
+```
+
+`gridNarration.addCallBack` → `getParam()`
+```java
+return (String) null;
+```
+- Alert: "Please select a record first."
+
 ## Files
 | file | lines |
 |---|---|

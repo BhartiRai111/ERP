@@ -12,6 +12,44 @@
 - Lookups/suggestions: -
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `WalkThroughEdit`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Authority | DmTextBox | `txtAuthority` | `35, false` |
+| 2 | Authorised By | DmTextBox | `txtAuthorisedBy` | `10, false` |
+| 3 | Date / Time | DmTextBox | `txtAuthorisedDateTime` | `20, false` |
+| 4 | Linked User | DmTextBox | `txtLinkedUser` | `250, false` |
+| 5 | Remark | DmTextArea | `txtRemark` | `250, false` |
+
+### Screen `WalkThrough`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+
+Other widgets (not in tab list): `grdWalkthrough` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `grdWalkthrough`: Authority [Text, w170]; Authorised By [Text, w90]; Auth. Date / Time [Text, w110]; Remark [Text, w1];  [Text, w30]
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`walkThroughPopupEdit.addCallBack` → `onOk()`
+```java
+if (grdWalkThrough_Mdl != null) {
+saveRecord(grdWalkThrough_Mdl);
+```
+
+`walkThroughPopupEdit.addCallBack` → `onClose()`
+```java
+((CellSelectionModel) grdWalkthrough.getGrid().getSelectionModel()).selectCell(0, 0);
+```
+
 ## Files
 | file | lines |
 |---|---|

@@ -12,6 +12,62 @@
 - Lookups/suggestions: -
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `ReelBundlePopUpGridEdit`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Customer Reel Bundle No. | DmTextBox | `txtCustomerReelBundleNo` | `20, false` |
+| 2 | Customer Barcode | DmTextBox | `txtCustomerBarCode` | `20, false` |
+| 3 | Weight | DmTextBoxNumeric | `txtRBWeight` | `4, false, 12, true` |
+| 4 | Sample No. | DmTextBox | `txtSampleNo` | `20, false` |
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtCustomerBarCode.setEnabled(headerEntry.isEditable)`
+- `txtCustomerReelBundleNo.setEnabled(headerEntry.isEditable)`
+- `txtRBWeight.setEnabled(headerEntry.isEditable)`
+- `txtSampleNo.setEnabled(headerEntry.isEditable)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtCustomerBarCode.setEnabled(headerEntry.isEditable);
+txtCustomerReelBundleNo.setEnabled(headerEntry.isEditable);
+txtRBWeight.setEnabled(headerEntry.isEditable);
+txtSampleNo.setEnabled(headerEntry.isEditable);
+Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+public void execute() {
+txtCustomerReelBundleNo.setFocus(true);
+```
+- Alert: "Weight is mandatory!"
+- Alert: "Weight should be less than or equal to pending weight!"
+
+### Screen `ReelBundlePopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+
+Other widgets (not in tab list): `grdReelBundleDetail` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `grdReelBundleDetail`: Reel/Bundle No. [Text, w150]; Barcode [Text, w150]; Customer Reel/Bundle No. [Text, w150]; Customer Barcode [Text, w150]; Weight [Text, w100]; Sample No. [Text, w100]
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`gridPopup.addCallBack` → `onOk()`
+```java
+fillGridData(rbDetail_Mdl);
+```
+
+`gridPopup.addCallBack` → `onClose()`
+```java
+grdReelBundleDetail.commitChanges();
+calculatePendingWeight("");
+```
+
 ## Files
 | file | lines |
 |---|---|

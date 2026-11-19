@@ -12,6 +12,48 @@
 - Lookups/suggestions: getTxtHPrinter
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `PrinterMapping`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Menu Text | DmTextBox | `txtMenu` | `11, false` |
+| 2 | Module Name | DmTextBox | `txtModule` | `11, false` |
+| 3 | Report Name | DmTextBox | `txtReportName` | `11, false` |
+| 4 | Printer Name | DmTextHelp | `txtHPrinter` | `KeyField_PrpAcs, 3, true, true` |
+
+**Grid / popup columns** (header, width, db field):
+- `txtHPrinter`: Name [Text, w0, Name]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHPrinter` → `getTxtHPrinter`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHPrinter.addTextHelpCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(blnCallBackWait).getTxtHPrinter(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFie
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHPrinter).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHPrinter.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHPrinter).show();
+```
+
+`txtHPrinter.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHPrinter.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHPrinter).show();
+```
+- Confirm: "Report Map for Module : "
+- Alert: "Printer Name is mandatory "
+
 ## Files
 | file | lines |
 |---|---|

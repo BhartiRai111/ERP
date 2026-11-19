@@ -12,6 +12,83 @@
 - Lookups/suggestions: getTxtHAccount
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `AccountDetailGridPopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Account | DmTextHelp | `txtHAccount` | `TxtHLedger_PrpAcs, 7` |
+
+Other widgets (not in tab list): `chkManualAccount` (DmCheckBox)
+
+**Grid / popup columns** (header, width, db field):
+- `txtHAccount`: Name [Text, w250, name]; Manual Code [Text, w50, manualCode]; City [Text, w150, cityName]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHAccount` → `getTxtHAccount`
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `chkManualAccount.setEnabled(flag)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtHAccount.setMandatory(false);
+if (isAccountMandatory) {
+txtHAccount.setMandatory(true);
+chkManualAccount.setEnabled(flag);
+manageChkManualAccountDisplay(flag);
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHAccount.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHAccount(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFie
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHAccount).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHAccount.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHAccount).show();
+```
+
+`txtHAccount.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHAccount.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHAccount).show();
+```
+
+### Screen `AccountDetailPopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+
+Other widgets (not in tab list): `gridAccountDetail` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `gridAccountDetail`: Particulars [Text, w250]; Account [Text, w250]
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`accountDetailGridEdit.addCallBack` → `onOk()`
+```java
+gridAccountDetail.commitChanges();
+```
+
+`accountDetailGridEdit.addCallBack` → `getMode()`
+```java
+if (callBack != null) {
+return callBack.getMode();
+return "Browse";
+```
+
 ## Files
 | file | lines |
 |---|---|

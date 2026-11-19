@@ -13,6 +13,1176 @@
 - Lookups/suggestions: getTxtHPriceList, getTxtHApplicableOn, getTxtHParty, getTxtHRefCustomer, getTxtHPriceListType, getTxtHBf, getTxtHGsm, getTxtHOverhead, getTxtHRateType, getTxtHNature, getTxtHRoundOff, getTxtHAccount, getTxtHFormula, getTxtHItemCategory, getTxtHItemGroup, getTxtHItemName, getTxtHItemType, getSuggestionName
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `ClosingDatePopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Date | DmTextBox | `txtClosingDate` | `11, true` |
+- Alert: "Closing date should be grater than or equal to applicable from date"
+- Alert: "Closing date should not be grater than current date date"
+
+### Screen `CreatePriceListPopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Applicable On | DmSuggestBox | `txtName` | `150, 10, true, "name", DmDataType.STRING` |
+| 2 | - | DmTextHelp | `txtHPriceListType` | `KeyField_PrpAcs, 5, true, true` |
+| 3 | - | DmTextHelp | `txtHApplicableOn` | `com.google.gwt.core.client.KeyField_PrpAcs, 4, true` |
+| 4 | Site Specific | DmTextHelp | `txtHParty` | `TxtHSupplierName_PrpAcs, 7, false` |
+| 5 | - | DmTextHelp | `txtHSiteSpecific` | `KeyField_PrpAcs, 5, true, true` |
+| 6 | Ref. Customer | DmTextHelp | `txtHRefCustomer` | `TxtHRefCustomer_PrpAcs, 7, false` |
+
+**Grid / popup columns** (header, width, db field):
+- `txtHPriceListType`: Type [Text, w0]
+- `txtHSiteSpecific`: Site specific [Text, w0]
+- `txtHApplicableOn`: Name [Text, w0]
+- `txtHParty`: Name [Text, w350, supplierName]; Manual Code [Text, w100, manualCode]; City [Text, w120, cityName]
+- `txtHRefCustomer`: Name [Text, w350, refCustmerName]; Manual Code [Text, w100, manualCode]; City [Text, w120, cityName]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHPriceListType` → `getTxtHPriceListType`
+- `txtHApplicableOn` → `getTxtHApplicableOn`
+- `txtHParty` → `getTxtHParty`
+- `txtHRefCustomer` → `getTxtHRefCustomer`
+- `txtHSiteSpecific` → `getYesNo`
+- `txtName` → `getSuggestionName`
+
+**Save: model field ← widget** (`saveInitialize`):
+- `SharedKeyFieldName` ← DmShared.xNull(txtName.getText())
+- `PriceListTypeTag` ← DmShared.xNull(txtHPriceListType.getTag())
+- `PriceListTypeText` ← DmShared.xNull(txtHPriceListType.getText())
+- `ApplicableOnTag` ← DmShared.xNull(txtHApplicableOn.getTag())
+- `ApplicableOnText` ← DmShared.xNull(txtHApplicableOn.getText())
+- `PartyCode` ← DmShared.xNull(txtHParty.getTag())
+- `PartyName` ← DmShared.xNull(txtHParty.getText())
+- `RefCustomerCode` ← DmShared.xNull(txtHRefCustomer.getTag())
+- `RefCustomerName` ← DmShared.xNull(txtHRefCustomer.getText())
+- `SiteSpecificCode` ← DmShared.xNull(txtHSiteSpecific.getTag())
+- `SiteSpecificName` ← DmShared.xNull(txtHSiteSpecific.getText())
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtHPriceListType.setEnabled(false)`
+- `txtHApplicableOn.setEnabled(false)`
+- `txtHParty.setEnabled(false)`
+- `txtHRefCustomer.setEnabled(false)`
+- `txtHSiteSpecific.setEnabled(false)`
+- `txtHPriceListType.setEnabled(true)`
+- `txtHParty.setEnabled(true)`
+- `txtHRefCustomer.setEnabled(true)`
+- `txtHSiteSpecific.setEnabled(true)`
+- `txtHApplicableOn.setEnabled(true)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtHPriceListType.setEnabled(false);
+txtHApplicableOn.setEnabled(false);
+txtHParty.setEnabled(false);
+txtHRefCustomer.setEnabled(false);
+txtHSiteSpecific.setEnabled(false);
+if (DmShared.xNull(code).trim().equalsIgnoreCase("")) {
+txtHPriceListType.setEnabled(true);
+txtHParty.setEnabled(true);
+txtHRefCustomer.setEnabled(true);
+txtHSiteSpecific.setEnabled(true);
+if (STEnum.PriceListApplicableOn.getViaShortName(priceListMaster.APPLICABLE_ON_SHORT_NAME) == null) {
+txtHApplicableOn.setEnabled(true);
+manageApplicableOnDisplay();
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHPriceListType.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHPriceListType(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHPriceListType).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHPriceListType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHPriceListType).show();
+```
+
+`txtHPriceListType.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHPriceListType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHPriceListType).show();
+```
+
+`txtHApplicableOn.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHApplicableOn(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<K
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHApplicableOn).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHApplicableOn.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHApplicableOn).show();
+```
+
+`txtHApplicableOn.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHApplicableOn.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHApplicableOn).show();
+```
+
+`txtHApplicableOn.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (!DmShared.xNull(txtHApplicableOn.getTag()).equalsIgnoreCase(DmShared.xNull(txtHApplicableOn.getTag2nd()))) {
+txtHParty.setTag("");
+txtHParty.setTag2nd("");
+txtHParty.setText("");
+txtHRefCustomer.setTag("");
+txtHRefCustomer.setTag2nd("");
+txtHRefCustomer.setText("");
+txtHApplicableOn.setTag2nd(txtHApplicableOn.getTag());
+if (blnStatus && t1Row != null) {
+manageApplicableOnDisplay();
+...
+```
+
+`txtHParty.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHParty(DmShared.xNull(txtHApplicableOn.getTag()), helper, blnToEndOfFile, new 
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHParty).show();
+public void onSuccess(DmResultPageing<List<TxtHParty_Mdl>> result) {
+if (result.isStatus()) {
+txtHParty.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHParty).show();
+```
+
+`txtHParty.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHParty.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHParty).show();
+```
+
+`txtHRefCustomer.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHRefCustomer(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<Tx
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHParty).show();
+public void onSuccess(DmResultPageing<List<TxtHParty_Mdl>> result) {
+if (result.isStatus()) {
+txtHRefCustomer.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHRefCustomer).show();
+```
+
+`txtHRefCustomer.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHRefCustomer.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHRefCustomer).show();
+```
+
+`txtHSiteSpecific.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getYesNo(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFieldExte
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), (DmTextBox) null).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHSiteSpecific.setData(result.getData(), result.getPaging());
+```
+
+`txtHSiteSpecific.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHSiteSpecific.setData(result.getData(), result.getPaging());
+```
+
+`txtName.addCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getSuggestionName(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<Str
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtName).show();
+public void onSuccess(DmResultPageing<List<String>> result) {
+if (result.isStatus()) {
+txtName.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtName).show();
+```
+
+`txtName.addCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtName.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtName).show();
+```
+- Confirm: "Are you sure? You want to delete."
+
+### Screen `DeductionFormula`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Formula | DmTextArea | `txtFormula` | `150, false` |
+| 2 | - | DmTextBox | `txtSearch` | `` |
+| 3 | - | DmGridPaging | `gridFormulaValue` | `GridFormula_PrpAcs, 8, true` |
+
+**Grid / popup columns** (header, width, db field):
+- `gridFormulaValue`: Item Name [Text, w120, name]; Manual Code [Text, w80, manualCode]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `gridFormulaValue` → `getTxtHFormula`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`gridFormulaValue.addCallBack` → `populateData()`
+```java
+SrvAsync.invokeRPC(blnToEndOfFile).getTxtHFormula(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<TxtHFor
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), (DmTextBox) null).show();
+public void onSuccess(DmResultPageing<List<TxtHFormula_Mdl>> result) {
+if (result.isStatus()) {
+gridFormulaValue.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), (DmTextBox) null).show();
+```
+
+`gridFormulaValue.addCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+gridFormulaValue.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), (DmTextBox) null).show();
+```
+
+`gridFormulaValue.addCallBack` → `getParam()`
+```java
+return null;
+```
+- Alert: "This formula has been used "
+
+### Screen `DeductionGridEdit`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Manual Code | DmTextBoxNumeric | `txtSrno` | `0, false, 10, true` |
+| 2 | - | DmTextHelp | `txtHOverHead` | `TxtOverHeadHelp_Mdl_PrpAcs, 6, true` |
+| 3 | Round Off (R.O.) | DmTextHelp | `txtHNature` | `KeyField_PrpAcs, 4, true, true` |
+| 4 | - | DmTextHelp | `txtHShowFormulaValue` | `KeyField_PrpAcs, 7, true` |
+| 5 | - | DmTextHelp | `txtHRoundOff` | `KeyField_PrpAcs, 7, true` |
+| 6 | Inventory | DmTextHelp | `txtHRateType` | `KeyField_PrpAcs, 4, true, false` |
+| 7 | - | DmTextHelp | `txtHInventory` | `KeyField_PrpAcs, 3, true` |
+| 8 | - | DmTextArea | `txtFormula` | `250, false` |
+| 9 | Amount | DmTextBoxNumeric | `txtAtRate` | `2, false, 10, false` |
+| 10 | - | DmTextBoxNumeric | `txtAmount` | `2, false, 10, false` |
+| 11 | Head A/c | DmTextHelp | `txtHHeadAc` | `KeyField_PrpAcs2, 6, false` |
+| 12 | Head Due A/c | DmTextHelp | `txtHHeadDueAc` | `KeyField_PrpAcs2, 6, false` |
+
+Other widgets (not in tab list): `txtOhManualCode` (DmTextBox), `cbIsDummyHead` (DmCheckBox)
+
+**Grid / popup columns** (header, width, db field):
+- `txtHRateType`: Type [Text, w0]
+- `txtHNature`: Nature [Text, w0]
+- `txtHOverHead`: Head [Text, w200, name]; Manual Code [Text, w100, manualCode]
+- `txtHHeadAc`: Name [Text, w150, name]; Manual Code [Text, w80, manualCode]; Group [Text, w100, groupName]; Nature [Text, w100, nature]
+- `txtHHeadDueAc`: Name [Text, w150, name]; Manual Code [Text, w80, manualCode]; Group [Text, w100, groupName]; Nature [Text, w100, nature]
+- `txtHShowFormulaValue`: F.V. [Text, w0]
+- `txtHRoundOff`: R.O. [Text, w0]
+- `txtHInventory`: Inventory [Text, w0, name]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHOverHead` → `getTxtHOverhead`
+- `txtHShowFormulaValue` → `getYesNo`
+- `txtHRateType` → `getTxtHRateType`
+- `txtHNature` → `getTxtHNature`
+- `txtHRoundOff` → `getTxtHRoundOff`
+- `txtHInventory` → `getYesNo`
+- `txtHHeadAc` → `getTxtHAccount`
+- `txtHHeadDueAc` → `getTxtHAccount`
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtFormula.setReadOnly(flag)`
+- `txtOhManualCode.setReadOnly(flag)`
+
+**Enable/disable rules** (`manageControls(flag)`, flag = editing mode):
+- `txtAtRate.setEnabled(false)`
+- `txtAmount.setEnabled(false)`
+- `txtHRateType.setEnabled(false)`
+- `txtFormula.setEnabled(false)`
+- `txtHNature.setEnabled(false)`
+- `txtHShowFormulaValue.setEnabled(false)`
+- `txtHHeadAc.setEnabled(false)`
+- `txtHHeadDueAc.setEnabled(false)`
+- `txtHNature.setEnabled(flag)`
+- `txtHShowFormulaValue.setEnabled(flag)`
+- `txtHHeadAc.setEnabled(flag)`
+- `txtHHeadDueAc.setEnabled(flag)`
+- `txtHRateType.setEnabled(flag)`
+- `txtAtRate.setEnabled(flag)`
+- `txtFormula.setEnabled(flag)`
+- `txtAmount.setEnabled(flag)`
+- `txtFormula.setEnabled(flag)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtFormula.setReadOnly(flag);
+txtOhManualCode.setReadOnly(flag);
+dummyCheckDisplay(flag);
+```
+
+**`manageControls()` logic (condensed code):**
+```java
+txtAtRate.setEnabled(false);
+txtAmount.setEnabled(false);
+txtHRateType.setEnabled(false);
+txtFormula.setEnabled(false);
+txtHNature.setEnabled(false);
+txtHShowFormulaValue.setEnabled(false);
+txtHHeadAc.setEnabled(false);
+txtHHeadDueAc.setEnabled(false);
+DmClient.setStyleHyperlinkLabel(lblFormula, false, "Formula", false);
+if (itemGridEdit != null
+&& itemGridEdit.clsParent != null
+&& DmShared.iNull(itemGridEdit.clsParent.txtApplicableOn.getTag()).intValue() == STEnum.PriceListApplicableOn.PURCHASE.g
+txtHNature.setEnabled(flag);
+if (!cbIsDummyHead.getValue()) {
+if (itemGridEdit != null
+&& itemGridEdit.clsParent != null
+&& DmShared.iNull(itemGridEdit.clsParent.txtApplicableOn.getTag()).intValue() == STEnum.PriceListApplicableOn.PURCHASE.g
+txtHShowFormulaValue.setEnabled(flag);
+txtHHeadAc.setEnabled(flag);
+txtHHeadDueAc.setEnabled(flag);
+if (!DmShared.xNull(txtHShowFormulaValue.getTag()).trim().equalsIgnoreCase("")) {
+if (DmShared.iNull(txtHShowFormulaValue.getTag()).intValue() != 1) {
+txtHRateType.setEnabled(flag);
+if (!DmShared.xNull(txtHRateType.getTag()).trim().equalsIgnoreCase("")) {
+...
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHOverHead.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHOverhead(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<txtHO
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHOverHead).show();
+public void onSuccess(DmResultPageing<List<txtHOverHead_Mdl>> result) {
+if (result.isStatus()) {
+txtHOverHead.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHOverHead).show();
+```
+
+`txtHOverHead.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHOverHead.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHOverHead).show();
+```
+
+`txtHOverHead.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (blnStatus && t1Row != null) {
+txtOhManualCode.setText(DmShared.xNull(t1Row.getManualCode()));
+```
+
+`txtHShowFormulaValue.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getYesNo(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFieldExte
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHShowFormulaValue).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHShowFormulaValue.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHShowFormulaValue).show();
+```
+
+`txtHShowFormulaValue.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHShowFormulaValue.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHShowFormulaValue).show();
+```
+
+`txtHShowFormulaValue.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (!DmShared.xNull(txtHShowFormulaValue.getTag()).equalsIgnoreCase(DmShared.xNull(txtHShowFormulaValue.getTag2nd()))) {
+txtHShowFormulaValue.setTag2nd(DmShared.xNull(txtHShowFormulaValue.getTag()));
+resetShowFormulaValue();
+manageControls(true);
+```
+
+`txtHRateType.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHRateType(DmShared.xNull(itemGridEdit.clsParent.txtApplicableOn.getTag()), hel
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHRateType).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHRateType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHRateType).show();
+```
+
+`txtHRateType.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHRateType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHRateType).show();
+```
+
+`txtHRateType.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (!DmShared.xNull(txtHRateType.getTag()).equalsIgnoreCase(DmShared.xNull(txtHRateType.getTag2nd()))) {
+txtHRateType.setTag2nd(DmShared.xNull(txtHRateType.getTag()));
+resetRateType();
+manageControls(true);
+```
+
+`txtHNature.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHNature(DmShared.xNull(itemGridEdit.clsParent.txtApplicableOn.getTag()), helpe
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHNature).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHNature.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHNature).show();
+```
+
+`txtHNature.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHNature.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHNature).show();
+```
+
+`txtHNature.addTextHelpCallBack` → `getSelectedRow()`
+```java
+manageNatureDisplay();
+```
+
+`txtHRoundOff.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHRoundOff(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFi
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHRoundOff).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHRoundOff.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHRoundOff).show();
+```
+
+`txtHRoundOff.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHRoundOff.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHRoundOff).show();
+```
+
+`txtHInventory.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getYesNo(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFieldExte
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHInventory).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHInventory.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHInventory).show();
+```
+
+`txtHInventory.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHInventory.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHInventory).show();
+```
+
+`txtHHeadAc.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHAccount(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFie
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHHeadAc).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHHeadAc.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHHeadAc).show();
+);
+```
+
+`txtHHeadAc.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHHeadAc.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHHeadAc).show();
+```
+
+`txtHHeadDueAc.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHAccount(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFie
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHHeadDueAc).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHHeadDueAc.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHHeadDueAc).show();
+```
+
+`txtHHeadDueAc.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHHeadDueAc.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHHeadDueAc).show();
+```
+
+`txtFormula.addKeyDownHandler` → `onKeyDown()`
+```java
+switch (event.getNativeKeyCode()) {
+case KeyCodes.KEY_DELETE:
+case KeyCodes.KEY_BACKSPACE:
+txtFormula.setTag("");
+txtFormula.setText("");
+break;
+case KeyCodes.KEY_SPACE:
+showFormula();
+break;
+case KeyCodes.KEY_ENTER:
+...
+```
+
+`deductionFormula.addCallBack` → `ok()`
+```java
+txtFormula.setText(name);
+```
+- Alert: "SNo. is mandatory!"
+- Alert: "Head is mandatory!"
+- Alert: "Nature is mandatory!"
+- Alert: "Show Formula Value is mandatory!"
+- Alert: "Round Off is mandatory!"
+- Alert: "Inventory is mandatory!"
+- Alert: "Formula is mandatory!"
+- Alert: "At rate is mandatory!"
+- Alert: "Formula or atRate is mandatory!"
+- Alert: "Amount is mandatory!"
+- Alert: "Amount is mandatory!"
+- Alert: "Head A/c is mandatory!"
+- Alert: "Head Due A/c is mandatory!"
+
+### Screen `ItemGridEdit`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | - | DmTextBoxNumeric | `txtPSNo` | `0, false, 3, false` |
+| 2 | GSM To | DmTextHelp | `txtHBfFrom` | `com.google.gwt.core.client.KeyField_PrpAcs, 5, false` |
+| 3 | - | DmTextHelp | `txtHBfTo` | `com.google.gwt.core.client.KeyField_PrpAcs, 5, false` |
+| 4 | - | DmTextHelp | `txtHGsmFrom` | `com.google.gwt.core.client.KeyField_PrpAcs, 5, false` |
+| 5 | - | DmTextHelp | `txtHGsmTo` | `com.google.gwt.core.client.KeyField_PrpAcs, 5, false` |
+| 6 | Estimated Landed Rate | DmTextBoxNumeric | `txtRate` | `2, false, 10, false` |
+| 7 | - | DmTextBoxNumeric | `txtDeductionValue` | `2, false, 12, false` |
+| 8 | - | DmTextBoxNumeric | `txtAdditionValue` | `2, false, 12, false` |
+| 9 | - | DmTextBoxNumeric | `txtEstimatedLandedRate` | `2, false, 10, false` |
+
+Other widgets (not in tab list): `txtItemCategory` (DmTextBox), `txtItemName` (DmTextBox), `txtRateUnit` (DmTextBox), `txtDeductionUnit` (DmTextBox), `txtAdditionUnit` (DmTextBox), `txtEstimatedLandedRateUnit` (DmTextBox), `gridDeductionDetails` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `txtHBfFrom`: BF From [Text, w100, name]
+- `txtHBfTo`: BF To [Text, w100, name]
+- `txtHGsmFrom`: GSM From [Text, w100, name]
+- `txtHGsmTo`: GSM To [Text, w100, name]
+- `gridDeductionDetails`: Sr. [Text, w30]; Head [Text, w200]; Manual code [Text, w70]; Nature [Text, w50]; F.V. [Text, w35]; R.O. [Text, w50]; Rate type [Text, w70]; Inventory [Text, w60]; Formula [Text, w230]; At rate [Text, w75]; Amount [Text, w75]; Head A/c [Text, w150]; Head Due A/c [Text, w150]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHBfFrom` → `getTxtHBf`
+- `txtHBfTo` → `getTxtHBf`
+- `txtHGsmFrom` → `getTxtHGsm`
+- `txtHGsmTo` → `getTxtHGsm`
+
+**Save: model field ← widget** (`saveInitialize`):
+- `SharedKeyFieldCode` ← DmShared.xNull(txtItemName.getTag())
+- `SharedKeyFieldName` ← DmShared.xNull(txtItemName.getText())
+- `ItemCatCode` ← DmShared.xNull(txtItemCategory.getTag())
+- `ItemCatName` ← DmShared.xNull(txtItemCategory.getText())
+- `UnitCode` ← DmShared.xNull(txtRateUnit.getTag())
+- `UnitName` ← DmShared.xNull(txtRateUnit.getText())
+- `Rate` ← DmClient.vNull(txtRate.getText(), "0.00")
+- `DeductionAmt` ← DmClient.vNull(txtDeductionValue.getText(), "0.00")
+- `AdditionAmt` ← DmClient.vNull(txtAdditionValue.getText(), "0.00")
+- `PrintSNo` ← DmClient.vNull(txtPSNo.getText(), "0")
+- `BfFromTag` ← DmShared.xNull(txtHBfFrom.getTag())
+- `BfFromText` ← DmShared.xNull(txtHBfFrom.getText())
+- `BfToTag` ← DmShared.xNull(txtHBfTo.getTag())
+- `BfToText` ← DmShared.xNull(txtHBfTo.getText())
+- `GsmFromTag` ← DmShared.xNull(txtHGsmFrom.getTag())
+- `GsmFromText` ← DmShared.xNull(txtHGsmFrom.getText())
+- `GsmToTag` ← DmShared.xNull(txtHGsmTo.getTag())
+- `GsmToText` ← DmShared.xNull(txtHGsmTo.getText())
+- `EstimatedLandedRate` ← DmClient.vNull(txtEstimatedLandedRate.getText(), "0.00")
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtItemName.setEnabled(false)`
+- `txtItemCategory.setEnabled(false)`
+- `txtDeductionValue.setEnabled(false)`
+- `txtAdditionValue.setEnabled(false)`
+- `txtEstimatedLandedRate.setEnabled(false)`
+- `txtRateUnit.setReadOnly(true)`
+- `txtDeductionUnit.setReadOnly(true)`
+- `txtAdditionUnit.setReadOnly(true)`
+- `txtEstimatedLandedRateUnit.setReadOnly(true)`
+- `txtHGsmTo.setEnabled(false)`
+- `txtHGsmFrom.setEnabled(false)`
+- `txtHBfTo.setEnabled(false)`
+- `txtHBfFrom.setEnabled(false)`
+- `txtHBfTo.setEnabled(true)`
+- `txtHBfFrom.setEnabled(true)`
+- `txtHGsmTo.setEnabled(true)`
+- `txtHGsmFrom.setEnabled(true)`
+- `txtHBfTo.setEnabled(true)`
+- `txtHBfFrom.setEnabled(true)`
+- `txtHGsmTo.setEnabled(true)`
+- `txtHGsmFrom.setEnabled(true)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtItemName.setEnabled(false);
+txtItemCategory.setEnabled(false);
+txtDeductionValue.setEnabled(false);
+txtAdditionValue.setEnabled(false);
+txtEstimatedLandedRate.setEnabled(false);
+txtRateUnit.setReadOnly(true);
+txtDeductionUnit.setReadOnly(true);
+txtAdditionUnit.setReadOnly(true);
+txtEstimatedLandedRateUnit.setReadOnly(true);
+txtHGsmTo.setEnabled(false);
+txtHGsmFrom.setEnabled(false);
+txtHBfTo.setEnabled(false);
+txtHBfFrom.setEnabled(false);
+if (STEnum.PriceListType.getViaKey(DmShared.iNull(clsParent.txtPriceListType.getTag()).intValue()) != null) {
+switch (STEnum.PriceListType.getViaKey(DmShared.iNull(clsParent.txtPriceListType.getTag()).intValue())) {
+case BF:
+txtHBfTo.setEnabled(true);
+txtHBfFrom.setEnabled(true);
+break;
+case GSM:
+txtHGsmTo.setEnabled(true);
+txtHGsmFrom.setEnabled(true);
+break;
+case BOTH:
+...
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHBfFrom.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHBf(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFieldExt
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHBfFrom).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHBfFrom.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHBfFrom).show();
+```
+
+`txtHBfFrom.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHBfFrom.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHBfFrom).show();
+```
+
+`txtHBfTo.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHBf(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFieldExt
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHBfTo).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHBfTo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHBfTo).show();
+```
+
+`txtHBfTo.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHBfTo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHBfTo).show();
+```
+
+`txtHGsmFrom.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHGsm(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFieldEx
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHGsmFrom).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHGsmFrom.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHGsmFrom).show();
+```
+
+`txtHGsmFrom.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHGsmFrom.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHGsmFrom).show();
+```
+
+`txtHGsmTo.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHGsm(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFieldEx
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHGsmTo).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHGsmTo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHGsmTo).show();
+```
+
+`txtHGsmTo.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHGsmTo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHGsmTo).show();
+```
+
+`deductionGridEdit.addCallBack` → `refresh()`
+```java
+calculate();
+```
+- Confirm: "Are you sure? You want to save price."
+- Confirm: "Are you sure? You want to Delete price."
+- Alert: "rate is required for deduction details!"
+- Alert: "BF from is mandatory!"
+- Alert: "BF to is mandatory!"
+- Alert: "BF to should be greater than or equal to BF from."
+- Alert: "GSM from is mandatory!"
+- Alert: "GSM to is mandatory!"
+- Alert: "GSM to should be greater than or equal to GSM from."
+- Alert: "BF from is mandatory!"
+- Alert: "BF to is mandatory!"
+- Alert: "GSM from is mandatory!"
+- Alert: "GSM to is mandatory!"
+- Alert: "BF to should be greater than or equal to BF from."
+- Alert: "GSM to should be greater than or equal to GSM from."
+- Alert: "Invalid price list type."
+- Alert: "Rate is mandatory."
+- Alert: "Deduction value cannot be greater than rate."
+- Alert: "Estimated landed rate cannot be negative."
+
+### Screen `PriceListGui`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+
+Other widgets (not in tab list): `gui` (DmGUI)
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`gui.addCallback` → `getGUITemplate()`
+```java
+return guiTemplateCode;
+```
+
+`gui.addCallback` → `addCustom()`
+```java
+return null;
+```
+
+`gui.addCallback` → `guiDataCopied()`
+```java
+if (gui_Mdl != null) {
+gui.initialize(gui_Mdl);
+```
+
+### Screen `PriceListPopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Price List | DmTextHelp | `txtHPriceList` | `RateList_PrpAcs, 10` |
+| 2 | Type | DmTextBox | `txtPriceListType` | `10, false` |
+| 3 | Applicable On | DmTextBox | `txtApplicableOn` | `10, false` |
+| 4 | - | DmTextBox | `txtParty` | `100, false` |
+| 5 | Applicable From | DmTextBox | `txtApplicableFrom` | `11, false` |
+| 6 | Applicable To | DmTextBox | `txtApplicableTo` | `11, false` |
+| 7 | Ref. Customer | DmTextBox | `txtRefCustomer` | `100, false` |
+| 8 | Site Specific | DmTextBox | `txtSiteSpecific` | `11, false` |
+| 9 | - | DmGridPaging | `grdItemDetail` | `GrdServices_PrpAcs, 17` |
+
+Other widgets (not in tab list): `txtSearchValue` (DmTextBox), `dmFind` (DmFind)
+
+**Grid / popup columns** (header, width, db field):
+- `txtHPriceList`: Name [Text, w220, priceListName]; Type [Text, w160, priceTypeName]
+- `dmFind`: Name [Text, w200, priceListName]; Price List Type [Text, w110, priceTypeName]; Applicable On [Text, w110, applicableOn]; Party [Text, w300, partyName]; Ref. Customer [Text, w300, refSubName]; Applicable From [Text, w110, replace(convert(varchar, applicableFrom, 106), ' ','-')]; Site Specific [Text, w110, siteSpecificName]
+- `grdItemDetail`: Item Name [Text, w300, itemName]; Item Category [Text, w210, itemCatName]; BF From [Text, w60, fromBfCode]; BF To [Text, w70, toBfCode]; GSM From [Text, w70, fromGsmCode]; GSM To [Text, w60, toGsmCode]; Unit [Text, w70, unitName]; Rate [Text, w60, rate]; Deduction [Text, w80, cmn_Deduction]; Addition [Text, w80, cmn_Addition]; Estd.L.Rate [Text, w90, estdLandedRate]; PS.No. [Text, w60, printSNo]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHPriceList` → `getTxtHPriceList`
+- `closingDatePopup` → `getFind`
+- `grdItemDetail` → `getItemDetailGrid`
+- Find popup → `getFind`
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtPriceListType.setEnabled(false)`
+- `txtParty.setEnabled(false)`
+- `txtRefCustomer.setEnabled(false)`
+- `txtApplicableOn.setEnabled(false)`
+- `txtApplicableFrom.setEnabled(false)`
+- `txtApplicableTo.setEnabled(false)`
+- `txtSiteSpecific.setEnabled(false)`
+- `txtSearchValue.setEnabled(true)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtPriceListType.setEnabled(false);
+txtParty.setEnabled(false);
+txtRefCustomer.setEnabled(false);
+txtApplicableOn.setEnabled(false);
+txtApplicableFrom.setEnabled(false);
+txtApplicableTo.setEnabled(false);
+txtSiteSpecific.setEnabled(false);
+txtSearchValue.setEnabled(true);
+manageCloseOpenPriceListBtn();
+Scheduler.get().scheduleDeferred(new Scheduler.ScheduledCommand() {
+public void execute() {
+txtHPriceList.setFocus(true);
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHPriceList.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHPriceList(APPLICABLE_ON_SHORT_NAME, helper, blnToEndOfFile, new AsyncCallback
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHPriceList).show();
+public void onSuccess(DmResultPageing<List<PriceListPopup_Mdl>> result) {
+if (result.isStatus()) {
+txtHPriceList.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHPriceList).show();
+```
+
+`txtHPriceList.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHPriceList.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHPriceList).show();
+```
+
+`txtHPriceList.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (!DmShared.xNull(txtHPriceList.getTag2nd()).equalsIgnoreCase(txtHPriceList.getTag())) {
+resetPriceList();
+txtHPriceList.setTag2nd(DmShared.xNull(txtHPriceList.getTag()));
+if (tRow != null && blnStatus) {
+txtPriceListType.setTag(DmShared.xNull(tRow.getPriceListTypeTag()));
+txtPriceListType.setText(DmShared.xNull(tRow.getPriceListTypeText()));
+txtApplicableOn.setTag(DmShared.xNull(tRow.getApplicableOnTag()));
+txtApplicableOn.setText(DmShared.xNull(tRow.getApplicableOnText()));
+txtParty.setTag(DmShared.xNull(tRow.getPartyCode()));
+txtParty.setText(DmShared.xNull(tRow.getPartyName()));
+...
+```
+
+`priceListPopup.addCallBack` → `onOk()`
+```java
+if (applicableMdl != null) {
+txtApplicableFrom.setText(DmShared.dNull(applicableMdl.getApplicableDate()));
+reQuery(0);
+```
+
+`priceListPopup.addCallBack` → `onDelete()`
+```java
+if (DmShared.dNull(applicableFrom).equalsIgnoreCase(DmShared.dNull(txtApplicableFrom.getText()))) {
+txtApplicableFrom.setText("");
+reQuery(0);
+```
+
+`createPriceList.addCallBack` → `onOk()`
+```java
+if (mrTemp != null) {
+if (DmShared.iNull(mrTemp.getSharedKeyFieldCode()).longValue() > 0) {
+txtHPriceList.setTag(mrTemp.getSharedKeyFieldCode());
+txtHPriceList.setTag2nd(mrTemp.getSharedKeyFieldCode());
+txtHPriceList.setText(mrTemp.getSharedKeyFieldName());
+txtPriceListType.setTag(DmShared.xNull(mrTemp.getPriceListTypeTag()));
+txtPriceListType.setText(DmShared.xNull(mrTemp.getPriceListTypeText()));
+txtApplicableOn.setTag(DmShared.xNull(mrTemp.getApplicableOnTag()));
+txtApplicableOn.setText(DmShared.xNull(mrTemp.getApplicableOnText()));
+txtParty.setTag(DmShared.xNull(mrTemp.getPartyCode()));
+...
+```
+
+`createPriceList.addCallBack` → `execute()`
+```java
+txtHPriceList.setFocus(true);
+```
+
+`createPriceList.addCallBack` → `onClose()`
+```java
+txtHPriceList.setFocus(true);
+```
+
+`createPriceList.addCallBack` → `onDelete()`
+```java
+clear();
+```
+
+`setting.addCallBack` → `onOk()`
+```java
+PriceListPopup.this.setting_Mdl = setting_Mdl;
+reQuery(0);
+```
+
+`txtHPriceList.addKeyDownHandler` → `onKeyDown()`
+```java
+if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
+if (txtApplicableFrom.isEnabled()) {
+txtApplicableFrom.setFocus(true);
+} else {
+txtSearchValue.setFocus(true);
+```
+
+`txtApplicableFrom.addKeyDownHandler` → `onKeyDown()`
+```java
+if (event.getNativeEvent().getKeyCode() == KeyCodes.KEY_ENTER) {
+txtSearchValue.setFocus(true);
+```
+
+`closingDatePopup.addCallBack` → `onOk()`
+```java
+if (!DmShared.dNull(closingDate).equalsIgnoreCase("")) {
+isActive = !isActive;
+txtApplicableTo.setText(DmShared.dNull(closingDate));
+manageCloseOpenPriceListBtn();
+reQuery(0);
+```
+
+`closingDatePopup.addCallBack` → `onClose()`
+```java
+txtHPriceList.setFocus(true);
+```
+
+`dmFind.addHelpGridCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getFind(APPLICABLE_ON_SHORT_NAME, helper, blnToEndOfFile, new AsyncCallback<DmResult
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), dmFind.getTextBox()).show();
+public void onSuccess(DmResultPageing<List<Find_Mdl>> result) {
+if (result.isStatus()) {
+dmFind.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), dmFind.getTextBox()).show();
+```
+
+`dmFind.addHelpGridCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+dmFind.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), dmFind.getTextBox()).show();
+```
+
+`dmFind.addHelpGridCallBack` → `getSelectedRow()`
+```java
+flwForm.remove(dmFind);
+flwForm.add(vrtInnerForm);
+if (blnStatus && tRow != null) {
+clear();
+txtHPriceList.setTag(DmShared.xNull(tRow.getSharedKeyFieldCode()));
+txtHPriceList.setText(DmShared.xNull(tRow.getSharedKeyFieldName()));
+txtPriceListType.setTag(DmShared.xNull(tRow.getPriceListTypeTag()));
+txtPriceListType.setText(DmShared.xNull(tRow.getPriceListType()));
+txtApplicableOn.setTag(DmShared.xNull(tRow.getApplicableOnTag()));
+txtApplicableOn.setText(DmShared.xNull(tRow.getApplicableOn()));
+...
+```
+
+`itemGridEdit.addCallBack` → `refresh()`
+```java
+reQuery(grdItemDetail.getHelper().getRowsStartFrom());
+```
+
+`itemGridEdit.addCallBack` → `defaultRow()`
+```java
+defaultItemDetails = grdItemDetail.getDmGrid().getGrid().getStore().get(curruntRowIndex);
+reQuery(grdItemDetail.getHelper().getRowsStartFrom());
+```
+
+`grdItemDetail.addCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnToEndOfFile).getItemDetailGrid(setting_Mdl, param, helper, blnToEndOfFile, new AsyncCallback<DmRes
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHPriceList).show();
+public void onSuccess(DmResultPageing<List<GrdItemDetail_Mdl>> result) {
+if (result.isStatus()) {
+grdItemDetail.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHPriceList).show();
+```
+
+`grdItemDetail.addCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+grdItemDetail.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHPriceList).show();
+```
+
+`grdItemDetail.addCallBack` → `getParam()`
+```java
+return setParam();
+```
+
+**Menu items (Other button):** Default Rate, Price List T&C
+- Confirm: "Are you sure? You want to close."
+- Alert: "'Applicable From' date is mandatory!"
+- Alert: "'Applicable from' date should be greater than previous closed date ("
+- Alert: "Please select a Record."
+- Alert: "Editing not allowed for closed price list."
+- Alert: "'Appliable On' is required to open the price list!"
+- Alert: "Please select price list"
+- Alert: "applicable date is mandatory!"
+
+### Screen `Setting`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Item Type | DmTextHelpMulti | `txtHItemType` | `TxtHItemType_PrpAcs, 5` |
+| 2 | Item Category | DmTextHelpMulti | `txtHItemCategory` | `KeyField_PrpAcs, 6, false` |
+| 3 | Item Group | DmTextHelpMulti | `txtHItemGroup` | `KeyField_PrpAcs, 6, false` |
+| 4 | Item Name | DmTextHelpMulti | `txtHItemName` | `com.google.gwt.core.shared.TxtHItemName_PrpAcs, 7, false` |
+
+**Grid / popup columns** (header, width, db field):
+- `txtHItemType`: Type [Text, w250, name]
+- `txtHItemCategory`: Item Category [Text, w220, categoryName]
+- `txtHItemGroup`: Item Group [Text, w250, Name]
+- `txtHItemName`: Item Name [Text, w200, name]; Manual Code [Text, w100, manualCode]; SKU [Text, w50, sku]
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHItemType.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHItemType(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFi
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHItemType).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHItemType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemType).show();
+```
+
+`txtHItemType.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHItemType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemType).show();
+```
+
+`txtHItemGroup.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHItemGroup(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyF
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHItemGroup).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHItemGroup.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemGroup).show();
+```
+
+`txtHItemGroup.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHItemGroup.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemGroup).show();
+```
+
+`txtHItemCategory.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHItemCategory(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<K
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHItemCategory).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHItemCategory.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemCategory).show();
+```
+
+`txtHItemCategory.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHItemCategory.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemCategory).show();
+```
+
+`txtHItemName.addTextHelpMultiCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHItemName(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<KeyFi
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHItemName).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHItemName.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemName).show();
+```
+
+`txtHItemName.addTextHelpMultiCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHItemName.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItemName).show();
+```
+
 ## Files
 | file | lines |
 |---|---|

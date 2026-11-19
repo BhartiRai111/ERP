@@ -12,6 +12,75 @@
 - Lookups/suggestions: -
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `ItemUpdatePopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+
+Other widgets (not in tab list): `grid` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `grid`: Field [Text, w120]; Previous Value [Text, w100]; Current Value [Text, w98]; Save To Item [Text, w100]; Save To Company [Text, w100]
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`schemePopup.addCallBack` → `ok()`
+```java
+int rowIndex = 0;
+for (ItemUpdateField_Mdl iufMdl : grid.getGrid().getStore().getAll()) {
+if (iufMdl.getField() != null && iufMdl.getField() == ItemUpdateField_Mdl.Field.SCHEME) {
+iufMdl.setFinalValue(DmClient.vNull(spMdl.getCurrentSchemeOnQty(), unitDecimalFormat) + " + " + DmClient.vNull(spMdl.get
+rowIndex = grid.getGrid().getStore().getAll().indexOf(iufMdl);
+break;
+grid.commitChanges();
+schemePopupMdl = spMdl;
+((CellSelectionModel) grid.getGrid().getSelectionModel()).selectCell(rowIndex, 3);
+```
+
+`schemePopup.addCallBack` → `onClose()`
+```java
+int rowIndex = 0;
+for (ItemUpdateField_Mdl iufMdl : grid.getGrid().getStore().getAll()) {
+if (iufMdl.getField() != null && iufMdl.getField() == ItemUpdateField_Mdl.Field.SCHEME) {
+iufMdl.setSaveToItem("0");
+rowIndex = grid.getGrid().getStore().getAll().indexOf(iufMdl);
+break;
+grid.commitChanges();
+((CellSelectionModel) grid.getGrid().getSelectionModel()).selectCell(rowIndex, 3);
+```
+
+### Screen `SchemePopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Quantity | DmTextBoxNumeric | `txtCurrentQty` | `4, false, 12, false` |
+| 2 | + | DmTextBoxNumeric | `txtCurrentFreeQty` | `4, false, 12, false` |
+| 3 | Previous Scheme | DmTextBoxNumeric | `txtMasterSchemeOnQty` | `4, false, 12, false` |
+| 4 | + | DmTextBoxNumeric | `txtMasterSchemeFreeQty` | `4, false, 12, false` |
+| 5 | Current Scheme | DmTextBoxNumeric | `txtCurrentSchemeOnQty` | `4, false, 12, false` |
+| 6 | + | DmTextBoxNumeric | `txtCurrentSchemeFreeQty` | `4, false, 12, false` |
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtCurrentQty.setEnabled(false)`
+- `txtCurrentFreeQty.setEnabled(false)`
+- `txtMasterSchemeOnQty.setEnabled(false)`
+- `txtMasterSchemeFreeQty.setEnabled(false)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtCurrentQty.setEnabled(false);
+txtCurrentFreeQty.setEnabled(false);
+txtMasterSchemeOnQty.setEnabled(false);
+txtMasterSchemeFreeQty.setEnabled(false);
+```
+- Alert: "Please fill Scheme On quantity."
+- Alert: "Please fill Scheme Free quantity."
+
 ## Files
 | file | lines |
 |---|---|

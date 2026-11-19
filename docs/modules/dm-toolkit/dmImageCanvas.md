@@ -12,6 +12,16 @@
 - Lookups/suggestions: -
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `ImageTextPopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | - | DmTextBoxNumeric | `txtFontSize` | `1, false, 2, true` |
+| 2 | - | DmTextBox | `txtText` | `` |
+
 ## Files
 | file | lines |
 |---|---|

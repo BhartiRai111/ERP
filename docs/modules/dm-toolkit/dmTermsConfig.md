@@ -12,6 +12,46 @@
 - Lookups/suggestions: -
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `DmTermsConfig`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+
+Other widgets (not in tab list): `textBox` (DmTextBox), `intBox` (DmTextBoxNumeric), `longBox` (DmTextBoxNumeric), `doubleBox` (DmTextBoxNumeric), `dateBox` (DmTextBox)
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`textBox.addBlurHandler` → `onBlur()`
+```java
+detail_Mdl.setValue(DmShared.xNull(textBox.getText()));
+```
+
+`intBox.addBlurHandler` → `onBlur()`
+```java
+detail_Mdl.setValue(String.valueOf(DmShared.iNull(intBox.getText()).intValue()));
+```
+
+`longBox.addBlurHandler` → `onBlur()`
+```java
+detail_Mdl.setValue(String.valueOf(DmShared.iNull(longBox.getText()).longValue()));
+```
+
+`doubleBox.addBlurHandler` → `onBlur()`
+```java
+detail_Mdl.setValue(DmShared.vNull(doubleBox.getText()).toString());
+```
+
+`dateBox.addBlurHandler` → `onBlur()`
+```java
+dateBox.setText(DmClient.returnDate(DmShared.xNull(dateBox.getText())));
+detail_Mdl.setValue(DmShared.dNull(dateBox.getText()));
+if (rowIndex == grid.getRowCount() - 1) {
+setFocus();
+```
+
 ## Files
 | file | lines |
 |---|---|

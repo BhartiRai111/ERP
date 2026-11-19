@@ -12,6 +12,564 @@
 - Lookups/suggestions: getTxtHVoucher, getTxtHRefVoucherType, getTxtHPartyName, getTxtHGstType, getTxtHLocation, getTxtHAdjBillNo, getTxtHRefBillNo, getTxtHDIfferenceType, getTxtHHSN, getTxtHItemGSTNature, getTxtHDueEntryNo, getTxtHTransactionType, getTxtHItem
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `CreditDebitNote`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Voucher Type | DmTextHelp | `txtHVoucherType` | `TxtHVoucher_PrpAcs, 4, true` |
+| 2 | Date | DmTextBox | `txtVoucherDate` | `11, true` |
+| 3 | Ref. Voucher Type | DmTextHelp | `txtHRefVoucherType` | `KeyField_PrpAcs, 7, true` |
+| 4 | Trans Type | DmTextHelp | `txtHTransactionType` | `TxtHTransactionType_PrpAcs, 3, true` |
+| 5 | - | DmTextHelp | `txtHPartyName` | `TxtHSupplier_PrpAcs, 6, true` |
+| 6 | State | DmTextBox | `txtPartyState` | `` |
+| 7 | Against From | DmTextHelp | `txtHAgainstFrom` | `KeyField_PrpAcs, 5, true` |
+| 8 | Diff. Type | DmTextHelp | `txtHDifferenceType` | `KeyField_PrpAcs, 5, true` |
+| 9 | Adj Bill No. | DmTextHelp | `txtHAdjBillNo` | `TxtHVoucherNo_PrpAcs, 5, false` |
+| 10 | Ref Bill No. | DmTextHelp | `txtHRefBillNo` | `TxtHVoucherNo_PrpAcs, 5, false` |
+| 11 | Voucher No. | DmTextBox | `txtVoucherNo` | `20, false` |
+| 12 | HSN Filter | DmTextHelp | `txtHSN` | `TxtHHSN_PrpAcs, 6, false` |
+| 13 | Due Entry No. | DmTextHelp | `txtHDueEntryNo` | `TxtHVoucherNo_PrpAcs, 5, false` |
+| 14 | Date | DmTextBox | `txtDueEntryDate` | `11, false` |
+| 15 | Party Bill No. | DmTextBox | `txtPartyBillNo` | `20, false` |
+| 16 | Party Bill Date | DmTextBox | `txtPartyBillDate` | `20, false` |
+| 17 | Remark | DmRemarkTextBox | `txtRemark` | `250, false` |
+| 18 | TDS On Amount | DmTextBoxNumeric | `txtTdsOnAmt` | `2, true, 12, false` |
+| 19 | - | DmTextBoxNumeric | `txtTds` | `2, true, 12, false` |
+
+Other widgets (not in tab list): `txtAcAmtTotal` (DmTextBox), `gui` (DmGUI), `dmFind` (DmFind), `gridItemDetail` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `txtHVoucherType`: Type [Text, w0, name]
+- `txtHRefVoucherType`: Type [Text, w0, name]
+- `txtHDifferenceType`: Type [Text, w0]
+- `txtHPartyName`: Name [Text, w0, name]; Manual Code [Text, w100, manualCode]; City [Text, w150, cityName]
+- `txtHRefBillNo`: Bill No. [Text, w120, name]; Date [Text, w80, v_Date]; Party Bill No. [Text, w120, partyBillNo]; Party Bill Date [Text, w80, replace(convert(varchar, partyBillDate, 106), ' ','-')]
+- `txtHAdjBillNo`: Bill No [Text, w120, name]; Date [Text, w80, replace(convert(varchar, v_Date, 106), ' ','-')]; Ref. No. [Text, w120, refNo]; Ref. Date [Text, w80, replace(convert(varchar, refDate, 106), ' ','-')]
+- `txtHAgainstFrom`: Tax Transaction [Text, w0, name]
+- `txtHDueEntryNo`: Due Entry No. [Text, w0, recId]; Date [Text, w80, replace(convert(varchar, v_Date, 106), ' ','-')]
+- `txtHSN`: Name [Text, w100, name]; HSN [Text, w80, hsn]
+- `txtHTransactionType`: Name [Text, w0, name]
+- `dmFind`: Voucher No. [Text, w120, recId]; Date [Text, w100, replace(convert(varchar, v_Date, 106), ' ','-')]; Type [Text, w80, short_Name]; Referenc Type [Text, w80, referencType]; Party Name [Text, w200, partyName]; Adj. Bill No. [Text, w120, AdjBillRecId]; Ref. Bill No. [Text, w120, refBillRecId]; difference Type [Text, w100, differenceType]; Due Entry No. [Text, w120, dueEntryRecId]; Due Entry Date [Text, w80, dueEntrydate]
+- `gridItemDetail`: Dr/Cr Due No. [Text, w180]; Dr/Cr Due Date [Text, w140]; Entry No. [Text, w200]; Item Name [Text, w200]; HSN [Text, w80]; Qty [Text, w70]; Rate [Text, w80]; Value [Text, w100]; Narration [Text, w200]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHVoucherType` → `getTxtHVoucher`
+- `txtHRefVoucherType` → `getTxtHRefVoucherType`
+- `txtHPartyName` → `getTxtHPartyName`
+- `txtHAdjBillNo` → `getTxtHAdjBillNo`
+- `txtHRefBillNo` → `getTxtHRefBillNo`
+- `txtHSN` → `getTxtHHSN`
+- `txtHDifferenceType` → `getTxtHDIfferenceType`
+- `txtHDueEntryNo` → `getTxtHDueEntryNo`
+- `txtHAgainstFrom` → `getTxtHLocation`
+- `txtHTransactionType` → `getTxtHTransactionType`
+- Find popup → `getFind`
+
+**Save: model field ← widget** (`topControlSave`):
+- `NewVoucherDate` ← txtVoucherDate.getText()
+
+**Save: model field ← widget** (`topControlSaveInitialize`):
+- `SharedKeyFieldCode` ← topControl.getDocId()
+- `SharedKeyFieldName` ← DmShared.xNull(txtVoucherNo.getText())
+- `U_EntDt_LatestLine` ← DmShared.xNull(txtVoucherNo.getTag())
+- `VoucherDate` ← DmShared.dNull(txtVoucherDate.getText())
+- `VoucherTypeCode` ← DmShared.xNull(txtHVoucherType.getTag())
+- `VoucherTypeName` ← DmShared.xNull(txtHVoucherType.getText())
+- `UserPermission` ← topControl.getPermissions()
+- `PartyCode` ← DmShared.xNull(txtHPartyName.getTag())
+- `PartyName` ← DmShared.xNull(txtHPartyName.getText())
+- `PartyStateCode` ← DmShared.xNull(txtPartyState.getTag())
+- `PartyStateName` ← DmShared.xNull(txtPartyState.getText())
+- `DueEntryDate` ← DmShared.dNull(txtDueEntryDate.getText())
+- `LocationCode` ← txtHAgainstFrom.getTag()
+- `LocationName` ← txtHAgainstFrom.getText()
+- `RefVoucherTypeCode` ← DmShared.xNull(txtHRefVoucherType.getTag())
+- `RefVoucherTypeName` ← DmShared.xNull(txtHRefVoucherType.getText())
+- `DiffTypeCode` ← DmShared.xNull(txtHDifferenceType.getTag())
+- `DiffTypeName` ← DmShared.xNull(txtHDifferenceType.getText())
+- `AdjBillDocId` ← DmShared.xNull(txtHAdjBillNo.getTag())
+- `AdjBillRecId` ← DmShared.xNull(txtHAdjBillNo.getText())
+- `RefBillDocId` ← DmShared.xNull(txtHRefBillNo.getTag())
+- `RefBillRecId` ← DmShared.xNull(txtHRefBillNo.getText())
+- `HsnCode` ← DmShared.xNull(txtHSN.getTag())
+- `HsnName` ← DmShared.xNull(txtHSN.getText())
+- `DueEntryCode` ← DmShared.xNull(txtHDueEntryNo.getTag())
+- `DueEntryName` ← DmShared.xNull(txtDueEntryDate.getText())
+- `PartyBillNo` ← DmShared.xNull(txtPartyBillNo.getText())
+- `PartyBillDate` ← DmShared.xNull(txtPartyBillDate.getText())
+- `Remark` ← DmShared.xNull(txtRemark.getText())
+- `TransTypeCode` ← DmShared.xNull(txtHTransactionType.getTag())
+- `TransTypeName` ← DmShared.xNull(txtHTransactionType.getText())
+
+**Load (record opened): widget ← model** (`topControlMoveRecSuccess`):
+- `txtVoucherNo.setText` ← mrTemp.getSharedKeyFieldName()
+- `txtVoucherNo.setTag` ← mrTemp.getU_EntDt_LatestLine()
+- `txtVoucherDate.setText` ← mrTemp.getVoucherDate()
+- `txtHVoucherType.setTag2nd` ← mrTemp.getVoucherTypeCode()
+- `txtHVoucherType.setTag` ← mrTemp.getVoucherTypeCode()
+- `txtHVoucherType.setText` ← mrTemp.getVoucherTypeName()
+- `txtHPartyName.setTag` ← mrTemp.getPartyCode()
+- `txtHPartyName.setTag2nd` ← mrTemp.getPartyCode()
+- `txtHPartyName.setText` ← mrTemp.getPartyName()
+- `txtPartyState.setTag` ← mrTemp.getPartyStateCode()
+- `txtPartyState.setText` ← mrTemp.getPartyStateName()
+- `txtHAgainstFrom.setTag` ← DmShared.xNull(mrTemp.getLocationCode())
+- `txtHAgainstFrom.setText` ← DmShared.xNull(mrTemp.getLocationName())
+- `txtPartyBillNo.setText` ← DmShared.xNull(mrTemp.getPartyBillNo())
+- `txtPartyBillDate.setText` ← mrTemp.getPartyBillDate()
+- `txtHRefVoucherType.setTag` ← DmShared.xNull(mrTemp.getRefVoucherTypeCode())
+- `txtHRefVoucherType.setText` ← DmShared.xNull(mrTemp.getRefVoucherTypeName())
+- `txtHAdjBillNo.setTag` ← DmShared.xNull(mrTemp.getAdjBillDocId())
+- `txtHAdjBillNo.setText` ← DmShared.xNull(mrTemp.getAdjBillRecId())
+- `txtHRefBillNo.setTag` ← DmShared.xNull(mrTemp.getRefBillDocId())
+- `txtHRefBillNo.setText` ← DmShared.xNull(mrTemp.getRefBillRecId())
+- `txtHDifferenceType.setTag` ← DmShared.xNull(mrTemp.getDiffTypeCode())
+- `txtHDifferenceType.setText` ← DmShared.xNull(mrTemp.getDiffTypeName())
+- `txtHSN.setTag` ← DmShared.xNull(mrTemp.getHsnCode())
+- `txtHSN.setText` ← DmShared.xNull(mrTemp.getHsnName())
+- `txtHDueEntryNo.setTag` ← DmShared.xNull(mrTemp.getDueEntryCode())
+- `txtHDueEntryNo.setText` ← DmShared.xNull(mrTemp.getDueEntryName())
+- `txtDueEntryDate.setTag` ← DmShared.dNull(mrTemp.getDueEntryDate())
+- `txtDueEntryDate.setText` ← DmShared.dNull(mrTemp.getDueEntryDate())
+- `txtRemark.setText` ← DmShared.xNull(mrTemp.getRemark())
+- `txtHTransactionType.setTag` ← DmShared.xNull(mrTemp.getTransTypeCode())
+- `txtHTransactionType.setTag2nd` ← DmShared.xNull(mrTemp.getTransTypeCode())
+- `txtHTransactionType.setText` ← DmShared.xNull(mrTemp.getTransTypeName())
+- `userControl.setTextBlog` ← preparedByBlog, mrTemp.getSharedPreparedBy()
+- `userControl.setTextBlog` ← modifiedByBlog, mrTemp.getSharedModifiedBy()
+- `userControl.setTextBlog` ← approvedByBlog, mrTemp.getApprovedBy()
+- `txtTdsOnAmt.setText` ← DmClient.vNull(tdsMdl.getTdsOnAmount(), "0.00")
+- `txtTds.setText` ← DmShared.xNull(tdsMdl.getTotalAmount())
+- `txtTds.setTag` ← DmShared.xNull(tdsMdl.getSharedKeyFieldCode())
+- `txtTds.setTag2nd` ← DmShared.xNull(tdsMdl.getSharedKeyFieldName())
+- `txtAcAmtTotal.setText` ← DmShared.xNull(overHead.getAmount(DmEnum.OverHeadType.NET_AMOUNT))
+- userControl.setTextBlog(preparedByBlog, mrTemp.getSharedPreparedBy())
+- userControl.setTextBlog(modifiedByBlog, mrTemp.getSharedModifiedBy())
+- userControl.setTextBlog(approvedByBlog, mrTemp.getApprovedBy())
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtHVoucherType.setEnabled(false)`
+- `txtVoucherNo.setEnabled(false)`
+- `txtVoucherDate.setEnabled(false)`
+- `txtHPartyName.setEnabled(false)`
+- `txtPartyState.setEnabled(false)`
+- `txtHAdjBillNo.setEnabled(false)`
+- `txtHRefBillNo.setEnabled(false)`
+- `txtDueEntryDate.setEnabled(false)`
+- `txtTds.setEnabled(false)`
+- `txtTdsOnAmt.setEnabled(false)`
+- `txtHVoucherType.setEnabled(true)`
+- `txtHPartyName.setEnabled(true)`
+- `txtHAdjBillNo.setEnabled(true)`
+- `txtHRefBillNo.setEnabled(true)`
+- `txtTds.setEnabled(true)`
+- `txtTdsOnAmt.setEnabled(true)`
+- `txtVoucherDate.setEnabled(dateEditable)`
+
+**Defaults when the screen opens** (`iniDefaultValues`):
+- calls server `getDefaultValues`
+
+**On New click:**
+- `onAdd()`
+- `txtHVoucherType.setFocus(true)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtHVoucherType.setEnabled(false);
+txtVoucherNo.setEnabled(false);
+txtVoucherDate.setEnabled(false);
+txtHPartyName.setEnabled(false);
+txtPartyState.setEnabled(false);
+txtHAdjBillNo.setEnabled(false);
+txtHRefBillNo.setEnabled(false);
+txtDueEntryDate.setEnabled(false);
+txtTds.setEnabled(false);
+txtTdsOnAmt.setEnabled(false);
+if (topControl.getMode().equalsIgnoreCase("New")) {
+txtHVoucherType.setEnabled(true);
+txtHPartyName.setEnabled(true);
+if (DmShared.xNull(txtHDueEntryNo.getTag()).trim().equalsIgnoreCase("")) {
+txtHAdjBillNo.setEnabled(true);
+txtHRefBillNo.setEnabled(true);
+if (voucherCategory.equalsIgnoreCase(lvc.CREDIT_NOTE_PURCHASE)
+|| voucherCategory.equalsIgnoreCase(lvc.CREDIT_NOTE_SALE)) {
+txtTds.setEnabled(true);
+txtTdsOnAmt.setEnabled(true);
+flwFillGrid.clear();
+if (flag) {
+flwFillGrid.add(btnFillGrid);
+txtVoucherDate.setEnabled(dateEditable);
+...
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`gui.addCallback` → `getGUITemplate()`
+```java
+return guiTemplateCode;
+```
+
+`gui.addCallback` → `addCustom()`
+```java
+return null;
+```
+
+`topControl.addNewHandeller` → `newClicked()`
+```java
+onAdd();
+txtHVoucherType.setFocus(true);
+```
+
+`topControl.addEditHandeller` → `editClicked()`
+```java
+if (!DmShared.xNull(userControl.getTextBlog(approvedByBlog)).equalsIgnoreCase("")) {
+topControl.btnClick("");
+new DmAlertMessageBox("Record is approved. You can't modify this record.", (DmTextBox) null).show();
+} else {
+manageDisplay(true);
+refreshGstDocumentInfo();
+addNewRow();
+txtHRefVoucherType.setFocus(true);
+```
+
+`topControl.addDeleteHandeller` → `deleteClicked()`
+```java
+if (!DmShared.xNull(userControl.getTextBlog(approvedByBlog)).equalsIgnoreCase("")) {
+topControl.btnClick("");
+new DmAlertMessageBox("Record is approved. You can't Delete this record.", (DmTextBox) null).show();
+} else {
+new DmConfirmMessageBox("Are you sure? You want to Delete this record.", new DialogHideEvent.DialogHideHandler() {
+public void onDialogHide(DialogHideEvent event) {
+if (event.getHideButton() == Dialog.PredefinedButton.YES) {
+showModifyReason();
+}).show();
+```
+
+`topControl.addDeleteHandeller` → `onDialogHide()`
+```java
+if (event.getHideButton() == Dialog.PredefinedButton.YES) {
+showModifyReason();
+```
+
+`topControl.addCardHandeller` → `cardClicked()`
+```java
+topControlCard();
+```
+
+`topControl.addFindHandeller` → `findClicked()`
+```java
+flwForm.remove(vrtInnerForm);
+flwForm.add(dmFind);
+```
+
+`topControl.addMoveRecHandeller` → `moveRec()`
+```java
+topControlMoveRec(fetchCode);
+```
+
+`topControl.addPrintHandeller` → `printClicked()`
+```java
+prnRecord(false);
+```
+
+`topControl.addSaveHandeller` → `saveClicked()`
+```java
+if (DmShared.xNull(topControl.getMode()).equalsIgnoreCase("Edit")) {
+showModifyReason();
+} else {
+verifyDueDate();
+```
+
+`topControl.addCloseHandeller` → `closeClicked()`
+```java
+DmClient.<SetWidgetInvoker>getStoreItem("swiEvent").closeWidget(CreditDebitNote.this);
+```
+
+`topControl.addOtherHandeller` → `otherClicked()`
+```java
+if (!topControl.getMode().trim().equalsIgnoreCase("New")) {
+if (!DmShared.xNull(topControl.getDocId()).trim().equalsIgnoreCase("")) {
+menu.show(topControl.getButton("Other"));
+topControlMoveRec(topControl.getDocId());
+```
+
+`modifyReason.addCallBack` → `onOk()`
+```java
+try {
+CreditDebitNote.this.modifyReasonMdl = modifyReason;
+if (topControl.getMode().equalsIgnoreCase("Browse") && DmShared.iNull(topControl.getDocId()).longValue() > 0) {
+topControlDelete(topControl.getDocId());
+} else {
+verifyDueDate();
+} catch (Exception ex) {
+new DmAlertMessageBox(ex.getMessage(), (DmTextBox) null).show();
+```
+
+`walkThrough.addCallBack` → `onClose()`
+```java
+topControlMoveRec(topControl.getDocId());
+```
+
+`tdsPopup.addCallBack` → `onOk()`
+```java
+tdsMdl = new TDSPopup_Mdl();
+tdsMdl = tDS_Mdl;
+fillTdsCallBackData();
+txtTds.setFocus(true);
+```
+
+`tdsPopup.addCallBack` → `onClose()`
+```java
+txtTds.setFocus(true);
+```
+
+`eGstPopup.addCallBack` → `onOk()`
+```java
+topControlMoveRec(DmShared.xNull(eGst_Mdl.getDocid()));
+```
+
+`eGstPopup.addCallBack` → `getVoucherCategory()`
+```java
+return CreditDebitNote.this.voucherCategory;
+```
+
+`txtHVoucherType.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHVoucher(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<TxtHVo
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHVoucherType).show();
+public void onSuccess(DmResultPageing<List<TxtHVoucherType_Mdl>> result) {
+if (result.isStatus()) {
+txtHVoucherType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHVoucherType).show();
+```
+
+`txtHVoucherType.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHVoucherType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHVoucherType).show();
+```
+
+`txtHVoucherType.addTextHelpCallBack` → `getSelectedRow()`
+```java
+if (!DmShared.xNull(txtHVoucherType.getTag()).equalsIgnoreCase(DmShared.xNull(txtHVoucherType.getTag2nd()))) {
+txtHVoucherType.setTag2nd(txtHVoucherType.getTag());
+balancingAc = "";
+voucherCategory = "";
+guiTemplateCode = "";
+txtHRefVoucherType.clear(false);
+if (blnStatus && t1Row
+!= null) {
+balancingAc = t1Row.getBalancingAc();
+voucherCategory = t1Row.getCategory();
+...
+```
+
+`txtHRefVoucherType.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHRefVoucherType(DmShared.xNull(voucherCategory), helper, blnToEndOfFile, new A
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHRefVoucherType).show();
+public void onSuccess(DmResultPageing<List<KeyFieldExtended>> result) {
+if (result.isStatus()) {
+txtHRefVoucherType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHRefVoucherType).show();
+```
+
+`txtHRefVoucherType.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHRefVoucherType.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHRefVoucherType).show();
+```
+
+`txtHRefVoucherType.addTextHelpCallBack` → `getSelectedRow()`
+```java
+boolean flag = false;
+if (!DmShared.xNull(txtHRefVoucherType.getTag2nd()).equalsIgnoreCase(txtHRefVoucherType.getTag())) {
+txtHRefVoucherType.setTag2nd(txtHRefVoucherType.getTag());
+txtHPartyName.clear();
+resetParty();
+flag = true;
+if (flag && t1Row != null) {
+```
+
+`txtHPartyName.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHPartyName(voucherCategory, txtHRefVoucherType.getTag(), helper, blnToEndOfFil
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHPartyName).show();
+public void onSuccess(DmResultPageing<List<TxtHPartyName_Mdl>> result) {
+if (result.isStatus()) {
+txtHPartyName.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHPartyName).show();
+```
+
+`txtHPartyName.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHPartyName.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHPartyName).show();
+```
+
+`txtHPartyName.addTextHelpCallBack` → `getSelectedRow()`
+```java
+fillPartyDetails(blnStatus, tRow);
+```
+
+`txtHAdjBillNo.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHAdjBillNo(voucherCategory, txtHPartyName.getTag(), txtHRefVoucherType.getTag(
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHAdjBillNo).show();
+public void onSuccess(DmResultPageing<List<TxtHVoucherNo_Mdl>> result) {
+if (result.isStatus()) {
+txtHAdjBillNo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHAdjBillNo).show();
+```
+
+`txtHAdjBillNo.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHAdjBillNo.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHAdjBillNo).show();
+```
+
+**Top control options:** setOtherRequired(true), setRefreshRequired(false), setDisplay(true), setDisplay(false)
+
+**Menu items (Other button):** GST Actions, Process Message
+
+**Modify reason popup:** yes (Edit save and Delete).
+- Confirm: "Are you sure? You want to Delete this record."
+- Confirm: "Due Date is Changed, Are you sure to Continue ?"
+- Alert: "Record is approved. You can't modify this record."
+- Alert: "Record is approved. You can't Delete this record."
+- Alert: "Please select 'voucher Type'"
+- Alert: "Please fill date."
+- Alert: "Please select Supplier."
+- Alert: "Please select 'Against From'"
+- Alert: "Please select 'voucher Type'"
+- Alert: "Please fill date."
+- Alert: "Please select Supplier."
+- Alert: "Please select 'Against From'"
+- Alert: "Please select 'Adj. Bill No.' Or 'Ref. Bill No.' Or 'Due ENtry No.'"
+- Alert: "Can be use in Browse Mode only and select a record."
+- Alert: "Message is processed successfully!"
+- Alert: "Message can be send only in Browse Mode!"
+- Alert: "Please select party."
+
+### Screen `GridEditPopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Item Name | DmTextHelp | `txtHItem` | `com.google.gwt.core.client.TxtHItemName_PrpAcs, 7, true` |
+| 2 | Quantity | DmTextBoxNumeric | `txtQuantity` | `2, false, 12, true` |
+| 3 | Rate | DmTextBoxNumeric | `txtRate` | `2, false, 12, true` |
+| 4 | Amount | DmTextBoxNumeric | `txtAmount` | `2, false, 12, true` |
+| 5 | Narration | DmRemarkTextBox | `txtNarration` | `250, false` |
+
+**Grid / popup columns** (header, width, db field):
+- `txtHItem`: Item Name [Text, w200, name]; Manual Code [Text, w100, manualCode]; Unit [Text, w50, purchaseUnitName]; Item Type [Text, w130, itemTypeName]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHItem` → `getTxtHItem`
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtHItem.setEnabled(false)`
+- `txtQuantity.setEnabled(false)`
+- `txtRate.setEnabled(false)`
+- `txtAmount.setEnabled(false)`
+- `txtNarration.setEnabled(isEditable)`
+- `flwOk.setVisible(isEditable)`
+- `txtRate.setEnabled(isEditable)`
+- `txtQuantity.setEnabled(isEditable)`
+- `txtAmount.setEnabled(isEditable)`
+- `txtHItem.setEnabled(isEditable)`
+- `txtRate.setEnabled(isEditable)`
+- `txtQuantity.setEnabled(isEditable)`
+- `txtAmount.setEnabled(isEditable)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtHItem.setEnabled(false);
+txtQuantity.setEnabled(false);
+txtRate.setEnabled(false);
+txtAmount.setEnabled(false);
+txtNarration.setEnabled(isEditable);
+flwOk.setVisible(isEditable);
+boolean isAutoFill = !DmShared.xNull(grid_Mdl.getDueDocId()).trim().isEmpty() || !DmShared.xNull(grid_Mdl.getRefDocId())
+if (isAutoFill) {
+DmEnum.DifferenceType dType = DmEnum.DifferenceType.getViaCode(DmShared.iNull(headerEntry.txtHDifferenceType.getTag()).i
+if (dType != null) {
+switch (dType) {
+case RATE_DIFF:
+txtRate.setEnabled(isEditable);
+break;
+case QUANTITY_DIFF:
+txtQuantity.setEnabled(isEditable);
+break;
+case OTHER_DIFF:
+case OVERALL_DIFF:
+txtAmount.setEnabled(isEditable);
+break;
+default:
+break;
+} else {
+...
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHItem.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHItem(DmShared.xNull(headerEntry.txtHVoucherType.getTag()),
+DmShared.xNull(headerEntry.txtHPartyName.getTag()), DmShared.xNull(headerEntry.itemCatCodeCSV), helper, blnToEndOfFile, 
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHItem).show();
+public void onSuccess(DmResultPageing<List<TxtHItemName_Mdl>> result) {
+if (result.isStatus()) {
+txtHItem.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItem).show();
+```
+
+`txtHItem.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHItem.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHItem).show();
+```
+
+`txtHItem.addTextHelpCallBack` → `getSelectedRow()`
+```java
+boolean flagItemChange = false;
+if (!DmShared.xNull(txtHItem.getTag2nd()).equalsIgnoreCase(DmShared.xNull(txtHItem.getTag()))) {
+hsnCode = "";
+hsn = "";
+purchaseSalesUnitCode = "";
+purchaseSalesUnitName = "";
+itsBasedOn = "";
+purchaseAc = "";
+txtHItem.setTag2nd(DmShared.xNull(txtHItem.getTag()));
+flagItemChange = true;
+...
+```
+
 ## Files
 | file | lines |
 |---|---|

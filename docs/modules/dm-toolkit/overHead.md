@@ -12,6 +12,227 @@
 - Lookups/suggestions: getTxtHPostingAC
 - CSV export: no
 
+## Screen spec (auto-extracted from client)
+### Screen `OverHeadExcludePopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+
+Other widgets (not in tab list): `grid` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `grid`: Overhead [Text, w247]; Amount [Text, w100];  [Text, w30]
+
+### Screen `OverHeadGridEdit`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Particulars | DmTextBox | `txtOverHead` | `50, true` |
+| 2 | Alias | DmTextBox | `txtOverHeadAlias` | `50, true` |
+| 3 | A/c Name | DmTextHelp | `txtHPostingAC` | `TxtHPostingAC_PrpAcs, 7, false` |
+| 4 | At Rate | DmTextBoxNumeric | `txtAtRate` | `DmTextBoxNumeric.DecimalNature.NONE, true, 6, false` |
+| 5 | Amount | DmTextBoxNumeric | `txtAmount` | `DmTextBoxNumeric.DecimalNature.NONE, true, 15, false` |
+
+Other widgets (not in tab list): `txtDrCrType` (DmTextBox), `gridMA` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `txtHPostingAC`: Name [Text, w0, name]; Code [Text, w50, ManualCode]
+- `gridMA`: A/c Name [Text, w1]; Amount [Text, w100]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHPostingAC` → `getTxtHPostingAC`
+
+**Enable/disable rules** (`manageDisplay(flag)`, flag = editing mode):
+- `txtOverHead.setEnabled(false)`
+- `txtOverHeadAlias.setEnabled(false)`
+- `txtAtRate.setEnabled(false)`
+- `txtAmount.setEnabled(false)`
+- `txtOverHeadAlias.setEnabled(true)`
+- `txtAmount.setEnabled(true)`
+- `txtAtRate.setEnabled(true)`
+
+**`manageDisplay()` logic (condensed code):**
+```java
+txtOverHead.setEnabled(false);
+txtOverHeadAlias.setEnabled(false);
+txtAtRate.setMandatory(false);
+txtAtRate.setEnabled(false);
+txtAmount.setMandatory(false);
+txtAmount.setEnabled(false);
+if (parentRow != null) {
+if (DmShared.vNull(parentRow.getAtRateMandatory()).doubleValue() == 1) {
+txtAtRate.setMandatory(true);
+if (DmShared.vNull(parentRow.getAmountMandatory()).doubleValue() == 1) {
+txtAmount.setMandatory(true);
+if (callBack.allowEditable()) {
+if (DmShared.vNull(parentRow.getOverHeadAliasEditable()).doubleValue() == 1) {
+txtOverHeadAlias.setEnabled(true);
+if (DmShared.vNull(parentRow.getAmountEditable()).doubleValue() == 1) {
+txtAmount.setEnabled(true);
+if (DmShared.vNull(parentRow.getAtRateEditable()).doubleValue() == 1) {
+txtAtRate.setEnabled(true);
+```
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHPostingAC.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHPostingAC(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<Acco
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHPostingAC).show();
+public void onSuccess(DmResultPageing<List<AccountHelp_Mdl>> result) {
+if (result.isStatus()) {
+txtHPostingAC.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHPostingAC).show();
+```
+
+`txtHPostingAC.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHPostingAC.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHPostingAC).show();
+```
+
+`overHeadGridMAEdit.addCallBack` → `onOk()`
+```java
+gridMA.commitChanges();
+```
+
+`overHeadGridMAEdit.addCallBack` → `onDelete()`
+```java
+gridMA.commitChanges();
+```
+- Alert: "Please fill A/c Name."
+- Alert: "Duplicate A/c Name."
+- Alert: "Please bifurcate full amount"
+
+### Screen `OverHeadGridMAEdit`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+| 1 | Posting A/c | DmTextHelp | `txtHPostingAC` | `TxtHPostingAC_PrpAcs, 7, true` |
+| 2 | Amount | DmTextBoxNumeric | `txtAmount` | `DmTextBoxNumeric.DecimalNature.NONE, true, 15, true` |
+
+**Grid / popup columns** (header, width, db field):
+- `txtHPostingAC`: Name [Text, w0, name]; Code [Text, w50, ManualCode]
+
+**Lookup / suggestion / find sources (server RPC called):**
+- `txtHPostingAC` → `getTxtHPostingAC`
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`txtHPostingAC.addTextHelpCallBack` → `populateData()`
+```java
+srvAsync.invokeRPC(blnCallBackWait).getTxtHPostingAC(helper, blnToEndOfFile, new AsyncCallback<DmResultPageing<List<Acco
+public void onFailure(Throwable caught) {
+new DmAlertMessageBox(caught.getMessage(), txtHPostingAC).show();
+public void onSuccess(DmResultPageing<List<AccountHelp_Mdl>> result) {
+if (result.isStatus()) {
+txtHPostingAC.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHPostingAC).show();
+```
+
+`txtHPostingAC.addTextHelpCallBack` → `onSuccess()`
+```java
+if (result.isStatus()) {
+txtHPostingAC.setData(result.getData(), result.getPaging());
+} else {
+new DmAlertMessageBox(result.getErrorMessage(), txtHPostingAC).show();
+```
+- Alert: "A/c Name is mandatory."
+- Alert: "Amount is mandatory."
+- Alert: "A/c Name already exists."
+
+### Screen `OverHead`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+
+Other widgets (not in tab list): `grid` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `grid`: Particulars [Text]; Particulars [Text, w185]; At Rate [Text]; At Rate [Text, w65]; Amount [Text]; Amount [Text, w100]
+
+**Event handlers (condensed code, CRUD flow and field callbacks):**
+
+`overHeadGridEdit.addCallBack` → `onOk()`
+```java
+calculate(grossAmount);
+grid.commitChanges();
+```
+
+`overHeadGridEdit.addCallBack` → `onDelete()`
+```java
+grid.commitChanges();
+```
+
+`overHeadGridEdit.addCallBack` → `allowEditable()`
+```java
+if (callback != null) {
+return callback.allowEditable();
+return true;
+```
+
+`excludePopup.addCallBack` → `ok()`
+```java
+String excludeFormula = "";
+for (OverHeadExclude_Mdl excludeMdl : excludePopup.grid.getGrid().getStore().getAll()) {
+if (DmShared.xNull(excludeMdl.getIsSelected()).trim().equals("1")) {
+if (!excludeFormula.equals("")) {
+excludeFormula += "+";
+excludeFormula += "[" + DmShared.xNull(excludeMdl.getManualCode()) + "]";
+for (OverHead_Mdl ohMdl : getOverHeadList()) {
+if (DmShared.xNull(ohMdl.getCalLValOn()).trim().equals("1")) {
+if (!DmShared.xNull(excludeFormula).trim().equalsIgnoreCase("")) {
+if (!DmShared.xNull(ohMdl.getActualFormula()).trim().equalsIgnoreCase("")) {
+...
+```
+
+`excludePopup.addCallBack` → `close()`
+```java
+focusGrid();
+```
+
+`postingAccountPopup.addCallBack` → `close()`
+```java
+focusGrid();
+```
+
+### Screen `PostingAccountDetailPopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+
+Other widgets (not in tab list): `gridMA` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `gridMA`: A/c Name [Text, w230]; Amount [Text, w100]
+
+### Screen `PostingAccountPopup`
+
+**Fields in screen order** (tab order `vl.add`; label = nearest `DmLabel` before it):
+
+| # | Label | Widget | Variable | Constructor args |
+|---|---|---|---|---|
+
+Other widgets (not in tab list): `txtDrAmount` (DmTextBoxNumeric), `txtCrAmount` (DmTextBoxNumeric), `grid` (DmGrid)
+
+**Grid / popup columns** (header, width, db field):
+- `grid`: OverHead [Text, w185]; At Rate [Text, w65]; Amount [Text, w100]; Account [Text, w245]; Dr/Cr [Text, w50]
+
 ## Files
 | file | lines |
 |---|---|
