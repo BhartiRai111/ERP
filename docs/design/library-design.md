@@ -42,7 +42,7 @@ Baaki: scheduler/web-job engine, Jasper engine (6.1 -> 7.x, 73 `.jrxml`), dynami
 | `egst` | `EGstService` (e-way bill, e-invoice: token, generate, cancel, print) | `gst`, `eGstPopup` | `gstTrans*`, `eGst*` | L2-5 |
 | `importdata` | `ImportDataService` (CSV formats, validation, log) | `dmImportData` | master tables | L2-5 |
 | `notify` | `NotificationService`, mail (`spring-mail`), web-socket | `dmNotifications`, `MailServer`, `dmWebSocket` | `wj*` | L2-5 |
-| `report` | Jasper 7 engine glue, report printer, printer mapping | `dmJasper`, `STReportPrinter`, `printerMapping` | - | L2-6 |
+| `report` | **JasperReports 7.1.1** glue: `ReportService` (compile `.jrxml` once + cache -> `JasperFillManager` with the company DB connection -> `JasperExportManager`/`JRXlsxExporter` -> bytes), stored-procedure query executer, scriptlet helpers (`AmountInWords`, `NumberFormatter`, watermark), report printer, printer mapping. Artifacts (all 7.1.1): `jasperreports`, `jasperreports-pdf`, `jasperreports-excel-poi`, `jasperreports-fonts`, `jasperreports-jdt` | `dmJasper`, `STReportPrinter`, `printerMapping` | - | L2-6 |
 
 ### 2.3 `pb-self-toolkit` (`com.paperbiz.selftoolkit`)
 | Package | Service(s) | Legacy | Priority |

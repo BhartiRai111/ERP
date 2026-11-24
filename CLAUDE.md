@@ -19,7 +19,7 @@ This is **not** a line-by-line port and there is **no compatibility layer**. Do 
 3. **Never commit or push `legacy-gwt/`.**
 4. Work in small steps: show plan, get approval, implement, show `mvn -q compile` result, wait for approval.
 5. Reply to the user in Hinglish.
-6. Develop on branch `Other`.
+6. Develop on branch `next` (decided by the user; `Other` holds the earlier work).
 
 ## Per-module workflow
 1. **Understand (read only):** list entries, flows, tables, validations, reports, dependencies.

@@ -1,0 +1,32 @@
+# PaperBiz backend configuration. Secrets come from environment variables, never from this file.
+server:
+  port: ${PB_SERVER_PORT:8080}
+
+spring:
+  application:
+    name: paperbiz
+
+dataman:
+  db:
+    url: ${DM_DB_URL:}                       # e.g. jdbc:sqlserver://host:1433;encrypt=true;trustServerCertificate=true
+    username: ${DM_DB_USER:}
+    password: ${DM_DB_PASSWORD:}
+    default-catalog: ${DM_DB_DEFAULT_CATALOG:}
+    maximum-pool-size: ${DM_DB_POOL_MAX:20}
+    minimum-idle: ${DM_DB_POOL_MIN:2}
+  mongo:
+    host: ${DM_MONGO_HOST:}
+    port: ${DM_MONGO_PORT:27017}
+    username: ${DM_MONGO_USER:}
+    password: ${DM_MONGO_PASSWORD:}
+    auth-source: ${DM_MONGO_AUTH_SOURCE:admin}
+  locale:
+    country: ${DM_LOCALE_COUNTRY:IND}        # IND | KHM | USA | KHM-USA
+  cors:
+    allowed-origins: ${DM_CORS_ORIGINS:http://localhost:3000}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
