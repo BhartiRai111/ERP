@@ -4,6 +4,11 @@ import com.dataman.base.report.ReportProperties;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.dataman.base.report.AmountFormatter;
+import com.dataman.base.report.AmountInWords;
+import com.dataman.base.report.LocaleSettings;
+import com.dataman.base.report.html.HtmlReportService;
+import com.dataman.base.report.jasper.JasperGridPdfExporter;
 import com.dataman.base.report.jasper.ReportCompiler;
 import com.dataman.base.report.ReportProperties;
 import com.dataman.base.report.jasper.ReportService;
@@ -59,11 +64,27 @@ class GridExportersTest {
     }
 
     @Test
+    void htmlPdfHasTitleHeadingsRowsAndFooter() throws Exception {
+        LocaleSettings ls = new LocaleSettings("IND");
+        HtmlReportService svc = new HtmlReportService(new ReportProperties(), new AmountFormatter(ls), new AmountInWords(ls));
+        try (Connection cn = DriverManager.getConnection("jdbc:h2:mem:x3")) {
+            byte[] pdf = new HtmlGridPdfExporter(svc).export(report, data(cn));
+            try (org.apache.pdfbox.pdmodel.PDDocument doc = org.apache.pdfbox.Loader.loadPDF(pdf)) {
+                String text = new org.apache.pdfbox.text.PDFTextStripper().getText(doc);
+                assertTrue(text.contains("Item List") && text.contains("Active items"), text);
+                assertTrue(text.contains("Paper") && text.contains("12.50") && text.contains("Total: 2"), text);
+                assertTrue(text.contains("Page 1 of 1"), text);
+                assertTrue(!text.contains("Missing"), "unknown columns are skipped");
+            }
+        }
+    }
+
+    @Test
     void pdfIsProduced() throws Exception {
         ReportProperties p = new ReportProperties();
         ReportService service = new ReportService(new ReportCompiler(p));
         try (Connection cn = DriverManager.getConnection("jdbc:h2:mem:x2")) {
-            byte[] pdf = new GridPdfExporter(service).export(report, data(cn));
+            byte[] pdf = new JasperGridPdfExporter(service).export(report, data(cn));
             assertTrue(new String(pdf, 0, 8, StandardCharsets.ISO_8859_1).startsWith("%PDF-1.7"));
             assertTrue(pdf.length > 1000);
         }

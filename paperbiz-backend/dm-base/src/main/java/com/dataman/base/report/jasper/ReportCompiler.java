@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
  * report ({@code "name.jasper"}) are compiled too, into the cache folder that becomes SUBREPORT_DIR.
  */
 @Service
+@org.springframework.boot.autoconfigure.condition.ConditionalOnClass(name = "net.sf.jasperreports.engine.JasperReport")
 public class ReportCompiler {
 
     private static final Pattern SUBREPORT_FILE = Pattern.compile("\"([A-Za-z0-9_\\-]+)\\.jasper\"");

@@ -130,7 +130,7 @@ public class GridExcelExporter {
         return s;
     }
 
-    static boolean isNumeric(int type) {
+    public static boolean isNumeric(int type) {
         return switch (type) {
             case Types.BIGINT, Types.DECIMAL, Types.DOUBLE, Types.FLOAT, Types.INTEGER, Types.NUMERIC, Types.REAL,
                     Types.SMALLINT, Types.TINYINT -> true;

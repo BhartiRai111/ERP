@@ -36,6 +36,7 @@ import org.springframework.stereotype.Service;
  * handed (REPORT_CONNECTION, with the filter table as the {@code fieldUDT} parameter).
  */
 @Service
+@org.springframework.boot.autoconfigure.condition.ConditionalOnClass(name = "net.sf.jasperreports.engine.JasperReport")
 public class ReportService {
 
     private static final DateTimeFormatter CURRENT_DATE_TIME =

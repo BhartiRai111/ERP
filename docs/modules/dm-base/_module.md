@@ -5,6 +5,8 @@
 > Approach: logic samajh kar saaf naya code (compat layer nahi). GWT code seedha copy sirf wahan jahan constants/algorithm hi asli cheez hai (enums, voucher codes, amount-in-words).
 > Verification: `mvn -q compile` poore reactor par pass, `dm-base` ke **60 unit tests pass**. Mongo aur SQL Server asli server par nahi chalaye (container me nahi hain); `RecIdService` aur `SerialNoService` ke SQL/stored procedure calls sirf compile + format tests se verified hain, asli DB par test baaki (dev DB milne par).
 
+> **Reports:** faisla (user): **HTML/PDF template** (Thymeleaf + OpenHTMLtoPDF) pehli priority; Jasper sirf optional library. Detail: `report-templates.md`.
+
 ## 1. Kya ho gaya (new code)
 
 | Package (`com.dataman.base.*`) | Legacy | Kaam | Verify |
@@ -16,8 +18,9 @@
 | `serial` | `getSerialNoInteger/BigInt`, `getDocId` | `SerialNoService`: `getCode` proc keys (4/14 digit, prefix wala 11 digit), `docId` | format tests |
 | `serial` (RecId) | `DmBaseServer.getRecId` (~270 lines) | `RecIdService.resolve(...)`: `numberSystem/numberSystemFormat` se format, `getRecId` proc se counter, date-lock (`Voucher_Type.acceptEntryAfter`), financial-year check (`Company`), duplicate voucher no. check. `RecIdFormat` = token expand (`{vouchersname}`, `{year}`, `{counter}` ...), `RecId` record | format tests |
 | `scheduler` | `dmScheduler` (`DmSchedulerFactory`, `DmScheduler`, `DmAutoScheduler`) | `SchedulePlan` (schedulerMast row), `ScheduleEvaluator` (ONCE/DAILY/WEEKLY/MONTHLY, legacy rules), `SchedulerService` (registry + 1-minute `@Scheduled` tick, worker thread per job, ek job fail ho to baaki chalte hain), `ScheduledJobHandler` (job type ke hisaab se handler; EMAIL/SMS/WHATSAPP/EVENT ke handler `dm-web-jobs` me aayenge) | unit tests |
-| `report.jasper` | `compileJasper/fillJasper/showJasper`, `DmJasperCompiler`, `DmWaterMark` | `ReportCompiler` (systemCustomized → system lookup, memory cache jo .jrxml badalne par refresh hota hai, sub reports auto-compile, font override for regional language, legacy scriptlet class mapping), `ReportService` (fill from ResultSet / list / connection with `fieldUDT`; `dmCurrentDateTime`, `SUBREPORT_DIR`, `dmFrmRptFormulaFieldDisplay`; export PDF 1.7 / XLSX / DOCX as bytes), `WatermarkRenderer` | unit tests (groovy + sub report + 3 exports) |
-| `report.grid` | `dmDynamicReportBuilder`, `RptFind.downloadExcel`, `DmMasterReport*` | `GridReport/GridColumn/PageSetup`, `GridExcelExporter` (legacy layout: header lines, shaded heading row, `#.00`), `GridPdfExporter` (layout Jasper design API se code me; DynamicJasper library ki zaroorat nahi) | unit tests (H2) |
+| `report.html` | `DmBaseServer.fillJasper/showJasper`, Jasper scriptlet `DmJasper` | `HtmlReportService` (Thymeleaf template, `systemCustomized` override, HTML -> PDF with fonts), `DmReportHelper` (`${dm.amount/qty/words/date}`), `ReportDataService` (report stored procedure -> result sets, incl. `fieldUDT`) | unit tests (PDF text checked) |
+| `report.jasper` (optional) | `compileJasper/fillJasper/showJasper`, `DmJasperCompiler`, `DmWaterMark` | `ReportCompiler` (systemCustomized → system lookup, memory cache jo .jrxml badalne par refresh hota hai, sub reports auto-compile, font override for regional language, legacy scriptlet class mapping), `ReportService` (fill from ResultSet / list / connection with `fieldUDT`; `dmCurrentDateTime`, `SUBREPORT_DIR`, `dmFrmRptFormulaFieldDisplay`; export PDF 1.7 / XLSX / DOCX as bytes), `WatermarkRenderer` | unit tests (groovy + sub report + 3 exports) |
+| `report.grid` | `dmDynamicReportBuilder`, `RptFind.downloadExcel`, `DmMasterReport*` | `GridReport/GridColumn/PageSetup`, `GridExcelExporter` (legacy layout: header lines, shaded heading row, `#.00`), `GridPdfExporter` interface: default `HtmlGridPdfExporter`, optional `JasperGridPdfExporter` | unit tests (H2) |
 | `audit` | `DmServer.formatTimestamp/getUserWithDateTime` | `AuditService` | tests |
 | `util` | `DmBaseShared`, `DmShared` (base part) | `Strings` (xNull, iNull, vNull, foreignKey, removeSpace, properCase, sentenceCase, space, isNumeric), `Validate` (mandatory, amount, email, pan, mobile, gstin), `DateUtil` | tests |
 | `enums` | `DmEnum` (99 enums) | **88 enums** + `CodeValueEnum` (har enum ek file) | compile |
@@ -52,8 +55,8 @@
 
 | Hissa | Legacy | Note |
 |---|---|---|
-| **Old `.jrxml` ka format** | 73 reports (`accounts/reports`, 1 in `paperbiz/store`) | **Jasper 7.1.1 purana (6.x) JRXML format padh hi nahi sakta** (sirf naya format). Test me sab 72 reports "Unable to load report" aaye. Faisla chahiye: (a) reports ko ek baar naye format me convert karna, ya (b) runtime par purana format padhne wala loader likhna (customer ke `systemCustomized` reports bhi purane format me honge), ya (c) reports ka tareeka hi badalna. Detail neeche "Reports ka faisla" |
-| Reports ke scriptlet | 72 reports me `scriptletClass="dataman.dmToolkit.dmJasper.server.DmJasper"` | `ReportProperties.scriptletClasses` se naye class par map hoga; `DmJasper` scriptlet `dm-toolkit` me port hona baaki |
+| **73 legacy `.jrxml` reports** | `accounts/reports` (72) + `paperbiz/store` (1) | Naya format (HTML template) chuna gaya; har report apne module ke saath HTML me banega (procedure same, layout naya). Jasper 7 purana format padh nahi sakta, isliye direct load nahi hote |
+| Reports ke scriptlet (`DmJasper`) | 72 reports me | Helpers `${dm...}` me aa gaye (amount, qty, words, date); baaki scriptlet functions report-wise dekhenge |
 | Web jobs (email/SMS/WhatsApp, templates) | `DmEMailWebJob`, `DmSMSWebJob`, `DmWhatsappWebJob`, `DmWebJobTemplateEngine`, `DmMapFormat` | `dm-web-jobs` module me, `ScheduledJobHandler` implement karke. Multi-instance deploy me double run se bachne ke liye lock (alag decision) |
 | Event bus | `dmEventbus` | Spring `ApplicationEventPublisher`; zaroorat padne par |
 | DB utilities | `executeScalar`, `executeSQL`, `getParamList`, `prepareContraText*`, `deleteExpiredLinkVerification`, `deleteFilesAndDirectories`, `createRepository*` | Zaroorat ke hisaab se |
@@ -63,7 +66,7 @@
 | `CsvContentType`, `DmCsvFileFormat_Mdl` | | `selfToolkit` ke ImportData ke saath |
 | Excel header helper | `setReportHeaderExcel` | Header lines ab `GridReport.headerLines` me caller deta hai (company/site session se, login step ke baad wire hoga) |
 
-### Reports ka faisla (Jasper)
+### Jasper (optional library) ke notes
 - Jasper 7 ke liye teen cheezein Jaspersoft ki apni repository (`jaspersoft.jfrog.io`) par hain jo yahan nahi khulti: patched `openpdf` (Central ka `openpdf 1.3.43` use kiya), `groovy-sandbox` (exclude, sirf sandbox expressions ke liye), aur `commons-collections4` ka 4.5.0 (POI 4.4 laata hai, isliye explicitly jodha). Test me PDF/XLSX/DOCX export aur groovy expressions chalte hain.
 - Legacy ke `DmJRXlsExporter` (patched 2,107 lines) ki jagah Jasper ka standard `JRXlsxExporter` use hota hai; Excel reports ki styling me chhote farak ho sakte hain.
 - Legacy `.jasper` files disk par cache hoti thi aur .jrxml badalne par refresh nahi hoti thi; ab memory cache hai jo file ka time dekhta hai.
@@ -88,14 +91,15 @@
 | `dataman.db.url`, `username`, `password`, `default-catalog`, `maximum-pool-size`, `minimum-idle` | SQL Server pool (DataSource tabhi banta hai jab `url` set ho) |
 | `dataman.mongo.host`, `port`, `username`, `password`, `auth-source` | File server (Mongo) |
 | `dataman.locale.country` | Base country dm code: IND / KHM / USA / KHM-USA (default IND) |
-| `dataman.reports.dir` | Report sources ka folder (`system`, `systemCustomized`, `osr` ke andar `.jrxml`), default `reports` |
+| `dataman.reports.dir` | Report templates ka folder (`system`, `systemCustomized`, `osr` ke andar `.html`; Jasper ke liye `.jrxml`), default `reports` |
+| `dataman.reports.fonts-dir`, `template-cache`, `grid-pdf` | PDF fonts folder, template cache, `html` (default) / `jasper` |
 | `dataman.reports.cache-dir` | Compiled sub reports ka folder (default: system temp ke andar `paperbiz-reports`) |
 | `dataman.reports.scriptlet-classes.<old class>` | Purane scriptlet class ka naya class |
 | `dataman.scheduler.enabled` / `dataman.scheduler.tick-millis` | Scheduler on/off (default on) aur tick (default 60000 ms) |
 | Request headers (temporary) | `X-Dm-User`, `X-Dm-Company-Db`, `X-Dm-Site` |
 
 ## 6. Dependencies jode (dm-base/pom.xml)
-Spring Boot starters (webmvc, jdbc, test), `mssql-jdbc` (BOM), `mongodb-driver-sync` (BOM), `opencsv 5.9`, `poi-ooxml 5.4.1`, `icu4j 77.1`, **JasperReports 7.1.1** (`jasperreports`, `-pdf`, `-excel-poi`, `-fonts`, `-jdt`, `-groovy`), `openpdf 1.3.43`, `commons-collections4 4.5.0`, test me `h2`.
+Spring Boot starters (webmvc, jdbc, test), `mssql-jdbc` (BOM), `mongodb-driver-sync` (BOM), `opencsv 5.9`, `poi-ooxml 5.4.1`, `icu4j 77.1`, **Thymeleaf** (Boot starter), **OpenHTMLtoPDF 1.1.117**, `jsoup 1.24.1`, **JasperReports 7.1.1** (optional: `jasperreports`, `-pdf`, `-excel-poi`, `-fonts`, `-jdt`, `-groovy`), `openpdf 1.3.43`, `commons-collections4 4.5.0`, test me `h2`.
 
 ## 7. Aage ka order (mera suggestion)
 1. Review: "port nahi" faisle (khaaskar `dmRefreshDataStructure`, `DmBuild`, `codify`) aur reports ka faisla (upar section 3).
