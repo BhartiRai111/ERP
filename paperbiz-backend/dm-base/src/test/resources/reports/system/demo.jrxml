@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport name="demo" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+	<property name="dmTitle" value="Demo"/>
+	<style name="regionalLanguageStyle" fontName="DejaVu Sans"/>
+	<parameter name="SUBREPORT_DIR" class="java.lang.String"/>
+	<parameter name="dmCurrentDateTime" class="java.lang.String"/>
+	<parameter name="dmFrmRptFormulaFieldDisplay" class="java.lang.String"/>
+	<field name="name" class="java.lang.String"/>
+	<field name="amount" class="java.lang.Double"/>
+	<title height="30">
+		<element kind="textField" width="555" height="15"><expression><![CDATA[$P{dmFrmRptFormulaFieldDisplay}]]></expression></element>
+		<element kind="subreport" y="15" width="400" height="15">
+			<expression><![CDATA[$P{SUBREPORT_DIR} + "sub.jasper"]]></expression>
+			<dataSourceExpression><![CDATA[new net.sf.jasperreports.engine.JREmptyDataSource(1)]]></dataSourceExpression>
+			<parameter name="note"><expression><![CDATA["x"]]></expression></parameter>
+		</element>
+	</title>
+	<detail>
+		<band height="20">
+			<element kind="textField" style="regionalLanguageStyle" width="300" height="20"><expression><![CDATA[$F{name}]]></expression></element>
+			<element kind="textField" x="300" width="200" height="20"><expression><![CDATA[$F{amount}]]></expression></element>
+		</band>
+	</detail>
+</jasperReport>

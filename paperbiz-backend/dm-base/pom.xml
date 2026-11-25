@@ -10,6 +10,9 @@
     <artifactId>dm-base</artifactId>
     <name>dm-base</name>
     <description>dataman_V2/dmBase: result/paging/helpers, DB connection, prepared statement, session, file manager, jasper base, scheduler, eventbus</description>
+    <properties>
+        <jasperreports.version>7.1.1</jasperreports.version>
+    </properties>
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -41,6 +44,61 @@
             <groupId>org.apache.poi</groupId>
             <artifactId>poi-ooxml</artifactId>
             <version>5.4.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-pdf</artifactId>
+            <version>${jasperreports.version}</version>
+            <exclusions>
+                <!-- Jaspersoft's patched build lives only on their own repository; the Central build is used instead -->
+                <exclusion>
+                    <groupId>com.github.librepdf</groupId>
+                    <artifactId>openpdf</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-excel-poi</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-fonts</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-groovy</artifactId>
+            <version>${jasperreports.version}</version>
+            <exclusions>
+                <!-- only on Jaspersoft's own repository; needed only for sandboxed expressions, which are not used -->
+                <exclusion>
+                    <groupId>org.kohsuke</groupId>
+                    <artifactId>groovy-sandbox</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.jasperreports</groupId>
+            <artifactId>jasperreports-jdt</artifactId>
+            <version>${jasperreports.version}</version>
+        </dependency>
+        <dependency>
+            <!-- Jasper 7.1.1 needs 4.5; POI would otherwise bring 4.4 -->
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-collections4</artifactId>
+            <version>4.5.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.librepdf</groupId>
+            <artifactId>openpdf</artifactId>
+            <version>1.3.43</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport name="sub" language="groovy" pageWidth="400" pageHeight="842" columnWidth="400" leftMargin="0" rightMargin="0" topMargin="0" bottomMargin="0">
+	<parameter name="note" class="java.lang.String"/>
+	<detail>
+		<band height="20">
+			<element kind="textField" width="400" height="20"><expression><![CDATA["sub:" + $P{note}]]></expression></element>
+		</band>
+	</detail>
+</jasperReport>

@@ -9,7 +9,11 @@ import java.util.Map;
  * Value of the SQL Server table type {@code dbo.fieldUDT} (legacy FieldUDT_Mdl + getFieldUDT): the
  * input some DB procedures take (e.g. getItemManualCode: itemName, itemGroup, itemCat).
  */
-public record FieldUdt(String caption, String text, String tag) {
+public record FieldUdt(String caption, String text, String tag, String tag2nd) {
+
+    public FieldUdt(String caption, String text, String tag) {
+        this(caption, text, tag, null);
+    }
 
     /** Column size of fieldCode and fieldName in the DB type. */
     public static final int MAX_CODE_LENGTH = 30;
