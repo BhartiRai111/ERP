@@ -11,6 +11,9 @@ import java.util.Map;
  */
 public record FieldUdt(String caption, String text, String tag) {
 
+    /** Column size of fieldCode and fieldName in the DB type. */
+    public static final int MAX_CODE_LENGTH = 30;
+
     /** Table-valued parameter: columns fieldCode, fieldName, fieldText, fieldTag, fieldTag2nd (last one stays empty). */
     public static SQLServerDataTable toTable(Map<String, FieldUdt> fields) throws SQLException {
         SQLServerDataTable table = new SQLServerDataTable();
@@ -23,6 +26,12 @@ public record FieldUdt(String caption, String text, String tag) {
             for (Map.Entry<String, FieldUdt> e : fields.entrySet()) {
                 if (e.getKey() != null && !e.getKey().isBlank()) {
                     FieldUdt f = e.getValue();
+                    if (e.getKey().length() > MAX_CODE_LENGTH) {
+                        throw new IllegalArgumentException("fieldCode longer than " + MAX_CODE_LENGTH + ": " + e.getKey());
+                    }
+                    if (f.caption() != null && f.caption().length() > MAX_CODE_LENGTH) {
+                        throw new IllegalArgumentException("fieldName longer than " + MAX_CODE_LENGTH + ": " + f.caption());
+                    }
                     table.addRow(e.getKey(), f.caption(), f.text(), f.tag());
                 }
             }
