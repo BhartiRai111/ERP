@@ -1,5 +1,6 @@
 package com.dataman.base.report.jasper;
 
+import com.dataman.base.report.ReportProperties;
 import com.dataman.base.exception.DmException;
 import java.io.File;
 import java.io.IOException;

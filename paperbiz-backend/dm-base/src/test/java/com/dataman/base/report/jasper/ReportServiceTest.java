@@ -1,5 +1,6 @@
 package com.dataman.base.report.jasper;
 
+import com.dataman.base.report.ReportProperties;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;

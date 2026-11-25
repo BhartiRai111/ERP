@@ -1,10 +1,11 @@
 package com.dataman.base.report.grid;
 
+import com.dataman.base.report.ReportProperties;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import com.dataman.base.report.jasper.ReportCompiler;
-import com.dataman.base.report.jasper.ReportProperties;
+import com.dataman.base.report.ReportProperties;
 import com.dataman.base.report.jasper.ReportService;
 import java.io.ByteArrayInputStream;
 import java.nio.charset.StandardCharsets;

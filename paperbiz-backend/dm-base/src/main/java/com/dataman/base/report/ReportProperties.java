@@ -1,4 +1,4 @@
-package com.dataman.base.report.jasper;
+package com.dataman.base.report;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -19,6 +19,16 @@ public class ReportProperties {
 
     public java.util.Map<String, String> getScriptletClasses() { return scriptletClasses; }
     public void setScriptletClasses(java.util.Map<String, String> scriptletClasses) { this.scriptletClasses = scriptletClasses; }
+
+    /** Folder with TrueType/OpenType fonts used in PDFs (regional languages, rupee sign); empty = built-in fonts only. */
+    private String fontsDir;
+    /** Cache compiled HTML templates (production); off while templates are being edited. */
+    private boolean templateCache = false;
+
+    public String getFontsDir() { return fontsDir; }
+    public void setFontsDir(String fontsDir) { this.fontsDir = fontsDir; }
+    public boolean isTemplateCache() { return templateCache; }
+    public void setTemplateCache(boolean templateCache) { this.templateCache = templateCache; }
 
     public String getDir() { return dir; }
     public void setDir(String dir) { this.dir = dir; }

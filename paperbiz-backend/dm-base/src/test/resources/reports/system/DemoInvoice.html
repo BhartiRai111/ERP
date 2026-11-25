@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8"/>
+<title th:text="${title}">Title</title>
+<style>
+  @page { size: A4 portrait; margin: 20mm 15mm;
+          @bottom-center { content: "Page " counter(page) " of " counter(pages); font-size: 9pt; } }
+  body { font-family: sans-serif; font-size: 10pt; }
+  table { width: 100%; border-collapse: collapse; }
+  th { background: #ddd; border-bottom: 1px solid #000; text-align: left; }
+  td.num, th.num { text-align: right; }
+  .words { margin-top: 12px; font-weight: bold; }
+</style>
+</head>
+<body>
+<h2 th:text="${title}">Title</h2>
+<p th:text="${filter}">filter</p>
+<table>
+  <thead><tr><th>Item</th><th class="num">Qty</th><th class="num">Amount</th></tr></thead>
+  <tbody>
+    <tr th:each="r : ${rows}">
+      <td th:text="${r.item}">item</td>
+      <td class="num" th:text="${dm.qty(r.qty, 3)}">0</td>
+      <td class="num" th:text="${dm.amount(r.amount)}">0</td>
+    </tr>
+  </tbody>
+</table>
+<p class="words" th:text="${dm.words(total)}">words</p>
+</body>
+</html>

@@ -12,6 +12,7 @@
     <description>dataman_V2/dmBase: result/paging/helpers, DB connection, prepared statement, session, file manager, jasper base, scheduler, eventbus</description>
     <properties>
         <jasperreports.version>7.1.1</jasperreports.version>
+        <openhtmltopdf.version>1.1.117</openhtmltopdf.version>
     </properties>
     <dependencies>
         <dependency>
@@ -36,6 +37,25 @@
             <version>77.1</version>
         </dependency>
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openhtmltopdf</groupId>
+            <artifactId>openhtmltopdf-pdfbox</artifactId>
+            <version>${openhtmltopdf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.openhtmltopdf</groupId>
+            <artifactId>openhtmltopdf-slf4j</artifactId>
+            <version>${openhtmltopdf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jsoup</groupId>
+            <artifactId>jsoup</artifactId>
+            <version>1.24.1</version>
+        </dependency>
+        <dependency>
             <groupId>com.opencsv</groupId>
             <artifactId>opencsv</artifactId>
             <version>5.9</version>
@@ -49,11 +69,13 @@
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports</artifactId>
             <version>${jasperreports.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports-pdf</artifactId>
             <version>${jasperreports.version}</version>
+            <optional>true</optional>
             <exclusions>
                 <!-- Jaspersoft's patched build lives only on their own repository; the Central build is used instead -->
                 <exclusion>
@@ -66,16 +88,19 @@
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports-excel-poi</artifactId>
             <version>${jasperreports.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports-fonts</artifactId>
             <version>${jasperreports.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports-groovy</artifactId>
             <version>${jasperreports.version}</version>
+            <optional>true</optional>
             <exclusions>
                 <!-- only on Jaspersoft's own repository; needed only for sandboxed expressions, which are not used -->
                 <exclusion>
@@ -88,6 +113,7 @@
             <groupId>net.sf.jasperreports</groupId>
             <artifactId>jasperreports-jdt</artifactId>
             <version>${jasperreports.version}</version>
+            <optional>true</optional>
         </dependency>
         <dependency>
             <!-- Jasper 7.1.1 needs 4.5; POI would otherwise bring 4.4 -->

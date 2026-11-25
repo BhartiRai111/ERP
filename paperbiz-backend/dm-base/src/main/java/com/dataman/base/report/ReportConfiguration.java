@@ -1,4 +1,4 @@
-package com.dataman.base.report.jasper;
+package com.dataman.base.report;
 
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
