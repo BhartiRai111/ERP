@@ -12,6 +12,16 @@
     <description>dataman_V2/dmToolkit: server helpers, GST, walk-through, overhead, modify reason, terms config, jasper</description>
     <dependencies>
         <dependency>
+            <groupId>com.nimbusds</groupId>
+            <artifactId>nimbus-jose-jwt</artifactId>
+            <version>10.10</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>com.paperbiz</groupId>
             <artifactId>dm-base</artifactId>
             <version>${project.version}</version>

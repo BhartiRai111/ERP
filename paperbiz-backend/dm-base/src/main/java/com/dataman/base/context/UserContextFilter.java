@@ -15,6 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
  * Headers: X-Dm-User, X-Dm-Company-Db, X-Dm-Site.
  */
 @Component
+@org.springframework.boot.autoconfigure.condition.ConditionalOnProperty(prefix = "dataman.auth", name = "dev-headers", havingValue = "true")
 public class UserContextFilter extends OncePerRequestFilter {
 
     public static final String H_USER = "X-Dm-User";
