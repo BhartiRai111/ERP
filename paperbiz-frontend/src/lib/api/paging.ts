@@ -17,3 +17,31 @@ export function pageQueryToParams(q: PageQuery): URLSearchParams {
   }
   return p;
 }
+
+/** Query string of the backend's Find / lookup / suggestion calls (`PageParams`): start, size, one search column, sort. */
+export interface SearchOptions {
+  start?: number;
+  size?: number;
+  /** Column and text for a "begins with" search. */
+  column?: string;
+  q?: string;
+  sort?: string;
+  desc?: boolean;
+  /** Jump to the last page. */
+  end?: boolean;
+}
+
+export function searchParams(o: SearchOptions): Record<string, string | number | boolean | undefined> {
+  const out: Record<string, string | number | boolean | undefined> = {
+    start: o.start ?? 0,
+    size: o.size ?? 20,
+  };
+  if (o.column && o.q) {
+    out.column = o.column;
+    out.q = o.q;
+  }
+  if (o.sort) out.sort = o.sort;
+  if (o.desc) out.desc = true;
+  if (o.end) out.end = true;
+  return out;
+}

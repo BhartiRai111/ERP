@@ -2,6 +2,7 @@
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState, type ReactNode } from "react";
+import { DialogProvider } from "@/components/dm/Dialogs";
 import { SessionProvider } from "@/components/session/SessionProvider";
 
 export function Providers({ children }: { children: ReactNode }) {
@@ -10,7 +11,9 @@ export function Providers({ children }: { children: ReactNode }) {
   );
   return (
     <QueryClientProvider client={client}>
-      <SessionProvider>{children}</SessionProvider>
+      <SessionProvider>
+        <DialogProvider>{children}</DialogProvider>
+      </SessionProvider>
     </QueryClientProvider>
   );
 }

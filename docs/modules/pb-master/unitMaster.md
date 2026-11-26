@@ -413,3 +413,21 @@ Helpers used: `DmServer.convertToJson`, `DmServer.evaluateHelper`, `DmServer.for
 
 ## Notes (hand-written)
 _No hand-written notes yet._
+
+## New implementation (Spring Boot + Next.js)
+Code: `pb-master` `com.paperbiz.master.unit` (`UnitMasterController`, `UnitMasterService`, `UnitMasterRepository`, `UnitMasterDto`), frontend `src/entries/master/`. Menu: module "Master", menu "Unit Master" (`PmMaster.UNIT_MASTER`). Table `unitMast` (`unit` is varchar(10)), `gstUnitMast`.
+
+| Endpoint | Rule |
+|---|---|
+| `GET /api/master/unit-master/defaults` | default GST unit (`gstUnitMast.manualCode = 'OTH'`) |
+| `GET .../navigator` | codes ordered by unit name |
+| `GET .../{code}` | record with prepared/modified texts, `isSystemGenerated` Yes/No, nature name |
+| `POST` | permission A; validate; key `getCode('unitmast')` (site + 4 digits); duplicate name (case-insensitive) -> "Unit Name already exists."; insert (`isSystemGenerated = 0`); log NEW |
+| `PUT .../{code}` | permission E; reason needed; system generated: name and nature are kept; log EDIT with old/new JSON |
+| `DELETE .../{code}` | permission D; reason needed; system generated: "Record is system generated. You can't delete this record."; DB foreign-key message if in use; log DELETE |
+| `GET .../find` | columns code, name, decimalPlaces, gstUnitName, nature name; default sort name |
+| `GET .../lookups/gst-unit`, `.../lookups/unit-nature`, `.../suggestions` | text helps and suggestion |
+
+Validation (error number = field to focus): Unit Name mandatory (100; max 10 characters, new because of the column size), Decimal Places not above 4 (200, "Decimal places can't be greater than 4."), GST Unit mandatory (300), Unit nature mandatory (400). Name is trimmed and spaces collapsed.
+
+Changed from legacy: server-side permission and system-generated checks (legacy had them only on the screen), change log written in the same transaction (legacy wrote after commit and ignored a log failure), old record re-read from the DB. Not yet: CSV export ("Other" menu).
