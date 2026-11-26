@@ -122,7 +122,7 @@ Hooks: `useEntryMode`, `useSession` (company/site/year/prefix/tax type/locale), 
 | # | Milestone | Backend | Frontend | Done when |
 |---|---|---|---|---|
 | L1 | Foundation | `dm-base` rest (config, startup) | Next.js scaffold, API client, errors, layout | compile/build pass |
-| L2-1 | Login & session | `auth`, `session`, `permission`, `enviro` | login, select company/site, lock, menu from permissions | login with a real DB user works (needs your DB) |
+| L2-1 | Login & session | `auth`, `session`, `permission`, `enviro` | login, select company/site, lock, menu from permissions | **code done** (see docs/modules/dm-toolkit/login-session-permission.md; `enviro` and real-DB login test pending) |
 | L2-2 | Entry basics | `datelock`, `changelog`, `crud`, `lookup` | `DmTextBox/Number/TextHelp/Suggest`, `DmTopControl`, `DmFind`, `DmGrid`, dialogs, `EntryScreen` | **vertical slice: `unitMaster` end-to-end** |
 | L2-3 | Shared features | `files`, `singleline`, `walkthrough`, `gui`, `terms`, `partyinfo` | uploader, dynamic fields, terms, approval screens | each has tests |
 | L2-4 | Stock & accounts | `tds`, `overhead`, `stock`, `accounting`, `posting` | grids/popups for vouchers | **golden tests vs legacy** for stock FIFO and postings |

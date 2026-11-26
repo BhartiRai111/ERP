@@ -1,5 +1,7 @@
 import { ApiRequestError, isApiErrorBody } from "./errors";
 import { devContextHeaders, getDevContext } from "../session/devContext";
+import { EVT_LOCKED, EVT_UNAUTHORIZED, emit } from "../session/events";
+import { getToken } from "../session/tokenStore";
 
 export const API_BASE_URL = (process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8080").replace(/\/$/, "");
 
@@ -25,7 +27,10 @@ function toSearch(query: ApiOptions["query"]): string {
  * `{errorNumber, message}` (messages are the legacy ones, shown to the user as they are).
  */
 export async function apiFetch<T>(path: string, opts: ApiOptions = {}): Promise<T> {
-  const headers: Record<string, string> = { Accept: "application/json", ...devContextHeaders(getDevContext()) };
+  const token = getToken();
+  const headers: Record<string, string> = { Accept: "application/json" };
+  if (token) headers.Authorization = `Bearer ${token}`;
+  else Object.assign(headers, devContextHeaders(getDevContext()));
   let body: string | undefined;
   if (opts.body !== undefined) {
     headers["Content-Type"] = "application/json";
@@ -50,6 +55,8 @@ export async function apiFetch<T>(path: string, opts: ApiOptions = {}): Promise<
     json = undefined;
   }
   if (!res.ok) {
+    if (token && res.status === 401) emit(EVT_UNAUTHORIZED);
+    if (token && res.status === 423) emit(EVT_LOCKED);
     if (isApiErrorBody(json)) throw new ApiRequestError(res.status, json.errorNumber, json.message);
     throw new ApiRequestError(res.status, 0, text || res.statusText || "Request failed");
   }
