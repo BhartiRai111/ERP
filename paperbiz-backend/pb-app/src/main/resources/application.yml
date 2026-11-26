@@ -22,6 +22,16 @@ dataman:
     auth-source: ${DM_MONGO_AUTH_SOURCE:admin}
   locale:
     country: ${DM_LOCALE_COUNTRY:IND}        # IND | KHM | USA | KHM-USA
+  auth:
+    jwt-secret: ${DM_AUTH_JWT_SECRET:}       # required, at least 32 characters (unless dev-headers)
+    token-minutes: ${DM_AUTH_TOKEN_MINUTES:480}
+    dev-headers: ${DM_AUTH_DEV_HEADERS:false} # true = X-Dm-* headers instead of tokens (development only)
+    max-failures: ${DM_AUTH_MAX_FAILURES:5}
+    lock-minutes: ${DM_AUTH_LOCK_MINUTES:15}
+  reports:
+    dir: ${DM_REPORTS_DIR:reports}
+    fonts-dir: ${DM_REPORTS_FONTS_DIR:}
+    template-cache: ${DM_REPORTS_TEMPLATE_CACHE:true}
   cors:
     allowed-origins: ${DM_CORS_ORIGINS:http://localhost:3000}
 
