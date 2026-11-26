@@ -1,5 +1,7 @@
 package com.dataman.toolkit.auth;
 
+import com.dataman.base.context.SessionContextHolder;
+import com.dataman.base.context.SessionInfo;
 import com.dataman.base.context.UserContext;
 import com.dataman.base.context.UserContextHolder;
 import jakarta.servlet.FilterChain;
@@ -63,9 +65,13 @@ public class JwtContextFilter extends OncePerRequestFilter {
         SessionClaims c = claims.get();
         try {
             UserContextHolder.set(new UserContext(c.userName(), c.companyDb(), c.siteCode(), clientIp(req)));
+            if (session.info() instanceof SessionInfo info) {
+                SessionContextHolder.set(new SessionContextHolder.Current(session.sessionId(), info));
+            }
             chain.doFilter(req, res);
         } finally {
             UserContextHolder.clear();
+            SessionContextHolder.clear();
         }
     }
 
